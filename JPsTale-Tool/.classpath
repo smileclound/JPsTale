@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/InxLoader"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-core"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-desktop"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-lwjgl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/AseLoader"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
