@@ -1,0 +1,108 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                4428,
+                845,
+                22511
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        4547,
+                        817,
+                        22616
+                    ],
+                    "ToField": 7
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "废墟村庄",
+    "NameMap": "Field/map/ruin-2.tga",
+    "BackImageCode": [
+        8,
+        12,
+        10
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Ruin/ruin-2.ASE",
+    "NameTitle": "Field/title/ruin-2t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                3051,
+                0,
+                16124
+            ],
+            "ToField": 6
+        },
+        {
+            "Position": [
+                10019,
+                0,
+                18031
+            ],
+            "ToField": 8
+        },
+        {
+            "Position": [
+                4470,
+                0,
+                27774
+            ],
+            "ToField": 18
+        },
+        {
+            "Position": [
+                12713,
+                0,
+                23409
+            ],
+            "ToField": 35
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "ruin/ruin_ani01.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 1024,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        4547,
+        817,
+        22616
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                3976,
+                19645
+            ]
+        },
+        {
+            "Position": [
+                5832,
+                23751
+            ]
+        },
+        {
+            "Position": [
+                5615,
+                25117
+            ]
+        }
+    ],
+    "id": 7,
+    "CenterPos": [
+        7459,
+        23984
+    ]
+}

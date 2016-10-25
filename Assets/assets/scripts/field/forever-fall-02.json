@@ -1,0 +1,141 @@
+{
+    "ServerCode": 3,
+    "Title": "秋之谷",
+    "NameMap": "Field/map/forever-fall-02.tga",
+    "BackImageCode": [
+        18,
+        19,
+        17
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/forever-fall/forever-fall-02.ASE",
+    "NameTitle": "Field/title/forever-fall-02t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                -2349,
+                0,
+                49830
+            ],
+            "ToField": 19
+        },
+        {
+            "Position": [
+                667,
+                0,
+                59371
+            ],
+            "ToField": 21
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "forever-fall/2ani-01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/2ani-02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/2ani-03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/2ani-04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/2ani-05.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 100,
+            "Position": [
+                -266,
+                862,
+                57971
+            ],
+            "AmbientNum": 13
+        },
+        {
+            "round": 100,
+            "Position": [
+                -5014,
+                629,
+                56702
+            ],
+            "AmbientNum": 13
+        },
+        {
+            "round": 80,
+            "Position": [
+                2153,
+                772,
+                53576
+            ],
+            "AmbientNum": 13
+        },
+        {
+            "round": 80,
+            "Position": [
+                -395,
+                542,
+                56521
+            ],
+            "AmbientNum": 13
+        },
+        {
+            "round": 20,
+            "Position": [
+                -3329,
+                522,
+                56469
+            ],
+            "AmbientNum": 15
+        },
+        {
+            "round": 10,
+            "Position": [
+                -39,
+                604,
+                54080
+            ],
+            "AmbientNum": 6
+        }
+    ],
+    "State": 512,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                -1024,
+                45437
+            ]
+        },
+        {
+            "Position": [
+                -1543,
+                52333
+            ]
+        },
+        {
+            "Position": [
+                -1310,
+                54945
+            ]
+        }
+    ],
+    "id": 20,
+    "CenterPos": [
+        1691,
+        52599
+    ]
+}

@@ -1,0 +1,111 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                5563,
+                840,
+                36772
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        2981,
+                        0,
+                        75486
+                    ],
+                    "ToField": 22
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                11502,
+                840,
+                36776
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        2981,
+                        0,
+                        75486
+                    ],
+                    "ToField": 22
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                7254,
+                853,
+                36875
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        9992,
+                        830,
+                        36750
+                    ],
+                    "ToField": 40
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 8
+        },
+        {
+            "size": 64,
+            "Position": [
+                9992,
+                853,
+                36875
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        7254,
+                        830,
+                        36750
+                    ],
+                    "ToField": 40
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 8
+        }
+    ],
+    "Title": "场景图",
+    "NameMap": "",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/Fall_Game/Fall_Game.ASE",
+    "NameTitle": "",
+    "State": 2816,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        7254,
+        830,
+        36750
+    ],
+    "id": 40,
+    "CenterPos": [
+        5800,
+        36747
+    ]
+}

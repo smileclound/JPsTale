@@ -1,0 +1,90 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                -5908,
+                136,
+                -26878
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -15314,
+                        58,
+                        -28718
+                    ],
+                    "ToField": 14
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                -8019,
+                21,
+                -25768
+            ],
+            "LimitLevel": 60,
+            "OutGate": [
+                {
+                    "Position": [
+                        1810,
+                        0,
+                        -28802
+                    ],
+                    "ToField": 16
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                -3918,
+                21,
+                -27988
+            ],
+            "LimitLevel": 60,
+            "OutGate": [
+                {
+                    "Position": [
+                        1810,
+                        0,
+                        -28802
+                    ],
+                    "ToField": 16
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "古代地牢2层",
+    "NameMap": "Field/map/dun-2.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/dungeon/Dun-2.ASE",
+    "NameTitle": "Field/title/dun-2t.tga",
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 15,
+    "CenterPos": [
+        -6108,
+        -26880
+    ]
+}

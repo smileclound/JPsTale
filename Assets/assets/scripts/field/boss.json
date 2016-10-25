@@ -1,0 +1,48 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                33012,
+                1533,
+                49926
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        37971,
+                        1209,
+                        50460
+                    ],
+                    "ToField": 36
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "凯尔祖维的巢穴",
+    "NameMap": "Field/map/Boss.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/Boss/boss.ASE",
+    "NameTitle": "Field/title/Bosst.tga",
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 37,
+    "CenterPos": [
+        33000,
+        50036
+    ]
+}

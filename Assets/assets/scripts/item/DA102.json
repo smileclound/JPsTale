@@ -1,0 +1,82 @@
+{
+    "ItemInfo": {
+        "Locale_Name": "Õ½¶··þ",
+        "En_Name": "Battle Suit",
+        "UniqueItem": 1,
+        "EffectColor": [0,0,0,0],
+        "EffectBlink": 0,
+        "ScaleBlink": 0,
+        "DispEffect": 0,
+        "Weight": 10,
+        "Price": 400,
+        "AttrResistance": {
+            "Bionic": [1,4],
+            "Earth": [0,0],
+            "Fire": [-1,-1],
+            "Ice": [1,4],
+            "Lighting": [-1,-1],
+            "Poison": [1,4],
+            "Water": [0,0],
+            "Wind": [0,0],
+        },
+        "AttrAttack": {
+            "Damage": [0,0,0,0],
+            "Shooting_Range": 0,
+            "Attack_Speed": 0,
+            "Attack_Rating": [0,0],
+            "Critical_Hit": 0,
+            "Magic_Mastery": [0.0,0.0]
+        },
+        "AttrDefense": {
+            "Absorb": [0.3,0.7],
+            "Defense": [8,12],
+            "Block_Rating": [0.0,0.0]
+        },
+        "AttrSpeed": [0.0,0.0],
+        "AttrRecovery": {
+            "Mana_Regen": [0.0,0.0],
+            "Life_Regen": [0.0,0.0],
+            "Stamina_Regen": [0.0,0.0],
+            "Increase_Life": [0.0,0.0],
+            "Increase_Mana": [0.0,0.0],
+            "Increase_Stamina": [0.0,0.0]
+        },
+        "AttrPotionSpace": 0,
+        "AttrPotionEffect": {
+            "Mana":[0,0],
+            "Life": [0,0],
+            "Stamina": [0,0]
+        },
+        "ItemSpecial": {
+            "Default_Job_Name": "null",
+            "Random_Job_Name": "Mechanician Fighter Pikeman Archer Knight Atalanta",
+            "Add_Absorb": [0.1,0.3],
+            "Add_Defence": [5,10],
+            "Add_Speed": [0.0,0.0],
+            "Add_Block_Rating": 0.0,
+            "Add_Attack_Speed": 0,
+            "Add_Critical_Hit": 0,
+            "Add_Shooting_Range": 0,
+            "Add_Magic_Mastery": [0.0,0.0],
+            "Add_Resistance": [0,0,0,0,0,0,0,0],
+            "Lev_Attack_Resistance": [0,0,0,0,0,0,0,0],
+            "Lev_Mana": 0,
+            "Lev_Life": 0,
+            "Lev_Attack_Rating": [0,0],
+            "Lev_Damage": [0,0],
+            "Add_Mana_Regen": [0.0,0.0],
+            "Add_Life_Regen":  [0.0,0.0],
+            "Add_Stamina_Regen":  [0.0,0.0]
+        },
+        "ItemRequire": {
+            "Level": 0,
+            "Strength": 0,
+            "Spirit": 0,
+            "Talent": 0,
+            "Dexterity": 0,
+            "Health": 0
+        },
+        "GenDay": 0,
+        "NextFile": "name\da102.zhoon"
+    }
+}

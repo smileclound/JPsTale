@@ -1,0 +1,97 @@
+{
+    "ServerCode": 3,
+    "Title": "凯拉笔山谷",
+    "NameMap": "Field/map/ice1.tga",
+    "BackImageCode": [
+        35,
+        36,
+        37
+    ],
+    "BackMusicCode": 11,
+    "Name": "Field/Ice/ice1.ASE",
+    "NameTitle": "Field/title/ice1t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                31848,
+                0,
+                27225
+            ],
+            "ToField": 30
+        },
+        {
+            "Position": [
+                33729,
+                0,
+                38029
+            ],
+            "ToField": 36
+        },
+        {
+            "Position": [
+                35364,
+                0,
+                39518
+            ],
+            "ToField": 36
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "ice/ice_ani_01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leewood01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leewood03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leewood04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leaf01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leaf02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leaf03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leaf04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leaf05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leaf06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ice/ice_bip_leaf07.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 2304,
+    "LimitLevel": 90,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 32,
+    "CenterPos": [
+        32313,
+        28529
+    ]
+}

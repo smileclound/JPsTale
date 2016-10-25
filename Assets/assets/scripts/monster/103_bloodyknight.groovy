@@ -1,0 +1,167 @@
+monster = [
+	ID:'103_bloodyknight',
+	Name:'嗜血骑士',
+	Clazz:0,// 1 BOSS
+	Brood:0x00,// 0 Normal; 0x90(144) UNDEAD; 0x91 MUTANT; 0x92 DEMON; 0x93 MECHANIC;
+	// Common Status
+	Level:103,
+	ActiveHour:0,
+	RespawnGroup:[1, 1],
+
+	Attributes:[
+		Life:13250,
+		// Attack Status
+		Atk:[160, 172],
+		AtkSpeed:8,
+		Range:80,
+		Rating:1532,
+
+		// Defence Status
+		Flee:1333,
+		Absorb:40,
+		Block:28,
+		DamageStunPers:10,
+
+		// Resistance
+		Earth:55,
+		Fire:55,
+		Ice:55,// Water
+		Lighting:55,// Wind
+		Poison:55,
+	],
+
+	// AI
+	AI:[
+		Nature:0x82,// 0x80 NATURAL; 0x81 GOOD; 0x82 EVIL
+		IQ:9,
+		Real_Sight:390,
+		Talks:[],
+
+		// Move Behavier
+		Move_Speed:2,
+		MoveRange:64,
+
+		// Skill Behavier
+		SpAttackPercetage:52,
+		SkillDamage:[175, 190],
+		SkillDistance:0,
+		SkillRange:0,
+		SkillRating:10,
+		SkillCurse:0,
+
+		// Heal Behavier
+		PotionPercent:0,
+		PotionCount:0,
+	],
+
+	Looks:[
+		ClassCode:68,
+		ArrowPosi:[0, 0],
+		ModelSize:1.3,
+		UseEventModel:false,
+		SizeLevel:1,
+		Model:'char/monster/Bloodyknight/Bknight.ini',
+		Sound:0x00001850,
+	],
+
+	// Drops
+	AllSeeItem:false,
+	Exp:620000,
+	Quantity:1,
+	drops:[
+		[probability:1376, code:"NULL"/* Drops nothing */],
+		[probability:1946, code:"GG101", value:[650, 1050]/* Gold */],
+		[probability:192, code:"DA117"/* 远古圣铠 */],
+		[probability:192, code:"DA217"/* 天使法袍 */],
+		[probability:192, code:"WA115"/* 泰坦斧 */],
+		[probability:192, code:"WC115"/* 魔玉爪 */],
+		[probability:192, code:"WH116"/* 轰天锤 */],
+		[probability:192, code:"WM116"/* 诸神的黄昏 */],
+		[probability:192, code:"WP116"/* 虹月 */],
+		[probability:192, code:"WS117"/* 破鹫 */],
+		[probability:192, code:"WS217"/* 鬼切 */],
+		[probability:192, code:"WT116"/* 玛雅神标 */],
+		[probability:192, code:"DB115"/* 时空之靴 */],
+		[probability:192, code:"DS115"/* 亢龙之盾 */],
+		[probability:192, code:"OM115"/* 炫彩水晶 */],
+		[probability:192, code:"DG115"/* 赤龙护手 */],
+		[probability:192, code:"OA215"/* 赤龙臂环 */],
+		[probability:192, code:"OR115"/* 守护之戒 */],
+		[probability:192, code:"OA115"/* 暗印护符 */],
+		[probability:192, code:"OS108"/* 虎翼石 */],
+		[probability:148, code:"DA118"/* 米诺陶斯铠 */],
+		[probability:148, code:"DA218"/* 撒旦披风 */],
+		[probability:148, code:"WA116"/* 轮回战斧 */],
+		[probability:148, code:"WC116"/* 泰坦爪 */],
+		[probability:148, code:"WH117"/* 兽神锤 */],
+		[probability:148, code:"WM117"/* 神圣之光 */],
+		[probability:148, code:"WP117"/* 银河战镰 */],
+		[probability:148, code:"WS118"/* 风切 */],
+		[probability:148, code:"WS218"/* 天裂 */],
+		[probability:148, code:"WT117"/* 夜叉 */],
+		[probability:148, code:"DB118"/* 符文之靴 */],
+		[probability:148, code:"DS116"/* 远古之盾 */],
+		[probability:148, code:"OM116"/* 龙之护身 */],
+		[probability:148, code:"DG116"/* 星辰护手 */],
+		[probability:148, code:"OA216"/* 鎏金臂环 */],
+		[probability:148, code:"OR116"/* 雅典娜之吻 */],
+		[probability:148, code:"OA116"/* 苍穹之链 */],
+		[probability:148, code:"OS109"/* 龙鳞石 */],
+		[probability:19, code:"DA119"/* 死神绝命铠 */],
+		[probability:19, code:"DA219"/* 幻彩羽袍 */],
+		[probability:19, code:"WA117"/* 远古战斧 */],
+		[probability:19, code:"WC117"/* 冰魄爪 */],
+		[probability:19, code:"WH118"/* 灭神锤 */],
+		[probability:19, code:"WM118"/* 日月同辉 */],
+		[probability:19, code:"WP118"/* 月影神矛 */],
+		[probability:19, code:"WS119"/* 丘比特之弓 */],
+		[probability:19, code:"WS219"/* 凝雾 */],
+		[probability:19, code:"WT118"/* 噬月 */],
+		[probability:19, code:"DB117"/* 烈焰靴 */],
+		[probability:19, code:"DS117"/* 米诺陶斯盾 */],
+		[probability:19, code:"OM117"/* 绿釉之眼 */],
+		[probability:19, code:"DG117"/* 炫钻护手 */],
+		[probability:19, code:"OA217"/* 炫钻臂环 */],
+		[probability:19, code:"OR117"/* 封魔之戒 */],
+		[probability:19, code:"OA117"/* 天眼护符 */],
+		[probability:19, code:"OS110"/* 钻晶石 */],
+		[probability:8, code:"DA120"/* 炎龙圣铠 */],
+		[probability:8, code:"DA220"/* 修罗圣衣 */],
+		[probability:8, code:"WA118"/* 雷神斧 */],
+		[probability:8, code:"WC118"/* 星刺爪 */],
+		[probability:8, code:"WH119"/* 弑神 */],
+		[probability:8, code:"WM119"/* 末日辉煌 */],
+		[probability:8, code:"WP119"/* 棲羽亚陀 */],
+		[probability:8, code:"WS120"/* 羽裂 */],
+		[probability:8, code:"WS220"/* 龙牙 */],
+		[probability:8, code:"WT119"/* 流星 */],
+		[probability:8, code:"DB118"/* 符文之靴 */],
+		[probability:8, code:"DS118"/* 死神之盾 */],
+		[probability:8, code:"OM118"/* 黑魔 */],
+		[probability:8, code:"DG118"/* 泰坦护手 */],
+		[probability:8, code:"OA218"/* 泰坦臂环 */],
+		[probability:8, code:"OR118"/* 封神之戒 */],
+		[probability:8, code:"OA118"/* 圣光勋章 */],
+		[probability:8, code:"OS111"/* 龙睛石 */],
+		[probability:2, code:"DA121"/* 魔龙圣铠 */],
+		[probability:2, code:"DA222"/* 雅典娜圣衣 */],
+		[probability:2, code:"WA119"/* 幽月斧 */],
+		[probability:2, code:"WC119"/* 修罗爪 */],
+		[probability:2, code:"WH120"/* 无畏 */],
+		[probability:2, code:"WM120"/* 灭绝 */],
+		[probability:2, code:"WP120"/* 炎枪素戋鸣 */],
+		[probability:2, code:"WS121"/* 亚罗栖 */],
+		[probability:2, code:"ws221"/* 32dew2 */],
+		[probability:2, code:"WT120"/* 天妒 */],
+		[probability:2, code:"DB119"/* 死神战靴 */],
+		[probability:2, code:"DS119"/* 蛮狮之盾 */],
+		[probability:2, code:"OM119"/* 赤魔之心 */],
+		[probability:2, code:"DG119"/* 炫彩护手 */],
+		[probability:2, code:"OA219"/* 兽神臂环 */],
+		[probability:2, code:"OR119"/* 轮回之戒 */],
+		[probability:2, code:"OA119"/* 逆天纹章 */],
+		[probability:2, code:"OS112"/* 圣晶石 */]
+	],
+	drops_more:[
+	]
+]

@@ -1,0 +1,35 @@
+{
+    "ServerCode": 3,
+    "Title": "迷失寺庙",
+    "NameMap": "Field/map/Losttemple.tga",
+    "BackImageCode": [
+        44,
+        45,
+        46
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Losttemple/lost_temple.ASE",
+    "NameTitle": "Field/title/Losttemplet.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                -11586,
+                0,
+                7704
+            ],
+            "ToField": 38
+        }
+    ],
+    "State": 1024,
+    "LimitLevel": 100,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 39,
+    "CenterPos": [
+        -11718,
+        10794
+    ]
+}

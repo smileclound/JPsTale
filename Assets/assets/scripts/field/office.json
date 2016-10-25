@@ -1,0 +1,25 @@
+{
+    "NameTitle": "",
+    "ServerCode": 1,
+    "State": 2048,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "Title": "GM房间",
+    "NameMap": "",
+    "id": 17,
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "CenterPos": [
+        -200000,
+        200000
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/Room/office.ASE"
+}

@@ -1,0 +1,71 @@
+{
+    "ServerCode": 1,
+    "Title": "自由庭院",
+    "NameMap": "Field/map/fore-1.tga",
+    "BackImageCode": [
+        2,
+        3,
+        1
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/forest/fore-1.ASE",
+    "NameTitle": "Field/title/fore-1t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                -292,
+                0,
+                -9548
+            ],
+            "ToField": 2
+        },
+        {
+            "Position": [
+                4844,
+                0,
+                -6835
+            ],
+            "ToField": 5
+        },
+        {
+            "Position": [
+                2275,
+                0,
+                -14828
+            ],
+            "ToField": 4
+        }
+    ],
+    "State": 512,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                1350,
+                -13672
+            ]
+        },
+        {
+            "Position": [
+                1761,
+                -10815
+            ]
+        },
+        {
+            "Position": [
+                4777,
+                -10916
+            ]
+        }
+    ],
+    "id": 3,
+    "CenterPos": [
+        4184,
+        -11016
+    ]
+}

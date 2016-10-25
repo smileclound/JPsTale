@@ -1,0 +1,25 @@
+{
+    "NameTitle": "Field/title/quest_IVt.tga",
+    "ServerCode": 3,
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "Title": "四转任务",
+    "NameMap": "Field/map/quest_IV.tga",
+    "id": 33,
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "CenterPos": [
+        22497,
+        9605
+    ],
+    "BackMusicCode": 9,
+    "Name": "Field/Quest/quest_IV.ASE"
+}

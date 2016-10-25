@@ -1,0 +1,321 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                -3665,
+                762,
+                -36334
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -12073,
+                        95,
+                        -40701
+                    ],
+                    "ToField": 23
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                -4895,
+                762,
+                -37132
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -12073,
+                        95,
+                        -40701
+                    ],
+                    "ToField": 23
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                -2441,
+                762,
+                -37137
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -12073,
+                        95,
+                        -40701
+                    ],
+                    "ToField": 23
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 128,
+            "Position": [
+                -3207,
+                553,
+                -43830
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -3650,
+                        116,
+                        -45312
+                    ],
+                    "ToField": 43
+                },
+                {
+                    "Position": [
+                        -3668,
+                        3,
+                        -50022
+                    ],
+                    "ToField": 43
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 128,
+            "Position": [
+                -4025,
+                553,
+                -43821
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -3650,
+                        116,
+                        -45312
+                    ],
+                    "ToField": 43
+                },
+                {
+                    "Position": [
+                        -3668,
+                        3,
+                        -50022
+                    ],
+                    "ToField": 43
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "古代神殿2层",
+    "NameMap": "Field/map/dun-5.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/dungeon/dun-5.ASE",
+    "NameTitle": "Field/title/dun-5t.tga",
+    "StageObject": [
+        {
+            "StgObjName": "dungeon/dun-5-ani-01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-11.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-12.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-13.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-14.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-15.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-16.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-17.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-18.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-19.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-20.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-21.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-5-ani-22.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 40,
+            "Position": [
+                -3660,
+                730,
+                -36915
+            ],
+            "AmbientNum": 23
+        },
+        {
+            "round": 0,
+            "Position": [
+                -2166,
+                732,
+                -36125
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 0,
+            "Position": [
+                -5150,
+                732,
+                -36123
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 0,
+            "Position": [
+                -6175,
+                762,
+                -41850
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 0,
+            "Position": [
+                -1239,
+                762,
+                -41850
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 0,
+            "Position": [
+                -1251,
+                794,
+                -38207
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 0,
+            "Position": [
+                -2424,
+                732,
+                -38229
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -3611,
+                885,
+                -39747
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -4798,
+                732,
+                -38212
+            ],
+            "AmbientNum": 7
+        }
+    ],
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 24,
+    "CenterPos": [
+        -3675,
+        -36597
+    ]
+}

@@ -1,0 +1,339 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                -10860,
+                398,
+                -41666
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        35872,
+                        804,
+                        -2016
+                    ],
+                    "ToField": 12
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                -12089,
+                95,
+                -40380
+            ],
+            "LimitLevel": 75,
+            "OutGate": [
+                {
+                    "Position": [
+                        -2527,
+                        727,
+                        -37196
+                    ],
+                    "ToField": 24
+                },
+                {
+                    "Position": [
+                        -3669,
+                        727,
+                        -36444
+                    ],
+                    "ToField": 24
+                },
+                {
+                    "Position": [
+                        -4795,
+                        727,
+                        -37198
+                    ],
+                    "ToField": 24
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "古代神殿1层",
+    "NameMap": "Field/map/dun-4.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/dungeon/dun-4.ASE",
+    "NameTitle": "Field/title/dun-4t.tga",
+    "StageObject": [
+        {
+            "StgObjName": "dungeon/dun-4-ani-01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-14.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-15.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-16.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-17.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-18.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-19.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-20.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-21.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-22.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-23.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-24.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-25.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-26.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-27.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-28.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-29.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-30.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-31.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-32.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-33.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-34.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-35.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-36.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/dun-4-ani-37.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 10,
+            "Position": [
+                -10857,
+                343,
+                -42634
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -11299,
+                689,
+                -44077
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -12995,
+                689,
+                -43856
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -11698,
+                343,
+                -43240
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -13472,
+                343,
+                -42494
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -13447,
+                343,
+                -40892
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -9956,
+                343,
+                -40637
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -9957,
+                443,
+                -43232
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -14113,
+                443,
+                -42715
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -14245,
+                343,
+                -40555
+            ],
+            "AmbientNum": 24
+        },
+        {
+            "round": 10,
+            "Position": [
+                -12071,
+                339,
+                -39600
+            ],
+            "AmbientNum": 25
+        },
+        {
+            "round": 0,
+            "Position": [
+                -10236,
+                443,
+                -44024
+            ],
+            "AmbientNum": 23
+        },
+        {
+            "round": 0,
+            "Position": [
+                -12637,
+                339,
+                -38716
+            ],
+            "AmbientNum": 23
+        },
+        {
+            "round": 10,
+            "Position": [
+                -12231,
+                94,
+                -41732
+            ],
+            "AmbientNum": 27
+        }
+    ],
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 23,
+    "CenterPos": [
+        -11108,
+        -41681
+    ]
+}

@@ -1,0 +1,88 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                21936,
+                855,
+                -1833
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        21826,
+                        825,
+                        -1712
+                    ],
+                    "ToField": 10
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "内维斯克",
+    "NameMap": "Field/map/village-1.tga",
+    "BackImageCode": [
+        4,
+        5,
+        6
+    ],
+    "BackMusicCode": 1,
+    "Name": "Field/forest/village-1.ASE",
+    "NameTitle": "Field/title/village-1t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                20041,
+                0,
+                -892
+            ],
+            "ToField": 9
+        },
+        {
+            "Position": [
+                27110,
+                0,
+                -479
+            ],
+            "ToField": 12
+        },
+        {
+            "Position": [
+                21840,
+                0,
+                1062
+            ],
+            "ToField": 31
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "forest/v2-ani01.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 768,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        21826,
+        825,
+        -1712
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                22214,
+                -1182
+            ]
+        }
+    ],
+    "id": 10,
+    "CenterPos": [
+        22214,
+        -1182
+    ]
+}

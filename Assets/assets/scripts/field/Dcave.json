@@ -1,0 +1,127 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 120,
+            "Position": [
+                158042,
+                330,
+                19525
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        124396,
+                        37,
+                        33291
+                    ],
+                    "ToField": 26
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 120,
+            "Position": [
+                158023,
+                240,
+                20453
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        125566,
+                        480,
+                        24825
+                    ],
+                    "ToField": 25
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "古代圣殿",
+    "NameMap": "Field/map/Dcave.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/cave/Dcave.ASE",
+    "NameTitle": "Field/title/Dcavet.tga",
+    "StageObject": [
+        {
+            "StgObjName": "cave/Dcave_ani01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani11.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani12.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani13.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Dcave_ani14.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 27,
+    "CenterPos": [
+        158814,
+        20070
+    ]
+}

@@ -1,0 +1,107 @@
+{
+    "ServerCode": 3,
+    "Title": "普隆的心脏",
+    "NameMap": "Field/map/iron-2.tga",
+    "BackImageCode": [
+        22,
+        23,
+        21
+    ],
+    "BackMusicCode": -1,
+    "Name": "Field/Iron/iron-2.ASE",
+    "NameTitle": "Field/title/iron-2t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                45316,
+                0,
+                21407
+            ],
+            "ToField": 28
+        },
+        {
+            "Position": [
+                33618,
+                0,
+                24011
+            ],
+            "ToField": 30
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "iron/i2-bip01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "iron/i2-bip02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "iron/i2-bip03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "iron/i2-bip04_ani.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i2-bip05_ani.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i2-bip06_ani.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i2-bip07_ani.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i2-bip08_ani.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i2-bip09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "iron/i2-bip10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "iron/i2-bip11_ani.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i2-bip12_ani.ASE",
+            "BipAnimation": 1
+        }
+    ],
+    "State": 1536,
+    "LimitLevel": 85,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                35149,
+                24326
+            ]
+        },
+        {
+            "Position": [
+                44893,
+                21380
+            ]
+        }
+    ],
+    "id": 29,
+    "CenterPos": [
+        33938,
+        24229
+    ]
+}

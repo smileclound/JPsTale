@@ -1,0 +1,157 @@
+{
+    "ServerCode": 1,
+    "Title": "贪婪湖泊",
+    "NameMap": "Field/map/Greedy.tga",
+    "BackImageCode": [
+        38,
+        39,
+        40
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Greedy/Greedy.ASE",
+    "NameTitle": "Field/title/Greedyt.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                12713,
+                0,
+                23409
+            ],
+            "ToField": 7
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "Greedy/vane1_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/vane2_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/vane3_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/vane4_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/ani_tail.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/ship_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/ship1_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/ship2_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/ship3_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_animi10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani00.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/flower_ani09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "Greedy/door.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 2304,
+    "LimitLevel": 70,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 35,
+    "CenterPos": [
+        13930,
+        23206
+    ]
+}

@@ -1,0 +1,83 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                4896,
+                230,
+                -42090
+            ],
+            "LimitLevel": 102,
+            "OutGate": [
+                {
+                    "Position": [
+                        5254,
+                        139,
+                        -41361
+                    ],
+                    "ToField": 42
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                6408,
+                230,
+                -42090
+            ],
+            "LimitLevel": 102,
+            "OutGate": [
+                {
+                    "Position": [
+                        5254,
+                        139,
+                        -41361
+                    ],
+                    "ToField": 42
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "无尽之塔3层",
+    "NameMap": "Field/map/dun-9.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/endless/dun-9.ASE",
+    "NameTitle": "Field/title/dun-9t.tga",
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                4896,
+                -42330
+            ]
+        },
+        {
+            "Position": [
+                6418,
+                -42330
+            ]
+        }
+    ],
+    "id": 44,
+    "CenterPos": [
+        4896,
+        -42330
+    ]
+}

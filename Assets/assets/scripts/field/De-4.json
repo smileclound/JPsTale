@@ -1,0 +1,86 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                33979,
+                969,
+                6080
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        34100,
+                        940,
+                        6214
+                    ],
+                    "ToField": 13
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "封印之地",
+    "NameMap": "Field/map/De-4.tga",
+    "BackImageCode": [
+        4,
+        5,
+        6
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/desert/De-4.ASE",
+    "NameTitle": "Field/title/De-4t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                34372,
+                0,
+                4277
+            ],
+            "ToField": 12
+        },
+        {
+            "Position": [
+                44545,
+                0,
+                13063
+            ],
+            "ToField": 28
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "desert/d4-ani01.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 768,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        34100,
+        940,
+        6214
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                33740,
+                6491
+            ]
+        },
+        {
+            "Position": [
+                40691,
+                11056
+            ]
+        }
+    ],
+    "id": 13,
+    "CenterPos": [
+        43988,
+        12053
+    ]
+}

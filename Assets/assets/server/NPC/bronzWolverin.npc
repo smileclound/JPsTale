@@ -1,0 +1,14 @@
+*이름		"브론즈 울버린"
+*모양파일	"char\monster\MonWolverin\MonWolverin-01.ini"
+*레벨		100
+//*대화		"캬오! 으르렁..."
+//*대화		"워우~~"
+
+*크기		중대형
+*효과음			WOLVERLIN
+
+
+*이벤트코드		100
+*이벤트정보		1
+
+*연결파일	"name\bronzWolverin.zhoon"

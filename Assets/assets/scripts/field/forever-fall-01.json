@@ -1,0 +1,264 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                1962,
+                559,
+                71184
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        1993,
+                        449,
+                        73134
+                    ],
+                    "ToField": 22
+                }
+            ],
+            "SpecialEffect": 1,
+            "height": 32
+        }
+    ],
+    "Title": "风之路",
+    "NameMap": "Field/map/forever-fall-01.tga",
+    "BackImageCode": [
+        18,
+        19,
+        17
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/forever-fall/forever-fall-01.ASE",
+    "NameTitle": "Field/title/forever-fall-01t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                667,
+                0,
+                59371
+            ],
+            "ToField": 20
+        },
+        {
+            "Position": [
+                -8508,
+                0,
+                -10576
+            ],
+            "ToField": 22
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "forever-fall/1ani-01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-11.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-12.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-13.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-14.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-15.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-16.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-17.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-18.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-19.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-20.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-21.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-22.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-23.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-24.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-25.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-26.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/1ani-27.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 30,
+            "Position": [
+                2849,
+                577,
+                67330
+            ],
+            "AmbientNum": 18
+        },
+        {
+            "round": 10,
+            "Position": [
+                317,
+                653,
+                64957
+            ],
+            "AmbientNum": 19
+        },
+        {
+            "round": 40,
+            "Position": [
+                -1166,
+                779,
+                63268
+            ],
+            "AmbientNum": 18
+        },
+        {
+            "round": 10,
+            "Position": [
+                -181,
+                864,
+                62576
+            ],
+            "AmbientNum": 18
+        },
+        {
+            "round": 10,
+            "Position": [
+                190,
+                686,
+                61850
+            ],
+            "AmbientNum": 18
+        },
+        {
+            "round": 10,
+            "Position": [
+                -1070,
+                671,
+                61561
+            ],
+            "AmbientNum": 18
+        },
+        {
+            "round": 100,
+            "Position": [
+                1815,
+                562,
+                65414
+            ],
+            "AmbientNum": 8
+        },
+        {
+            "round": 100,
+            "Position": [
+                1800,
+                603,
+                61149
+            ],
+            "AmbientNum": 8
+        }
+    ],
+    "State": 512,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                1875,
+                69871
+            ]
+        },
+        {
+            "Position": [
+                2637,
+                60219
+            ]
+        }
+    ],
+    "id": 21,
+    "CenterPos": [
+        2032,
+        71183
+    ]
+}

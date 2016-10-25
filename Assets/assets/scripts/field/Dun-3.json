@@ -1,0 +1,56 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                1810,
+                0,
+                -28924
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -8176,
+                        77,
+                        -25775
+                    ],
+                    "ToField": 15
+                },
+                {
+                    "Position": [
+                        -3738,
+                        73,
+                        -27990
+                    ],
+                    "ToField": 15
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "古代地牢3层",
+    "NameMap": "Field/map/dun-3.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/dungeon/Dun-3.ASE",
+    "NameTitle": "Field/title/dun-3t.tga",
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 16,
+    "CenterPos": [
+        1827,
+        -28586
+    ]
+}

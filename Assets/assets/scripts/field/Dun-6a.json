@@ -1,0 +1,264 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                -3655,
+                3,
+                -50603
+            ],
+            "LimitLevel": 75,
+            "OutGate": [
+                {
+                    "Position": [
+                        -2851,
+                        642,
+                        -43792
+                    ],
+                    "ToField": 24
+                },
+                {
+                    "Position": [
+                        -4422,
+                        642,
+                        -43801
+                    ],
+                    "ToField": 24
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                -3664,
+                145,
+                -44886
+            ],
+            "LimitLevel": 75,
+            "OutGate": [
+                {
+                    "Position": [
+                        -2851,
+                        642,
+                        -43792
+                    ],
+                    "ToField": 24
+                },
+                {
+                    "Position": [
+                        -4422,
+                        642,
+                        -43801
+                    ],
+                    "ToField": 24
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "古代神殿3层",
+    "NameMap": "Field/map/dun-6.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/dungeon/Dun-6a.ASE",
+    "NameTitle": "Field/title/dun-6t.tga",
+    "StageObject": [
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-001.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-002.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-003.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-004.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-005.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-006.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-007.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-008.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-009.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-010.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-011.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-012.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-013.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-014.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-015.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-016.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-017.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-018.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "dungeon/Dun-6a-ani-019.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 0,
+            "Position": [
+                -3648,
+                3,
+                -50013
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -4349,
+                454,
+                -47777
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -5130,
+                454,
+                -47587
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -2183,
+                172,
+                -47864
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -1785,
+                167,
+                -48077
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -3725,
+                116,
+                -46758
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -3632,
+                3,
+                -47999
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -627,
+                229,
+                -45987
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -1896,
+                116,
+                -45010
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -5077,
+                116,
+                -45555
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 0,
+            "Position": [
+                -5289,
+                116,
+                -46422
+            ],
+            "AmbientNum": 7
+        }
+    ],
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 43,
+    "CenterPos": [
+        -3660,
+        -45200
+    ]
+}

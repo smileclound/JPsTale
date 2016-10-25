@@ -1,0 +1,82 @@
+{
+    "ItemInfo": {
+        "Locale_Name": "ม๚าํวน",
+        "En_Name": "Dragon Wing",
+        "UniqueItem": 1,
+        "EffectColor": [0,0,0,0],
+        "EffectBlink": 0,
+        "ScaleBlink": 0,
+        "DispEffect": 0,
+        "Weight": 35,
+        "Price": 71000,
+        "AttrResistance": {
+            "Bionic": [0,0],
+            "Earth": [0,0],
+            "Fire": [0,0],
+            "Ice": [0,0],
+            "Lighting": [0,0],
+            "Poison": [0,0],
+            "Water": [0,0],
+            "Wind": [0,0],
+        },
+        "AttrAttack": {
+            "Damage": [21,23,49,53],
+            "Shooting_Range": 0,
+            "Attack_Speed": 7,
+            "Attack_Rating": [120,135],
+            "Critical_Hit": 17,
+            "Magic_Mastery": [0.0,0.0]
+        },
+        "AttrDefense": {
+            "Absorb": [0.0,0.0],
+            "Defense": [0,0],
+            "Block_Rating": [12.0,12.0]
+        },
+        "AttrSpeed": [0.0,0.0],
+        "AttrRecovery": {
+            "Mana_Regen": [0.0,0.0],
+            "Life_Regen": [0.0,0.0],
+            "Stamina_Regen": [0.0,0.0],
+            "Increase_Life": [0.0,0.0],
+            "Increase_Mana": [0.0,0.0],
+            "Increase_Stamina": [0.0,0.0]
+        },
+        "AttrPotionSpace": 0,
+        "AttrPotionEffect": {
+            "Mana":[0,0],
+            "Life": [0,0],
+            "Stamina": [0,0]
+        },
+        "ItemSpecial": {
+            "Default_Job_Name": "Pikeman",
+            "Random_Job_Name": "Atalanta Mechanician Fighter Pikeman",
+            "Add_Absorb": [0.0,0.0],
+            "Add_Defence": [0,0],
+            "Add_Speed": [0.0,0.0],
+            "Add_Block_Rating": 0.0,
+            "Add_Attack_Speed": 1,
+            "Add_Critical_Hit": 0,
+            "Add_Shooting_Range": 0,
+            "Add_Magic_Mastery": [0.0,0.0],
+            "Add_Resistance": [0,0,0,0,0,0,0,0],
+            "Lev_Attack_Resistance": [0,0,0,0,0,0,0,0],
+            "Lev_Mana": 0,
+            "Lev_Life": 0,
+            "Lev_Attack_Rating": [1,3],
+            "Lev_Damage": [0,6],
+            "Add_Mana_Regen": [0.0,0.0],
+            "Add_Life_Regen":  [0.0,0.0],
+            "Add_Stamina_Regen":  [0.0,0.0]
+        },
+        "ItemRequire": {
+            "Level": 65,
+            "Strength": 120,
+            "Spirit": 40,
+            "Talent": 90,
+            "Dexterity": 0,
+            "Health": 0
+        },
+        "GenDay": 0,
+        "NextFile": "name\WP114.zhoon"
+    }
+}

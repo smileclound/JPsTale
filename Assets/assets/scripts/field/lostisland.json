@@ -1,0 +1,80 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                -12610,
+                694,
+                -1349
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -12555,
+                        668,
+                        -1113
+                    ],
+                    "ToField": 38
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "迷失之地",
+    "NameMap": "Field/map/lost.tga",
+    "BackImageCode": [
+        41,
+        42,
+        43
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Lost/lostisland.ASE",
+    "NameTitle": "Field/title/lostt.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                -11586,
+                0,
+                7704
+            ],
+            "ToField": 39
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "lost/wf_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "lost/ani_shop01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "lost/ani_shop02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "lost/ani_shop03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "lost/ani_shop04.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 1024,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        -12555,
+        668,
+        -1113
+    ],
+    "id": 38,
+    "CenterPos": [
+        -12555,
+        -1113
+    ]
+}

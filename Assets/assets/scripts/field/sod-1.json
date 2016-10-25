@@ -1,0 +1,109 @@
+{
+    "ServerCode": 3,
+    "Title": "SOD",
+    "NameMap": "Field/map/sod-1.tga",
+    "BackImageCode": [
+        8,
+        12,
+        10
+    ],
+    "BackMusicCode": -1,
+    "Name": "Field/Sod/sod-1.ASE",
+    "NameTitle": "Field/title/sod-1t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                21840,
+                0,
+                1062
+            ],
+            "ToField": 10
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "sod/s-ani01_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani02_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani03_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani04_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani05_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani06_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani07_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani08_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani09_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani10_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani11_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani12_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani13_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani14_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani15_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani16_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani17_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "sod/s-ani18_Bip.ASE",
+            "BipAnimation": 1
+        }
+    ],
+    "State": 1024,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 31,
+    "CenterPos": [
+        22018,
+        6569
+    ]
+}

@@ -1,0 +1,57 @@
+{
+    "ServerCode": 1,
+    "Title": "废墟墓地",
+    "NameMap": "Field/map/ruin-4.tga",
+    "BackImageCode": [
+        7,
+        11,
+        9
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Ruin/ruin-4.ASE",
+    "NameTitle": "Field/title/ruin-4t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                4844,
+                0,
+                -6835
+            ],
+            "ToField": 3
+        },
+        {
+            "Position": [
+                410,
+                0,
+                4902
+            ],
+            "ToField": 6
+        }
+    ],
+    "State": 1024,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                2578,
+                -5124
+            ]
+        },
+        {
+            "Position": [
+                1873,
+                3060
+            ]
+        }
+    ],
+    "id": 5,
+    "CenterPos": [
+        1384,
+        -918
+    ]
+}

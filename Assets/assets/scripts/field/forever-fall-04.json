@@ -1,0 +1,168 @@
+{
+    "ServerCode": 3,
+    "Title": "心情树林",
+    "NameMap": "Field/map/forever-fall-04.tga",
+    "BackImageCode": [
+        18,
+        19,
+        17
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/forever-fall/forever-fall-04.ASE",
+    "NameTitle": "Field/title/forever-fall-04t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                4470,
+                0,
+                27774
+            ],
+            "ToField": 7
+        },
+        {
+            "Position": [
+                -2949,
+                0,
+                40442
+            ],
+            "ToField": 19
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "forever-fall/4ani-01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/4ani-11.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 160,
+            "Position": [
+                -1448,
+                827,
+                34188
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 160,
+            "Position": [
+                618,
+                531,
+                35981
+            ],
+            "AmbientNum": 7
+        },
+        {
+            "round": 160,
+            "Position": [
+                2282,
+                537,
+                32355
+            ],
+            "AmbientNum": 20
+        },
+        {
+            "round": 0,
+            "Position": [
+                2597,
+                793,
+                30745
+            ],
+            "AmbientNum": 20
+        },
+        {
+            "round": 0,
+            "Position": [
+                2562,
+                641,
+                32726
+            ],
+            "AmbientNum": 20
+        },
+        {
+            "round": 0,
+            "Position": [
+                3789,
+                770,
+                30062
+            ],
+            "AmbientNum": 20
+        },
+        {
+            "round": 60,
+            "Position": [
+                3698,
+                909,
+                34179
+            ],
+            "AmbientNum": 14
+        }
+    ],
+    "State": 512,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                -2135,
+                33668
+            ]
+        },
+        {
+            "Position": [
+                4073,
+                32119
+            ]
+        }
+    ],
+    "id": 18,
+    "CenterPos": [
+        -1583,
+        37905
+    ]
+}

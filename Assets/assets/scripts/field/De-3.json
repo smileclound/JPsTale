@@ -1,0 +1,80 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                36128,
+                804,
+                -2162
+            ],
+            "LimitLevel": 70,
+            "OutGate": [
+                {
+                    "Position": [
+                        -11088,
+                        343,
+                        -41570
+                    ],
+                    "ToField": 23
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "古代战场",
+    "NameMap": "Field/map/De-3.tga",
+    "BackImageCode": [
+        4,
+        5,
+        6
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/desert/De-3.ASE",
+    "NameTitle": "Field/title/De-3t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                27110,
+                0,
+                -479
+            ],
+            "ToField": 10
+        },
+        {
+            "Position": [
+                34372,
+                0,
+                4277
+            ],
+            "ToField": 13
+        }
+    ],
+    "State": 768,
+    "LimitLevel": 55,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                34758,
+                -1323
+            ]
+        },
+        {
+            "Position": [
+                29424,
+                322
+            ]
+        }
+    ],
+    "id": 12,
+    "CenterPos": [
+        34758,
+        -1323
+    ]
+}

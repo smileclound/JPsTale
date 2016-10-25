@@ -1,0 +1,57 @@
+{
+    "ServerCode": 1,
+    "Title": "废墟",
+    "NameMap": "Field/map/ruin-3.tga",
+    "BackImageCode": [
+        7,
+        11,
+        9
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Ruin/ruin-3.ASE",
+    "NameTitle": "Field/title/ruin-3t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                410,
+                0,
+                4902
+            ],
+            "ToField": 5
+        },
+        {
+            "Position": [
+                3051,
+                0,
+                16124
+            ],
+            "ToField": 7
+        }
+    ],
+    "State": 1024,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                875,
+                7910
+            ]
+        },
+        {
+            "Position": [
+                1576,
+                14307
+            ]
+        }
+    ],
+    "id": 6,
+    "CenterPos": [
+        4953,
+        10922
+    ]
+}

@@ -1,0 +1,150 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                734,
+                312,
+                -20119
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        822,
+                        254,
+                        -19956
+                    ],
+                    "ToField": 4
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "里查登",
+    "NameMap": "Field/map/village-2.tga",
+    "BackImageCode": [
+        2,
+        3,
+        1
+    ],
+    "BackMusicCode": 2,
+    "Name": "Field/Ricarten/village-2.ASE",
+    "NameTitle": "Field/title/village-2t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                2275,
+                0,
+                -14828
+            ],
+            "ToField": 3
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "ricarten/v-ani01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani11.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani12.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani13.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "ricarten/v-ani14.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 80,
+            "Position": [
+                -1006,
+                170,
+                -17835
+            ],
+            "AmbientNum": 27
+        },
+        {
+            "round": 80,
+            "Position": [
+                2632,
+                321,
+                -17285
+            ],
+            "AmbientNum": 27
+        }
+    ],
+    "State": 256,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        822,
+        254,
+        -19956
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                2592,
+                -18566
+            ]
+        },
+        {
+            "Position": [
+                -1047,
+                -16973
+            ]
+        }
+    ],
+    "id": 4,
+    "CenterPos": [
+        2596,
+        -18738
+    ]
+}

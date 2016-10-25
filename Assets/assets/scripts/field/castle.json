@@ -1,0 +1,98 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                32527,
+                774,
+                -30693
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        32739,
+                        711,
+                        -30474
+                    ],
+                    "ToField": 34
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "祝福城堡",
+    "NameMap": "Field/map/castle.tga",
+    "BackImageCode": [
+        8,
+        12,
+        10
+    ],
+    "BackMusicCode": 9,
+    "Name": "Field/castle/castle.ASE",
+    "NameTitle": "Field/title/castlet.tga",
+    "StageObject": [
+        {
+            "StgObjName": "castle/wf_gate_ani.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "castle/crystal_ani01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "castle/crystal_ani02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "castle/crystal_ani03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "castle/crystal_ani04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "castle/crystal_ani05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "castle/crystal_ani06.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 2560,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        32739,
+        711,
+        -30474
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                33920,
+                -23479
+            ]
+        },
+        {
+            "Position": [
+                35247,
+                -23355
+            ]
+        },
+        {
+            "Position": [
+                36164,
+                -23446
+            ]
+        }
+    ],
+    "id": 34,
+    "CenterPos": [
+        35225,
+        -23847
+    ]
+}

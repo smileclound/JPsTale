@@ -1,0 +1,97 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                -3408,
+                251,
+                -12447
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -3265,
+                        214,
+                        -12583
+                    ],
+                    "ToField": 2
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "竹之林",
+    "NameMap": "Field/map/fore-2.tga",
+    "BackImageCode": [
+        2,
+        3,
+        1
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/forest/fore-2.ASE",
+    "NameTitle": "Field/title/fore-2t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                -8508,
+                0,
+                -10576
+            ],
+            "ToField": 1
+        },
+        {
+            "Position": [
+                -292,
+                0,
+                -9548
+            ],
+            "ToField": 3
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "forest/2ani-04.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 160,
+            "Position": [
+                -3775,
+                171,
+                -14447
+            ],
+            "AmbientNum": 13
+        }
+    ],
+    "State": 512,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        -3265,
+        214,
+        -12583
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                -2272,
+                -10314
+            ]
+        },
+        {
+            "Position": [
+                -7192,
+                -11175
+            ]
+        }
+    ],
+    "id": 2,
+    "CenterPos": [
+        -5427,
+        -9915
+    ]
+}

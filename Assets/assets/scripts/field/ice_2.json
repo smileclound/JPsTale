@@ -1,0 +1,66 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                37981,
+                1216,
+                50790
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        33000,
+                        1512,
+                        50036
+                    ],
+                    "ToField": 37
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "风之谷",
+    "NameMap": "Field/map/ice2.tga",
+    "BackImageCode": [
+        35,
+        36,
+        37
+    ],
+    "BackMusicCode": 11,
+    "Name": "Field/Ice/ice_2.ASE",
+    "NameTitle": "Field/title/ice2t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                33729,
+                0,
+                38029
+            ],
+            "ToField": 32
+        },
+        {
+            "Position": [
+                35364,
+                0,
+                39518
+            ],
+            "ToField": 32
+        }
+    ],
+    "State": 2304,
+    "LimitLevel": 90,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 36,
+    "CenterPos": [
+        36264,
+        40182
+    ]
+}

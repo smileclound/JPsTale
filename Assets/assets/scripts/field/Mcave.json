@@ -1,0 +1,153 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 80,
+            "Position": [
+                124391,
+                37,
+                32913
+            ],
+            "LimitLevel": 65,
+            "OutGate": [
+                {
+                    "Position": [
+                        158543,
+                        290,
+                        19557
+                    ],
+                    "ToField": 27
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 80,
+            "Position": [
+                118808,
+                520,
+                35686
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        -6056,
+                        787,
+                        43245
+                    ],
+                    "ToField": 19
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "蜂房洞穴",
+    "NameMap": "Field/map/Mcave.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/cave/Mcave.ASE",
+    "NameTitle": "Field/title/Mcavet.tga",
+    "StageObject": [
+        {
+            "StgObjName": "cave/Mcave_ani01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani11.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani12.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani13.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani14.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani15.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani16.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "cave/Mcave_ani17.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 1280,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                119320,
+                35680
+            ]
+        },
+        {
+            "Position": [
+                124380,
+                33260
+            ]
+        }
+    ],
+    "id": 26,
+    "CenterPos": [
+        119966,
+        35466
+    ]
+}

@@ -1,0 +1,82 @@
+{
+    \"ItemInfo\": {
+        \"Locale_Name\": \"%s\",
+        \"En_Name\": \"%s\",
+        \"UniqueItem\": %d,
+        \"EffectColor\": [%d,%d,%d,%d],
+        \"EffectBlink\": %d,
+        \"ScaleBlink\": %d,
+        \"DispEffect\": %d,
+        \"Weight\": %d,
+        \"Price\": %d,
+        \"AttrResistance\": {
+            \"Bionic\": [%d,%d],
+            \"Earth\": [%d,%d],
+            \"Fire\": [%d,%d],
+            \"Ice\": [%d,%d],
+            \"Lighting\": [%d,%d],
+            \"Poison\": [%d,%d],
+            \"Water\": [%d,%d],
+            \"Wind\": [%d,%d]
+        },
+        \"AttrAttack\": {
+            \"Damage\": [%d,%d,%d,%d],
+            \"Shooting_Range\": %d,
+            \"Attack_Speed\": %d,
+            \"Attack_Rating\": [%d,%d],
+            \"Critical_Hit\": %d
+        },
+        \"AttrDefense\": {
+            \"Absorb\": [%.3f,%.3f],
+            \"Defense\": [%d,%d],
+            \"Block_Rating\": [%d,%d]
+        },
+        \"AttrSpeed\": [%.3f,%.3f],
+        \"AttrRecovery\": {
+            \"Magic_Mastery\": [%.3f,%.3f],
+            \"Mana_Regen\": [%.3f,%.3f],
+            \"Life_Regen\": [%.3f,%.3f],
+            \"Stamina_Regen\": [%.3f,%.3f],
+            \"Increase_Life\": [%d,%d],
+            \"Increase_Mana\": [%d,%d],
+            \"Increase_Stamina\": [%d,%d]
+        },
+        \"AttrPotionSpace\": %d,
+        \"AttrPotionEffect\": {
+            \"Mana\":[%d,%d],
+            \"Life\": [%d,%d],
+            \"Stamina\": [%d,%d],
+        },
+        \"ItemSpecial\": {
+            \"Default_Job_Name\": \"%s\",
+            \"Random_Job_Name\": \"%s\",
+            \"Add_Absorb\": [%.3f,%.3f],
+            \"Add_Defence\": [%d,%d],
+            \"Add_Speed\": [%.3f,%.3f],
+            \"Add_Block_Rating\": %d,
+            \"Add_Attack_Speed\": %d,
+            \"Add_Critical_Hit\": %d,
+            \"Add_Shooting_Range\": %d,
+            \"Add_Magic_Mastery\": [%.3f,%.3f],
+            \"Add_Resistance\": [%d,%d,%d,%d,%d,%d,%d,%d],
+            \"Lev_Attack_Resistance\": [%d,%d,%d,%d,%d,%d,%d,%d],
+            \"Lev_Mana\": %d,
+            \"Lev_Life\": %d,
+            \"Lev_Attack_Rating\": [%d,%d],
+            \"Lev_Damage\": [%d,%d],
+            \"Add_Mana_Regen\": [%.3f,%.3f],
+            \"Add_Life_Regen\":  [%.3f,%.3f],
+            \"Add_Stamina_Regen\":  [%.3f,%.3f]
+        },
+        \"ItemRequire\": {
+            \"Level\": %d,
+            \"Strength\": %d,
+            \"Spirit\": %d,
+            \"Talent\": %d,
+            \"Dexterity\": %d,
+            \"Health\": %d
+        },
+        \"GenDay\": %d,
+        \"NextFile\": \"%s\"
+    }
+}

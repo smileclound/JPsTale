@@ -1,0 +1,65 @@
+{
+    "ServerCode": 1,
+    "Title": "诅咒之地",
+    "NameMap": "Field/map/De-1.tga",
+    "BackImageCode": [
+        4,
+        5,
+        6
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/desert/De-1.ASE",
+    "NameTitle": "Field/title/De-1t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                13319,
+                0,
+                7102
+            ],
+            "ToField": 8
+        },
+        {
+            "Position": [
+                13466,
+                0,
+                -5953
+            ],
+            "ToField": 11
+        },
+        {
+            "Position": [
+                20041,
+                0,
+                -892
+            ],
+            "ToField": 10
+        }
+    ],
+    "State": 768,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                13306,
+                2000
+            ]
+        },
+        {
+            "Position": [
+                13083,
+                -2249
+            ]
+        }
+    ],
+    "id": 9,
+    "CenterPos": [
+        15005,
+        -1421
+    ]
+}

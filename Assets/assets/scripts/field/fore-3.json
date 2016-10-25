@@ -1,0 +1,141 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                -16638,
+                267,
+                -6737
+            ],
+            "LimitLevel": 55,
+            "OutGate": [
+                {
+                    "Position": [
+                        119112,
+                        510,
+                        26028
+                    ],
+                    "ToField": 25
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "胶之林",
+    "NameMap": "Field/map/fore-3.tga",
+    "BackImageCode": [
+        2,
+        3,
+        1
+    ],
+    "BackMusicCode": 4,
+    "Name": "Field/forest/fore-3.ASE",
+    "NameTitle": "Field/title/fore-3t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                -8508,
+                0,
+                -10576
+            ],
+            "ToField": 2
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "forest/3ani-01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-11.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-12.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-13.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forest/3ani-14.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 100,
+            "Position": [
+                -13819,
+                226,
+                -8950
+            ],
+            "AmbientNum": 15
+        }
+    ],
+    "State": 512,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                -10585,
+                -11810
+            ]
+        },
+        {
+            "Position": [
+                -13659,
+                -9753
+            ]
+        }
+    ],
+    "id": 1,
+    "CenterPos": [
+        -16419,
+        -7054
+    ]
+}

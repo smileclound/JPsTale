@@ -1,0 +1,165 @@
+monster = [
+	ID:'40_bargon',
+	Name:'刀斧手',
+	Clazz:0,// 1 BOSS
+	Brood:0x92,// 0 Normal; 0x90(144) UNDEAD; 0x91 MUTANT; 0x92 DEMON; 0x93 MECHANIC;
+	// Common Status
+	Level:40,
+	ActiveHour:0,
+	RespawnGroup:[0, 0],
+
+	Attributes:[
+		Life:480,
+		// Attack Status
+		Atk:[32, 38],
+		AtkSpeed:6,
+		Range:70,
+		Rating:700,
+
+		// Defence Status
+		Flee:250,
+		Absorb:8,
+		Block:6,
+		DamageStunPers:100,
+
+		// Resistance
+		Earth:20,
+		Fire:-10,
+		Ice:10,// Water
+		Lighting:20,// Wind
+		Poison:50,
+	],
+
+	// AI
+	AI:[
+		Nature:0x80,// 0x80 NATURAL; 0x81 GOOD; 0x82 EVIL
+		IQ:7,
+		Real_Sight:380,
+		Talks:[],
+
+		// Move Behavier
+		Move_Speed:2,
+		MoveRange:64,
+
+		// Skill Behavier
+		SpAttackPercetage:20,
+		SkillDamage:[0, 0],
+		SkillDistance:0,
+		SkillRange:0,
+		SkillRating:0,
+		SkillCurse:0,
+
+		// Heal Behavier
+		PotionPercent:0,
+		PotionCount:0,
+	],
+
+	Looks:[
+		ClassCode:1,
+		ArrowPosi:[0, 10],
+		ModelSize:0.0,
+		UseEventModel:false,
+		SizeLevel:3,
+		Model:'char/monster/Monbagon/Monbagon-A.ini',
+		Sound:0x00001090,
+	],
+
+	// Drops
+	AllSeeItem:false,
+	Exp:4300,
+	Quantity:1,
+	drops:[
+		[probability:2750, code:"NULL"/* Drops nothing */],
+		[probability:3000, code:"GG101", value:[80, 140]/* Gold */],
+		[probability:633, code:"PL102"/* 中级恢复生命药水 */],
+		[probability:633, code:"PS102"/* 中级恢复耐力药水 */],
+		[probability:633, code:"PM102"/* 中级恢复魔法药水 */],
+		[probability:60, code:"DA105"/* 鱼鳞甲 */],
+		[probability:60, code:"DA205"/* 战斗袍 */],
+		[probability:60, code:"WA105"/* 双刃战斧 */],
+		[probability:60, code:"WC105"/* 玄电爪 */],
+		[probability:60, code:"WH105"/* 破天锤 */],
+		[probability:60, code:"WM105"/* 旋风之杖 */],
+		[probability:60, code:"WP105"/* 鸠牙战镰 */],
+		[probability:60, code:"WS106"/* 长弓 */],
+		[probability:60, code:"WS206"/* 阔剑 */],
+		[probability:60, code:"WT105"/* 双刺标 */],
+		[probability:60, code:"DB104"/* 精铜靴 */],
+		[probability:60, code:"DS104"/* 轻盾 */],
+		[probability:60, code:"OM104"/* 龙骨念珠 */],
+		[probability:60, code:"DG104"/* 银贝护手 */],
+		[probability:60, code:"OA204"/* 大力臂环 */],
+		[probability:60, code:"OS103"/* 海精石 */],
+		[probability:60, code:"EC102"/* 回城卷 */],
+		[probability:60, code:"OR105"/* 蓝宝石戒指 */],
+		[probability:60, code:"OA105"/* 梦之心链 */],
+		[probability:60, code:"GP104"/* 刀斧手水晶 */],
+		[probability:28, code:"DA106"/* 索子甲 */],
+		[probability:28, code:"DA206"/* 精灵袍 */],
+		[probability:28, code:"wa106"/* 凯旋 */],
+		[probability:28, code:"WC106"/* 狼牙刃 */],
+		[probability:28, code:"WH106"/* 浑元金锤 */],
+		[probability:28, code:"WM106"/* 抗拒之杖 */],
+		[probability:28, code:"WP106"/* 三叉戟 */],
+		[probability:28, code:"WS107"/* 射日弓 */],
+		[probability:28, code:"WS207"/* 长刀 */],
+		[probability:28, code:"WT106"/* 精灵标 */],
+		[probability:28, code:"DB105"/* 百兽靴 */],
+		[probability:28, code:"DS105"/* 罗塔盾 */],
+		[probability:28, code:"OM105"/* 龙额念珠 */],
+		[probability:28, code:"DG105"/* 钢指护手 */],
+		[probability:28, code:"OA205"/* 龙鳞臂环 */],
+		[probability:28, code:"OS104"/* 天仪石 */],
+		[probability:28, code:"OS104"/* 天仪石 */],
+		[probability:28, code:"EC102"/* 回城卷 */],
+		[probability:28, code:"OR106"/* 红宝石戒指 */],
+		[probability:28, code:"OA106"/* 碧云石链 */],
+		[probability:28, code:"GP104"/* 刀斧手水晶 */],
+		[probability:14, code:"DA107"/* 全钢胸铠 */],
+		[probability:14, code:"DA207"/* 紫电袍 */],
+		[probability:14, code:"WA107"/* 刺脊斧 */],
+		[probability:14, code:"WC107"/* 平手刃 */],
+		[probability:14, code:"WH107"/* 十字锤 */],
+		[probability:14, code:"WM107"/* 天魔杖 */],
+		[probability:14, code:"WP107"/* 战神之镰 */],
+		[probability:14, code:"WS108"/* 巨弩 */],
+		[probability:14, code:"WS208"/* 圣殿武士剑 */],
+		[probability:14, code:"WT107"/* 天命标 */],
+		[probability:14, code:"DB106"/* 黄金靴 */],
+		[probability:14, code:"DS106"/* 百炼盾 */],
+		[probability:14, code:"OM106"/* 水星 */],
+		[probability:14, code:"DG106"/* 白金护手 */],
+		[probability:14, code:"OA206"/* 精灵臂环 */],
+		[probability:14, code:"OS105"/* 冰晶石 */],
+		[probability:14, code:"OS105"/* 冰晶石 */],
+		[probability:14, code:"EC102"/* 回城卷 */],
+		[probability:14, code:"OR107"/* 法师戒指 */],
+		[probability:14, code:"OA107"/* 水晶项链 */],
+		[probability:14, code:"GP104"/* 刀斧手水晶 */],
+		[probability:7, code:"DA108"/* 精制链铠 */],
+		[probability:7, code:"DA208"/* 圣女袍 */],
+		[probability:7, code:"WA108"/* 叼刚 清磐 */],
+		[probability:7, code:"WC108"/* 矩记飘 府亥瘤 */],
+		[probability:7, code:"WH108"/* 圣光锤 */],
+		[probability:7, code:"WM108"/* 公正之杖 */],
+		[probability:7, code:"WP108"/* 血烟长矛 */],
+		[probability:7, code:"WS109"/* 点金手弩 */],
+		[probability:7, code:"WS209"/* 镇妖剑 */],
+		[probability:7, code:"WT108"/* 金标 */],
+		[probability:7, code:"DB107"/* 冰火靴 */],
+		[probability:7, code:"DS107"/* 金刚盾 */],
+		[probability:7, code:"OM107"/* 火星 */],
+		[probability:7, code:"DG107"/* 百裂护手 */],
+		[probability:7, code:"OA207"/* 乌金臂环 */],
+		[probability:7, code:"OS105"/* 冰晶石 */],
+		[probability:7, code:"OS105"/* 冰晶石 */],
+		[probability:7, code:"EC102"/* 回城卷 */],
+		[probability:7, code:"OR107"/* 法师戒指 */],
+		[probability:7, code:"OA107"/* 水晶项链 */],
+		[probability:7, code:"GP105"/* 魔剑士水晶 */],
+		[probability:50, code:"GP109"/* 神秘水晶 */],
+		[probability:50, code:"OS105"/* 冰晶石 */]
+	],
+	drops_more:[
+	]
+]

@@ -1,0 +1,80 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 128,
+            "Position": [
+                16809,
+                501,
+                15407
+            ],
+            "LimitLevel": 40,
+            "OutGate": [
+                {
+                    "Position": [
+                        -15395,
+                        0,
+                        -24185
+                    ],
+                    "ToField": 14
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "遗忘之地",
+    "NameMap": "Field/map/ruin-1.tga",
+    "BackImageCode": [
+        8,
+        12,
+        10
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Ruin/ruin-1.ASE",
+    "NameTitle": "Field/title/ruin-1t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                10019,
+                0,
+                18031
+            ],
+            "ToField": 7
+        },
+        {
+            "Position": [
+                13319,
+                0,
+                7102
+            ],
+            "ToField": 9
+        }
+    ],
+    "State": 1024,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                12242,
+                16034
+            ]
+        },
+        {
+            "Position": [
+                12194,
+                8969
+            ]
+        }
+    ],
+    "id": 8,
+    "CenterPos": [
+        16362,
+        14959
+    ]
+}

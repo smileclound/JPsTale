@@ -1,0 +1,72 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                30407,
+                1349,
+                22232
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        30610,
+                        1304,
+                        22164
+                    ],
+                    "ToField": 30
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "幽拉村庄",
+    "NameMap": "Field/map/ice_ura.tga",
+    "BackImageCode": [
+        35,
+        36,
+        37
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/Ice/ice_ura.ASE",
+    "NameTitle": "Field/title/ice_urat.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                33618,
+                0,
+                24011
+            ],
+            "ToField": 29
+        },
+        {
+            "Position": [
+                31848,
+                0,
+                27225
+            ],
+            "ToField": 32
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "ice/ice_ani_01.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 2304,
+    "LimitLevel": 90,
+    "PosWarpOut": [
+        30610,
+        1304,
+        22164
+    ],
+    "id": 30,
+    "CenterPos": [
+        32621,
+        23865
+    ]
+}

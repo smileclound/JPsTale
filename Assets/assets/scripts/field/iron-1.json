@@ -1,0 +1,121 @@
+{
+    "ServerCode": 3,
+    "Title": "没落都市",
+    "NameMap": "Field/map/iron-1.tga",
+    "BackImageCode": [
+        22,
+        23,
+        20
+    ],
+    "BackMusicCode": -1,
+    "Name": "Field/Iron/iron-1.ASE",
+    "NameTitle": "Field/title/iron-1t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                44545,
+                0,
+                13063
+            ],
+            "ToField": 13
+        },
+        {
+            "Position": [
+                45316,
+                0,
+                21407
+            ],
+            "ToField": 29
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "iron/i1-ani01_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani02_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani03_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani04_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani05_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani06_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani07_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani08_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani09_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani10_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/i1-ani11_Bip.ASE",
+            "BipAnimation": 1
+        },
+        {
+            "StgObjName": "iron/iron-ani01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "iron/iron-ani02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "iron/iron-ani03.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "State": 1536,
+    "LimitLevel": 80,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                46905,
+                13478
+            ]
+        },
+        {
+            "Position": [
+                47357,
+                20845
+            ]
+        },
+        {
+            "Position": [
+                46741,
+                21349
+            ]
+        }
+    ],
+    "id": 28,
+    "CenterPos": [
+        47617,
+        13626
+    ]
+}

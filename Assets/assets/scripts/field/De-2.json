@@ -1,0 +1,49 @@
+{
+    "ServerCode": 1,
+    "Title": "绿洲",
+    "NameMap": "Field/map/De-2.tga",
+    "BackImageCode": [
+        4,
+        5,
+        6
+    ],
+    "BackMusicCode": 10,
+    "Name": "Field/desert/De-2.ASE",
+    "NameTitle": "Field/title/De-2t.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                13466,
+                0,
+                -5953
+            ],
+            "ToField": 9
+        }
+    ],
+    "State": 768,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                11859,
+                -11257
+            ]
+        },
+        {
+            "Position": [
+                16169,
+                -12768
+            ]
+        }
+    ],
+    "id": 11,
+    "CenterPos": [
+        15887,
+        -11161
+    ]
+}

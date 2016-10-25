@@ -1,0 +1,77 @@
+{
+    "ServerCode": 3,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                5253,
+                69,
+                -37708
+            ],
+            "LimitLevel": 102,
+            "OutGate": [
+                {
+                    "Position": [
+                        14242,
+                        220,
+                        -41199
+                    ],
+                    "ToField": 41
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                5254,
+                139,
+                -41500
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        4896,
+                        202,
+                        -42220
+                    ],
+                    "ToField": 44
+                },
+                {
+                    "Position": [
+                        6408,
+                        202,
+                        -42220
+                    ],
+                    "ToField": 44
+                }
+            ],
+            "SpecialEffect": 0,
+            "height": 32
+        }
+    ],
+    "Title": "无尽之塔2层",
+    "NameMap": "Field/map/dun-8.tga",
+    "BackImageCode": [
+        0,
+        0,
+        0
+    ],
+    "BackMusicCode": 5,
+    "Name": "Field/endless/dun-8.ASE",
+    "NameTitle": "Field/title/dun-8t.tga",
+    "State": 1280,
+    "LimitLevel": 102,
+    "PosWarpOut": [
+        0,
+        0,
+        0
+    ],
+    "id": 42,
+    "CenterPos": [
+        5255,
+        -37897
+    ]
+}

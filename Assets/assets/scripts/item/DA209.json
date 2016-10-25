@@ -1,0 +1,82 @@
+{
+    "ItemInfo": {
+        "Locale_Name": "Ñ§Í½Åû·ç",
+        "En_Name": "Disciple Robe",
+        "UniqueItem": 1,
+        "EffectColor": [0,0,0,0],
+        "EffectBlink": 0,
+        "ScaleBlink": 0,
+        "DispEffect": 0,
+        "Weight": 34,
+        "Price": 39000,
+        "AttrResistance": {
+            "Bionic": [6,11],
+            "Earth": [0,0],
+            "Fire": [-4,2],
+            "Ice": [6,11],
+            "Lighting": [-5,2],
+            "Poison": [6,11],
+            "Water": [0,0],
+            "Wind": [0,0],
+        },
+        "AttrAttack": {
+            "Damage": [0,0,0,0],
+            "Shooting_Range": 0,
+            "Attack_Speed": 0,
+            "Attack_Rating": [0,0],
+            "Critical_Hit": 0,
+            "Magic_Mastery": [0.0,0.0]
+        },
+        "AttrDefense": {
+            "Absorb": [1.8,2.5],
+            "Defense": [64,85],
+            "Block_Rating": [0.0,0.0]
+        },
+        "AttrSpeed": [0.0,0.0],
+        "AttrRecovery": {
+            "Mana_Regen": [0.0,0.0],
+            "Life_Regen": [0.0,0.0],
+            "Stamina_Regen": [0.0,0.0],
+            "Increase_Life": [0.0,0.0],
+            "Increase_Mana": [0.0,0.0],
+            "Increase_Stamina": [0.0,0.0]
+        },
+        "AttrPotionSpace": 0,
+        "AttrPotionEffect": {
+            "Mana":[0,0],
+            "Life": [0,0],
+            "Stamina": [0,0]
+        },
+        "ItemSpecial": {
+            "Default_Job_Name": "null",
+            "Random_Job_Name": "Priestess Magician",
+            "Add_Absorb": [0.5,0.9],
+            "Add_Defence": [12,18],
+            "Add_Speed": [0.0,0.0],
+            "Add_Block_Rating": 0.0,
+            "Add_Attack_Speed": 0,
+            "Add_Critical_Hit": 0,
+            "Add_Shooting_Range": 0,
+            "Add_Magic_Mastery": [0.0,0.0],
+            "Add_Resistance": [0,0,0,0,0,0,0,0],
+            "Lev_Attack_Resistance": [0,0,0,0,0,0,0,0],
+            "Lev_Mana": 0,
+            "Lev_Life": 0,
+            "Lev_Attack_Rating": [0,0],
+            "Lev_Damage": [0,0],
+            "Add_Mana_Regen": [0.8,1.3],
+            "Add_Life_Regen":  [0.0,0.0],
+            "Add_Stamina_Regen":  [0.0,0.0]
+        },
+        "ItemRequire": {
+            "Level": 39,
+            "Strength": 0,
+            "Spirit": 100,
+            "Talent": 50,
+            "Dexterity": 0,
+            "Health": 0
+        },
+        "GenDay": 0,
+        "NextFile": "name\da209.zhoon"
+    }
+}

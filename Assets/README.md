@@ -15,3 +15,12 @@ This project is aim to decode all the assets file in "Priston Tale". They are:
 9. Sky
 
 本项目用于解析精灵游戏中的各种资源文件，包括：
+1. 地图
+包括传送门、限制进入等级、刷怪点、刷怪种类、Boss种类等。
+2. 装备
+包括装备的属性、随机取值范围等。
+3. 怪物资料
+包括怪物的攻防属性、死后的掉落物品、掉落几率等。
+4. NPC资料
+包括NPC的对话、出售的物品等。
+5. 3D模型

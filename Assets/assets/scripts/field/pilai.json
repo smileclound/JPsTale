@@ -1,0 +1,359 @@
+{
+    "ServerCode": 1,
+    "WarpGate": [
+        {
+            "size": 64,
+            "Position": [
+                2000,
+                474,
+                72907
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        1958,
+                        536,
+                        70922
+                    ],
+                    "ToField": 21
+                }
+            ],
+            "SpecialEffect": 1,
+            "height": 32
+        },
+        {
+            "size": 64,
+            "Position": [
+                2245,
+                745,
+                78259
+            ],
+            "LimitLevel": 0,
+            "OutGate": [
+                {
+                    "Position": [
+                        2252,
+                        754,
+                        78041
+                    ],
+                    "ToField": 22
+                }
+            ],
+            "SpecialEffect": 2,
+            "height": 32
+        }
+    ],
+    "Title": "菲尔拉",
+    "NameMap": "Field/map/pilai.tga",
+    "BackImageCode": [
+        18,
+        19,
+        17
+    ],
+    "BackMusicCode": 6,
+    "Name": "Field/forever-fall/pilai.ASE",
+    "NameTitle": "Field/title/pilait.tga",
+    "FieldGate": [
+        {
+            "Position": [
+                -8508,
+                0,
+                -10576
+            ],
+            "ToField": 21
+        }
+    ],
+    "StageObject": [
+        {
+            "StgObjName": "forever-fall/piani-01.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-02.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-03.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-04.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-05.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-06.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-07.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-08.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-09.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-10.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-11.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-12.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-13.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-14.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-15.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-16.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-17.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-18.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-19.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-20.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-21.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-22.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-23.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-24.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-25.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-26.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-27.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-28.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-29.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-30.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-31.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-32.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-33.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-34.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-35.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-36.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-37.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-38.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-39.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-40.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-41.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-42.ASE",
+            "BipAnimation": 0
+        },
+        {
+            "StgObjName": "forever-fall/piani-43.ASE",
+            "BipAnimation": 0
+        }
+    ],
+    "Ambient": [
+        {
+            "round": 20,
+            "Position": [
+                3557,
+                613,
+                75494
+            ],
+            "AmbientNum": 9
+        },
+        {
+            "round": 50,
+            "Position": [
+                2256,
+                745,
+                78247
+            ],
+            "AmbientNum": 6
+        },
+        {
+            "round": 0,
+            "Position": [
+                2066,
+                463,
+                73782
+            ],
+            "AmbientNum": 5
+        },
+        {
+            "round": 10,
+            "Position": [
+                3032,
+                554,
+                73674
+            ],
+            "AmbientNum": 4
+        },
+        {
+            "round": 0,
+            "Position": [
+                2246,
+                554,
+                76696
+            ],
+            "AmbientNum": 14
+        },
+        {
+            "round": 30,
+            "Position": [
+                2531,
+                544,
+                74955
+            ],
+            "AmbientNum": 12
+        },
+        {
+            "round": 30,
+            "Position": [
+                2034,
+                544,
+                74921
+            ],
+            "AmbientNum": 12
+        },
+        {
+            "round": 0,
+            "Position": [
+                934,
+                542,
+                73886
+            ],
+            "AmbientNum": 17
+        },
+        {
+            "round": 0,
+            "Position": [
+                3851,
+                492,
+                74639
+            ],
+            "AmbientNum": 17
+        },
+        {
+            "round": 0,
+            "Position": [
+                3326,
+                666,
+                76387
+            ],
+            "AmbientNum": 17
+        }
+    ],
+    "State": 256,
+    "LimitLevel": 0,
+    "PosWarpOut": [
+        2252,
+        754,
+        78041
+    ],
+    "StartPoint": [
+        {
+            "Position": [
+                2287,
+                74131
+            ]
+        },
+        {
+            "Position": [
+                3547,
+                75500
+            ]
+        }
+    ],
+    "id": 22,
+    "CenterPos": [
+        2981,
+        75486
+    ]
+}
