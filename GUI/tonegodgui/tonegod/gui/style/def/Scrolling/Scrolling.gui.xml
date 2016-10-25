@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="ScrollArea">
+		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Top" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="Vector4f">
+				<x value="8" />
+				<y value="8" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="8" />
+				<y value="8" />
+				<z value="8" />
+				<w value="8" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="320" />
+				<y value="120" />
+			</property>
+			<property name="minimumSize" type="Vector2f">
+				<x value="96" />
+				<y value="96" />
+			</property>
+			<property name="scrollAreaPadding" type="float" value="4" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x_inner.png" />
+		</images>
+		<effects></effects>
+	</element>
+	<element name="ScrollArea#VScrollBar">
+		<font></font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="24" />
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+			<property name="btnUpResizeBorders" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+			<property name="btnDownResizeBorders" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+			<property name="useBtnUpArrowIcon" type="boolean" value="true" />
+			<property name="useBtnDownArrowIcon" type="boolean" value="true" />
+			<property name="gap" type="float" value="0" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String" value="tonegod/gui/style/def/Scrolling/scroll_track_x.png" />
+			<property name="thumbImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="thumbHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="thumbPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+			<property name="btnUpImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="btnUpHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="btnUpPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+			<property name="btnDownImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="btnDownHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="btnDownPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+		</images>
+		<effects></effects>
+	</element>
+	<element name="ScrollArea#HScrollBar">
+		<font></font>
+		<attributes>
+			<property name="defaultControlSize" type="float" value="24" />
+			<property name="trackResizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+			<property name="thumbResizeBorders" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+			<property name="btnLeftResizeBorders" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+			<property name="btnRightResizeBorders" type="Vector4f">
+				<x value="4" />
+				<y value="4" />
+				<z value="4" />
+				<w value="4" />
+			</property>
+			<property name="useBtnLeftArrowIcon" type="boolean" value="true" />
+			<property name="useBtnRightArrowIcon" type="boolean" value="true" />
+			<property name="gap" type="float" value="0" />
+		</attributes>
+		<images>
+			<property name="trackImg" type="String" value="tonegod/gui/style/def/Scrolling/scroll_track_x.png" />
+			<property name="thumbImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="thumbHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="thumbPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+			<property name="btnLeftImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="btnLeftHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="btnLeftPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+			<property name="btnRightImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="btnRightHoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="btnRightPressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+		</images>
+		<effects></effects>
+	</element>
+</root>

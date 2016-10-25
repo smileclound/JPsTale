@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Indicator">
+		<font>
+			<property name="fontSize" type="float" value="16" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="NoWrap" />
+			<property name="textPadding" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="-2" />
+				<w value="0" />
+			</property>
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="7" />
+				<y value="7" />
+				<z value="7" />
+				<w value="7" />
+			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="40" />
+				<y value="20" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="150" />
+				<y value="20" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="x=153|y=55|w=16|h=16" />
+			<property name="alphaImg" type="String" value="x=135|y=55|w=16|h=16" />
+		</images>
+		<effects></effects>
+	</element>
+</root>

@@ -1,0 +1,51 @@
+MaterialDef Unshaded {
+
+    MaterialParameters {
+		Texture2D EffectMap
+		Color EffectColor
+		Boolean UseEffectTexCoords : false
+		Vector2 OffsetTexCoord
+		Boolean UseEffect : false
+		Boolean EffectPulse : false
+		Boolean EffectPulseColor : false
+		Boolean EffectFade : false
+		Boolean EffectSaturate : false
+		Boolean EffectImageSwap : false
+		Float EffectStep
+		Float GlobalAlpha : 1.0
+		Texture2D ColorMap
+        Color Color (Color)
+        Boolean VertexColor (UseVertexColor)
+		Boolean UseClipping : false
+		Vector4 Clipping
+		Boolean IsTextField
+		Boolean HasTabFocus : false
+		Float CaretX : 1.0
+		Float CaretSpeed : 10.0
+		Float LastUpdate
+		Boolean ShowTextRange : false
+		Float TextRangeStart : 0.0
+		Float TextRangeEnd : 0.0
+		Texture2D AlphaMap
+		Vector2 OffsetAlphaTexCoord
+    }
+
+    Technique {
+        VertexShader GLSL100:   tonegod/gui/shaders/Unshaded.vert
+        FragmentShader GLSL100: tonegod/gui/shaders/Unshaded.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            WorldViewMatrix
+			Time
+        }
+
+        Defines {
+            HAS_COLORMAP : ColorMap
+            HAS_VERTEXCOLOR : VertexColor
+            HAS_COLOR : Color
+			HAS_ALPHAMAP : AlphaMap
+			IS_TEXTFIELD : IsTextField
+        }
+    }
+}

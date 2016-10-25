@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<element name="Table">
+		<font>
+		</font>
+		<attributes>
+			<property name="highlightColor" type="ColorRGBA">
+				<r value="0.7" />
+				<g value="0.7" />
+				<b value="0.7" />
+				<a value="0.5" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="14" />
+				<y value="14" />
+				<z value="14" />
+				<w value="14" />
+			</property>
+			<property name="minSize" type="Vector2f">
+				<x value="150" />
+				<y value="50" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="350" />
+				<y value="200" />
+			</property>
+			<property name="tablePadding" type="float" value="4" />
+			<property name="headerGap" type="float" value="0" />
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Window/panel_x.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+
+	<element name="Table#Row">
+		<font>
+		</font>
+		<attributes>
+			<property name="defaultSize" type="Vector2f">
+				<x value="100" />
+				<y value="24" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+		</attributes>
+		<images>
+		</images>
+		<effects>
+		</effects>
+	</element>
+
+	<element name="Table#Header">
+		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="1" />
+				<g value="1" />
+				<b value="1" />
+				<a value="1" />
+			</property>
+			<property name="textAlign" type="String" value="Center" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="Word" />
+			<property name="textPadding" type="float" value="0" />
+		</font>
+		<attributes>
+			<property name="defaultSize" type="Vector2f">
+				<x value="100" />
+				<y value="24" />
+			</property>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="5" />
+				<y value="5" />
+				<z value="5" />
+				<w value="5" />
+			</property>
+                        <property name="hoverColor" type="ColorRGBA">
+				<r value="1.0" />
+				<g value="1.0" />
+				<b value="1.0" />
+				<a value="1.0" />
+			</property>
+			<property name="pressedColor" type="ColorRGBA">
+				<r value="0.6" />
+				<g value="0.6" />
+				<b value="0.6" />
+				<a value="1.0" />
+			</property>
+			<property name="arrowSize" type="Vector2f">
+				<x value="20" />
+				<y value="20" />
+			</property>
+		</attributes>
+		<images>
+			<property name="defaultImg" type="String" value="tonegod/gui/style/def/Button/button_x_u.png" />
+			<property name="hoverImg" type="String" value="tonegod/gui/style/def/Button/button_x_h.png" />
+			<property name="pressedImg" type="String" value="tonegod/gui/style/def/Button/button_x_d.png" />
+			<property name="arrowUpImg" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_up.png" />
+			<property name="arrowDownImg" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_down.png" />
+			<property name="noArrowImg" type="String" value="tonegod/gui/style/def/Blank.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+
+	<element name="Table#Cell">
+		<font>
+			<property name="fontSize" type="float" value="20" />
+			<property name="fontColor" type="ColorRGBA">
+				<r value="0.8" />
+				<g value="0.8" />
+				<b value="0.8" />
+				<a value="1.0" />
+			</property>
+			<property name="textAlign" type="String" value="Left" />
+			<property name="textVAlign" type="String" value="Center" />
+			<property name="textWrap" type="String" value="Clip" />
+			<property name="textPadding" type="float" value="3" />
+		</font>
+		<attributes>
+			<property name="resizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="arrowResizeBorders" type="Vector4f">
+				<x value="0" />
+				<y value="0" />
+				<z value="0" />
+				<w value="0" />
+			</property>
+			<property name="defaultSize" type="Vector2f">
+				<x value="100" />
+				<y value="24" />
+			</property>
+			<property name="arrowSize" type="Vector2f">
+				<x value="20" />
+				<y value="20" />
+			</property>
+		</attributes>
+		<images>
+			<property name="expandImg" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_right.png" />
+			<property name="collapseImg" type="String" value="tonegod/gui/style/def/Common/Arrows/arrow_down.png" />
+		</images>
+		<effects>
+		</effects>
+	</element>
+</root>
+
