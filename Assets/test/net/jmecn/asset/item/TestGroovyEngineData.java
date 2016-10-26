@@ -20,34 +20,40 @@ public class TestGroovyEngineData {
 
 		long start = System.currentTimeMillis();
 		
-		String path = "scripts";
+		String path = "./assets/scripts";
 		GroovyScriptEngine gse = new GroovyScriptEngine(path);
 		Binding binding = new Binding();
-		
 
 		// 加载NPC数据
-		gse.run("data/npc-init.groovy", binding);
+		gse.run("npc-init.groovy", binding);
 		List<String> obj = (ArrayList<String>)binding.getVariable("npclist");
 		
 		for(int i=0; i<obj.size(); i++) {
 			String npcfile = obj.get(i);
 			gse.run(npcfile, binding);
 			Map map = (Map)binding.getVariable("npc");
+			System.out.println(map);
 		}
 
 		// 加载FIELD数据
-		gse.run("data/field-init.groovy", binding);
+		gse.run("field-init.groovy", binding);
 		List fields = (ArrayList)binding.getVariable("output");
 		for(int i=0; i<fields.size(); i++) {
 			Map fieldData = (Map)fields.get(i);
+			System.out.println(fieldData);
 		}
 		
-		gse.run("data/monster-init.groovy", binding);
+		gse.run("monster-init.groovy", binding);
 		List monsterlist = (ArrayList)binding.getVariable("monsterlist");
-		println(monsterlist);
+		for(int i=0; i<monsterlist.size(); i++) {
+			String script = (String)monsterlist.get(i);
+			gse.run(script, binding);
+			Map map = (Map)binding.getVariable("monster");
+			System.out.println(map);
+		}
+		
+		long time = System.currentTimeMillis() - start;
+		System.out.println("总耗时:" + time/1000.0f + "秒");
 	}
 
-	static void println(Object ... args) {
-		System.out.println(args);
-	}
 }

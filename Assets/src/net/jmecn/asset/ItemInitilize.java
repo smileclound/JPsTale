@@ -20,7 +20,7 @@ import net.jmecn.asset.job.JobConstant;
 public class ItemInitilize extends ResourceInitilize<ItemInfo> implements
 		ItemKeys, JobConstant {
 
-	String folder = "assert\\server\\openitem";
+	String folder = "./assets/server/OpenItem";
 	/**
 	 * 文件夹路径
 	 */
