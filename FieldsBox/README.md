@@ -146,6 +146,25 @@ AmbientNum是音频文件的索引号。
 
 这个是二进制文件，记录了每个NPC的位置坐标和面朝的方向。然后通过一个路径指向了实际存在的某个NPC定义文件。
 
+一个场景中最多只能有个100个NPC，每个NPC有504字节，每个spc文件大小固定为50400字节。
+数据结构如下：
+
+	struct smTRNAS_PLAYERINFO
+	{
+		int	size;// 固定值，504，就是这个结构体的大小。
+		int code;// 没有实际意义，标记了这个NPC信息是否有效。
+	
+		smCHAR_INFO	smCharInfo;
+	
+		DWORD	dwObjectSerial;
+	
+		int	x,y,z;// NPC在大地图上的坐标
+		int ax,ay,az;// NPC的面向，记录绕xyz的旋转角度。这3个整数值应该是放了256倍之后的值。
+		int state;
+	};
+
+smCHAR_INFO是另一个数据结构，存储了角色的模型、脚本、攻击、防御、回复、元素抗性等多种不同的属性。
+
 ## 刷怪点 StartPoint
 .spp文件存储了每个地区的刷怪点数据。
 
