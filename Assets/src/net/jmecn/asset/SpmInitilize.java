@@ -7,11 +7,10 @@ public class SpmInitilize extends ResourceInitilize<RespawnList> {
 
 	@Override
 	protected boolean accept(File dir, String name) {
-		// TODO Auto-generated method stub
 		return name.endsWith(".spm");
 	}
 
-	String folder = "assert\\server\\Field";
+	String folder = "assets/server/Field";
 
 	/**
 	 * 文件夹路径
