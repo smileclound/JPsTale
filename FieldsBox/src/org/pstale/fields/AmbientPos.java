@@ -10,7 +10,7 @@ public class AmbientPos {
 	public AmbientPos(Vector3f position, int round, int ambientNum) {
 		this.position = position;
 		this.round = round;
-		AmbientNum = ambientNum;
+		this.AmbientNum = ambientNum;
 	}
 
 	public Vector3f getPosition() {

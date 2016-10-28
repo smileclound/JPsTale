@@ -1,4 +1,4 @@
-package org.pstale.fields;
+package org.pstale.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;

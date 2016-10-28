@@ -1,7 +1,12 @@
-package org.pstale.fields;
+package org.pstale.loader;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.pstale.fields.ResourceLoader;
+import org.pstale.fields.RespawnList;
+import org.pstale.fields.StgBoss;
+import org.pstale.fields.StgMonster;
 
 public class SpmLoader extends ResourceLoader<RespawnList> {
 

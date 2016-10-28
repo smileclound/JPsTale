@@ -1,4 +1,4 @@
-package org.pstale.fields;
+package org.pstale.loader;
 
 import java.io.File;
 import java.io.FileInputStream;

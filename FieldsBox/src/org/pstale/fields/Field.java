@@ -129,7 +129,10 @@ public class Field {
 	public List<StageObject> getStageObject() {
 		return this.stgObj;
 	}
-
+	// 添加舞台背景物体
+	public void addStageObject(StageObject stgObj) {
+		this.stgObj.add(stgObj);
+	}
 	// 添加舞台背景物体
 	public void addStageObject(String stgObjName, int bipAnimation) {
 		this.stgObj.add(new StageObject(stgObjName, bipAnimation == 1));
@@ -139,14 +142,28 @@ public class Field {
 	public List<FieldGate> getFieldGate() {
 		return fieldGate;
 	}
-	public void addGate(Field field, float x, float y, float z) {
-		fieldGate.add(new FieldGate(new Vector3f(x, y, z), field));
+	
+	/**
+	 * 添加地区门户
+	 * @param gate
+	 */
+	public void addGate(FieldGate gate) {
+		fieldGate.add(gate);
 	}
-
+	
 	// WarpGate
 	public List<WarpGate> getWarpGate() {
 		return warpGate;
 	}
+	
+	/**
+	 * 添加传送门
+	 * @param warp
+	 */
+	public void addWarp(WarpGate warp) {
+		warpGate.add(warp);
+	}
+	
 	public int CheckWarpGate(int x, int y, int z) {
 		// TODO 检查传送门
 		return -1;
@@ -161,6 +178,11 @@ public class Field {
 	// AmbientPos
 	public List<AmbientPos> getAmbientPos() {
 		return ambientPos;
+	}
+	
+	// 添加环境音效
+	public void addAmbientPos(AmbientPos ambient) {
+		this.ambientPos.add(ambient);
 	}
 	// 添加环境音效
 	public void addAmbientPos(int x, int y, int z, int round, int ambCode) {
@@ -216,8 +238,9 @@ public class Field {
 	public List<Vector2f> getStartPoint() {
 		return startPoint;
 	}
-	public void addStartPoint(float x, float z) {
-		this.startPoint.add(new Vector2f(x, z));
+	
+	public void addStartPoint(Vector2f point) {
+		startPoint.add(point);
 	}
 
 	/**

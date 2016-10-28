@@ -1,8 +1,10 @@
-package org.pstale.fields;
+package org.pstale.loader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import org.pstale.fields.StartPoint;
 
 /**
  * spp文件记录了地区中的刷怪点。
