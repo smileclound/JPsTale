@@ -79,6 +79,10 @@ public class FieldLoader {
 			 */
 			String title = obj.getString("Title");
 			/**
+			 * 地区的编码
+			 */
+			String code = obj.getString("Code");
+			/**
 			 * 地图模型文件名
 			 */
 			String name = obj.getString("Name");
@@ -126,6 +130,7 @@ public class FieldLoader {
 			field = new Field();
 			field.setId(id);
 			field.setTitle(title);
+			field.setCode(code);
 			field.setName(name);
 			field.setNameMap(nameMap);
 			field.setNameTitle(nameTitle);

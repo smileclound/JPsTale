@@ -2,6 +2,7 @@
 	{
 		"id":1,
 		"Title":"胶之林",
+		"Code":"fore-3",
 		"Name":"Field/forest/fore-3.ASE",
 		"NameMap":"Field/map/fore-3.tga",
 		"NameTitle":"Field/title/fore-3t.tga",
@@ -54,6 +55,7 @@
 	{
 		"id":2,
 		"Title":"竹之林",
+		"Code":"fore-2",
 		"Name":"Field/forest/fore-2.ASE",
 		"NameMap":"Field/map/fore-2.tga",
 		"NameTitle":"Field/title/fore-2t.tga",
@@ -94,6 +96,7 @@
 	{
 		"id":3,
 		"Title":"自由庭院",
+		"Code":"fore-1",
 		"Name":"Field/forest/fore-1.ASE",
 		"NameMap":"Field/map/fore-1.tga",
 		"NameTitle":"Field/title/fore-1t.tga",
@@ -118,6 +121,7 @@
 	{
 		"id":4,
 		"Title":"里查登",
+		"Code":"village-2",
 		"Name":"Field/Ricarten/village-2.ASE",
 		"NameMap":"Field/map/village-2.tga",
 		"NameTitle":"Field/title/village-2t.tga",
@@ -171,6 +175,7 @@
 	{
 		"id":5,
 		"Title":"废墟墓地",
+		"Code":"ruin-4",
 		"Name":"Field/Ruin/ruin-4.ASE",
 		"NameMap":"Field/map/ruin-4.tga",
 		"NameTitle":"Field/title/ruin-4t.tga",
@@ -193,6 +198,7 @@
 	{
 		"id":6,
 		"Title":"废墟",
+		"Code":"ruin-3",
 		"Name":"Field/Ruin/ruin-3.ASE",
 		"NameMap":"Field/map/ruin-3.tga",
 		"NameTitle":"Field/title/ruin-3t.tga",
@@ -215,6 +221,7 @@
 	{
 		"id":7,
 		"Title":"废墟村庄",
+		"Code":"ruin-2",
 		"Name":"Field/Ruin/ruin-2.ASE",
 		"NameMap":"Field/map/ruin-2.tga",
 		"NameTitle":"Field/title/ruin-2t.tga",
@@ -255,6 +262,7 @@
 	{
 		"id":8,
 		"Title":"遗忘之地",
+		"Code":"ruin-1",
 		"Name":"Field/Ruin/ruin-1.ASE",
 		"NameMap":"Field/map/ruin-1.tga",
 		"NameTitle":"Field/title/ruin-1t.tga",
@@ -289,6 +297,7 @@
 	{
 		"id":9,
 		"Title":"诅咒之地",
+		"Code":"De-1",
 		"Name":"Field/desert/De-1.ASE",
 		"NameMap":"Field/map/De-1.tga",
 		"NameTitle":"Field/title/De-1t.tga",
@@ -312,6 +321,7 @@
 	{
 		"id":10,
 		"Title":"内维斯克",
+		"Code":"village-1",
 		"Name":"Field/forest/village-1.ASE",
 		"NameMap":"Field/map/village-1.tga",
 		"NameTitle":"Field/title/village-1t.tga",
@@ -349,6 +359,7 @@
 	{
 		"id":11,
 		"Title":"绿洲",
+		"Code":"De-2",
 		"Name":"Field/desert/De-2.ASE",
 		"NameMap":"Field/map/De-2.tga",
 		"NameTitle":"Field/title/De-2t.tga",
@@ -370,6 +381,7 @@
 	{
 		"id":12,
 		"Title":"古代战场",
+		"Code":"De-3",
 		"Name":"Field/desert/De-3.ASE",
 		"NameMap":"Field/map/De-3.tga",
 		"NameTitle":"Field/title/De-3t.tga",
@@ -404,6 +416,7 @@
 	{
 		"id":13,
 		"Title":"封印之地",
+		"Code":"De-4",
 		"Name":"Field/desert/De-4.ASE",
 		"NameMap":"Field/map/De-4.tga",
 		"NameTitle":"Field/title/De-4t.tga",
@@ -441,6 +454,7 @@
 	{
 		"id":14,
 		"Title":"古代地牢1层",
+		"Code":"dun-1",
 		"Name":"Field/dungeon/Dun-1.ASE",
 		"NameMap":"Field/map/dun-1.tga",
 		"NameTitle":"Field/title/dun-1t.tga",
@@ -483,6 +497,7 @@
 	{
 		"id":15,
 		"Title":"古代地牢2层",
+		"Code":"dun-2",
 		"Name":"Field/dungeon/Dun-2.ASE",
 		"NameMap":"Field/map/dun-2.tga",
 		"NameTitle":"Field/title/dun-2t.tga",
@@ -529,6 +544,7 @@
 	{
 		"id":16,
 		"Title":"古代地牢3层",
+		"Code":"dun-3",
 		"Name":"Field/dungeon/Dun-3.ASE",
 		"NameMap":"Field/map/dun-3.tga",
 		"NameTitle":"Field/title/dun-3t.tga",
@@ -556,6 +572,7 @@
 	{
 		"id":17,
 		"Title":"GM房间",
+		"Code":"",
 		"Name":"Field/Room/office.ASE",
 		"NameMap":"",
 		"NameTitle":"",
@@ -570,6 +587,7 @@
 	{
 		"id":18,
 		"Title":"心情树林",
+		"Code":"forever-fall-04",
 		"Name":"Field/forever-fall/forever-fall-04.ASE",
 		"NameMap":"Field/map/forever-fall-04.tga",
 		"NameTitle":"Field/title/forever-fall-04t.tga",
@@ -614,6 +632,7 @@
 	{
 		"id":19,
 		"Title":"黄昏树林",
+		"Code":"forever-fall-03",
 		"Name":"Field/forever-fall/forever-fall-03.ASE",
 		"NameMap":"Field/map/forever-fall-03.tga",
 		"NameTitle":"Field/title/forever-fall-03t.tga",
@@ -671,6 +690,7 @@
 	{
 		"id":20,
 		"Title":"秋之谷",
+		"Code":"forever-fall-02",
 		"Name":"Field/forever-fall/forever-fall-02.ASE",
 		"NameMap":"Field/map/forever-fall-02.tga",
 		"NameTitle":"Field/title/forever-fall-02t.tga",
@@ -709,6 +729,7 @@
 	{
 		"id":21,
 		"Title":"风之路",
+		"Code":"forever-fall-01",
 		"Name":"Field/forever-fall/forever-fall-01.ASE",
 		"NameMap":"Field/map/forever-fall-01.tga",
 		"NameTitle":"Field/title/forever-fall-01t.tga",
@@ -782,6 +803,7 @@
 	{
 		"id":22,
 		"Title":"菲尔拉",
+		"Code":"pilai",
 		"Name":"Field/forever-fall/pilai.ASE",
 		"NameMap":"Field/map/pilai.tga",
 		"NameTitle":"Field/title/pilait.tga",
@@ -882,6 +904,7 @@
 	{
 		"id":23,
 		"Title":"古代神殿1层",
+		"Code":"dun-4",
 		"Name":"Field/dungeon/dun-4.ASE",
 		"NameMap":"Field/map/dun-4.tga",
 		"NameTitle":"Field/title/dun-4t.tga",
@@ -969,6 +992,7 @@
 	{
 		"id":24,
 		"Title":"古代神殿2层",
+		"Code":"dun-5",
 		"Name":"Field/dungeon/dun-5.ASE",
 		"NameMap":"Field/map/dun-5.tga",
 		"NameTitle":"Field/title/dun-5t.tga",
@@ -1072,6 +1096,7 @@
 	{
 		"id":25,
 		"Title":"蘑菇洞穴",
+		"Code":"Tcave",
 		"Name":"Field/cave/Tcave.ASE",
 		"NameMap":"Field/map/Tcave.tga",
 		"NameTitle":"Field/title/Tcavet.tga",
@@ -1130,6 +1155,7 @@
 	{
 		"id":26,
 		"Title":"蜂房洞穴",
+		"Code":"Mcave",
 		"Name":"Field/cave/Mcave.ASE",
 		"NameMap":"Field/map/Mcave.tga",
 		"NameTitle":"Field/title/Mcavet.tga",
@@ -1189,6 +1215,7 @@
 	{
 		"id":27,
 		"Title":"古代圣殿",
+		"Code":"Dcave",
 		"Name":"Field/cave/Dcave.ASE",
 		"NameMap":"Field/map/Dcave.tga",
 		"NameTitle":"Field/title/Dcavet.tga",
@@ -1241,6 +1268,7 @@
 	{
 		"id":28,
 		"Title":"没落都市",
+		"Code":"iron-1",
 		"Name":"Field/Iron/iron-1.ASE",
 		"NameMap":"Field/map/iron-1.tga",
 		"NameTitle":"Field/title/iron-1t.tga",
@@ -1280,6 +1308,7 @@
 	{
 		"id":29,
 		"Title":"普隆的心脏",
+		"Code":"iron-2",
 		"Name":"Field/Iron/iron-2.ASE",
 		"NameMap":"Field/map/iron-2.tga",
 		"NameTitle":"Field/title/iron-2t.tga",
@@ -1316,6 +1345,7 @@
 	{
 		"id":30,
 		"Title":"幽拉村庄",
+		"Code":"ice_ura",
 		"Name":"Field/Ice/ice_ura.ASE",
 		"NameMap":"Field/map/ice_ura.tga",
 		"NameTitle":"Field/title/ice_urat.tga",
@@ -1349,6 +1379,7 @@
 	{
 		"id":31,
 		"Title":"SOD",
+		"Code":"sod-1",
 		"Name":"Field/Sod/sod-1.ASE",
 		"NameMap":"Field/map/sod-1.tga",
 		"NameTitle":"Field/title/sod-1t.tga",
@@ -1386,6 +1417,7 @@
 	{
 		"id":32,
 		"Title":"凯拉笔山谷",
+		"Code":"ice1",
 		"Name":"Field/Ice/ice1.ASE",
 		"NameMap":"Field/map/ice1.tga",
 		"NameTitle":"Field/title/ice1t.tga",
@@ -1418,6 +1450,7 @@
 	{
 		"id":33,
 		"Title":"四转任务",
+		"Code":"quest_IV",
 		"Name":"Field/Quest/quest_IV.ASE",
 		"NameMap":"Field/map/quest_IV.tga",
 		"NameTitle":"Field/title/quest_IVt.tga",
@@ -1432,6 +1465,7 @@
 	{
 		"id":34,
 		"Title":"祝福城堡",
+		"Code":"castle",
 		"Name":"Field/castle/castle.ASE",
 		"NameMap":"Field/map/castle.tga",
 		"NameTitle":"Field/title/castlet.tga",
@@ -1472,6 +1506,7 @@
 	{
 		"id":35,
 		"Title":"贪婪湖泊",
+		"Code":"Greedy",
 		"Name":"Field/Greedy/Greedy.ASE",
 		"NameMap":"Field/map/Greedy.tga",
 		"NameTitle":"Field/title/Greedyt.tga",
@@ -1521,6 +1556,7 @@
 	{
 		"id":36,
 		"Title":"风之谷",
+		"Code":"ice2",
 		"Name":"Field/Ice/ice_2.ASE",
 		"NameMap":"Field/map/ice2.tga",
 		"NameTitle":"Field/title/ice2t.tga",
@@ -1551,6 +1587,7 @@
 	{
 		"id":37,
 		"Title":"凯尔祖维的巢穴",
+		"Code":"boss",
 		"Name":"Field/Boss/boss.ASE",
 		"NameMap":"Field/map/Boss.tga",
 		"NameTitle":"Field/title/Bosst.tga",
@@ -1577,6 +1614,7 @@
 	{
 		"id":38,
 		"Title":"迷失之地",
+		"Code":"lost",
 		"Name":"Field/Lost/lostisland.ASE",
 		"NameMap":"Field/map/lost.tga",
 		"NameTitle":"Field/title/lostt.tga",
@@ -1613,6 +1651,7 @@
 	{
 		"id":39,
 		"Title":"迷失寺庙",
+		"Code":"Losttemple",
 		"Name":"Field/Losttemple/lost_temple.ASE",
 		"NameMap":"Field/map/Losttemple.tga",
 		"NameTitle":"Field/title/Losttemplet.tga",
@@ -1630,6 +1669,7 @@
 	{
 		"id":40,
 		"Title":"场景图",
+		"Code":"",
 		"Name":"Field/Fall_Game/Fall_Game.ASE",
 		"NameMap":"",
 		"NameTitle":"",
@@ -1686,6 +1726,7 @@
 	{
 		"id":41,
 		"Title":"无尽之塔1层",
+		"Code":"dun-7",
 		"Name":"Field/endless/dun-7.ASE",
 		"NameMap":"Field/map/dun-7.tga",
 		"NameTitle":"Field/title/dun-7t.tga",
@@ -1722,6 +1763,7 @@
 	{
 		"id":42,
 		"Title":"无尽之塔2层",
+		"Code":"dun-8",
 		"Name":"Field/endless/dun-8.ASE",
 		"NameMap":"Field/map/dun-8.tga",
 		"NameTitle":"Field/title/dun-8t.tga",
@@ -1759,6 +1801,7 @@
 	{
 		"id":43,
 		"Title":"古代神殿3层",
+		"Code":"dun-6",
 		"Name":"Field/dungeon/Dun-6a.ASE",
 		"NameMap":"Field/map/dun-6.tga",
 		"NameTitle":"Field/title/dun-6t.tga",
@@ -1831,6 +1874,7 @@
 	{
 		"id":44,
 		"Title":"无尽之塔3层",
+		"Code":"dun-9",
 		"Name":"Field/endless/dun-9.ASE",
 		"NameMap":"Field/map/dun-9.tga",
 		"NameTitle":"Field/title/dun-9t.tga",

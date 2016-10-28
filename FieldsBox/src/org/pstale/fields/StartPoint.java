@@ -5,7 +5,7 @@ package org.pstale.fields;
  * @author yanmaoyuan
  *
  */
-class StartPoint {
+public class StartPoint {
 	public int state;// 该出生点是否正在使用?
 	public int x, z;// 出生点坐标
 

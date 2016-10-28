@@ -21,14 +21,14 @@ import org.pstale.fields.StartPoint;
  * @author yanmaoyuan
  *
  */
-public class SppLoader {
+public class SpawnLoader {
 	
 	/**
 	 * 地区刷怪点最大数量。
 	 */
 	public final static int STG_START_POINT_MAX = 200;
 	
-	public Object load(String fileName) throws IOException {
+	public StartPoint[] load(String fileName) throws IOException {
 		/**
 		 * 判断文件是否存在
 		 */
@@ -57,12 +57,11 @@ public class SppLoader {
 		for(int i=0; i<STG_START_POINT_MAX; i++) {
 			int index = i*12;
 			int state = makeInt(buffer, index);
-			int x = makeInt(buffer, index+4);
-			int z = makeInt(buffer, index+8);
+			int z = -makeInt(buffer, index+4);
+			int x = -makeInt(buffer, index+8);
 			
 			if (state != 0) {
 				points[i] = new StartPoint(state, x, z);
-				System.out.println("x=" + x + " z=" + z);
 			}
 		}
 		
@@ -86,7 +85,7 @@ public class SppLoader {
     }
 	
 	public static void main(String[] args) throws Exception {
-		SppLoader loader = new SppLoader();
+		SpawnLoader loader = new SpawnLoader();
 		loader.load("assets/server/Field/fore-3.ase.spp");
 	}
 }

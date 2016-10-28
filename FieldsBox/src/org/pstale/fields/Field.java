@@ -10,6 +10,7 @@ public class Field {
 
 	private int id;// 地区编号
 	private String title;// 地区名称
+	private String code;// 地区的编码
 	private String name; // 地区模型文件名称
 	private String nameMap; // 地区地图图像文件
 	private String nameTitle; // 地区名称映像文件
@@ -40,6 +41,13 @@ public class Field {
 
 	private ActionFieldCamera ActionCamera;
 
+	/**
+	 * 服务端数据
+	 */
+	private StartPoint[] spawnPoints = null;// 怪物刷新点
+	private RespawnList respawnList = null;// 刷怪种类信息
+	private ArrayList<NPC> npcs = null;// NPC信息
+	
 	public Field() {
 		stgObj = new ArrayList<StageObject>();
 		ambientPos = new ArrayList<AmbientPos>();
@@ -68,6 +76,14 @@ public class Field {
 		return "[" + id + "-" + this.title + "]";
 	}
 	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -285,4 +301,32 @@ public class Field {
 		ActionCamera = actionCamera;
 	}
 
+	public StartPoint[] getSpawnPoints() {
+		return spawnPoints;
+	}
+
+	public void setSpawnPoints(StartPoint[] spawnPoints) {
+		this.spawnPoints = spawnPoints;
+	}
+
+	public RespawnList getRespawnList() {
+		return respawnList;
+	}
+
+	public void setRespawnList(RespawnList respawnList) {
+		this.respawnList = respawnList;
+	}
+
+	public ArrayList<NPC> getNpcs() {
+		return npcs;
+	}
+
+	public void setNpcs(ArrayList<NPC> npcs) {
+		this.npcs = npcs;
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + id + "-" + this.title + "]";
+	}
 }

@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+
+import org.pstale.fields.NPC;
+
+import com.jme3.math.Vector3f;
 
 /**
  * 读取场景中的NPC信息，这些信息存储在一个.spc文件中。
@@ -26,14 +31,16 @@ struct smTRNAS_PLAYERINFO
  * @author yanmaoyuan
  *
  */
-public class SpcLoader {
+public class NpcLoader {
 	
 	/**
 	 * NPC角色数量
 	 */
 	private final static int FIX_CHAR_MAX	= 100;
 	private final static int STG_CHAR_INFO_SIZE = 504;
-	public Object load(String fileName) throws IOException {
+	public ArrayList<NPC> load(String fileName) throws IOException {
+		
+		
 		/**
 		 * 判断文件是否存在
 		 */
@@ -47,6 +54,7 @@ public class SpcLoader {
 		 */
 		int length = FIX_CHAR_MAX * STG_CHAR_INFO_SIZE;
 		byte[] buffer = new byte[length];
+		ArrayList<NPC> npcs = new ArrayList<NPC>();
 
 		/**
 		 * 读取文件
@@ -64,38 +72,29 @@ public class SpcLoader {
 			int size = makeInt(buffer, index);// 结构体的大小，实际上应该是504
 			int code = makeInt(buffer, index+4);// 这是一个标记，如果存在NPC的信息，那么code应该不为0，没有实际意义。
 			
-			String ini = makeStr(buffer, index+40);// 这个字符串指向了NPC的模型、动画
-			String npc = makeStr(buffer, index+104);// 这个字符串指向了NPC的脚本，诸如对话、售卖物品列表、职业等。
+			String model = makeStr(buffer, index+40);// 这个字符串指向了NPC的模型、动画
+			String script = makeStr(buffer, index+104);// 这个字符串指向了NPC的脚本，诸如对话、售卖物品列表、职业等。
 			
 			// 这是NPC在大地图上的坐标
-			int x = makeInt(buffer, index+476);
+			int z = -makeInt(buffer, index+476);
 			int y = makeInt(buffer, index+480);
-			int z = makeInt(buffer, index+484);
+			int x = -makeInt(buffer, index+484);
 			
 			// 这是NPC面向的角度，3个值分别是NPC绕x,y,z轴旋转的角度。
 			// 目前还不太确定这个角度是弧度值还是欧拉角，但是可以肯定这个值被放大了。也许要除以256或65536。
-			int ax = makeInt(buffer, index+488);
+			int az = -makeInt(buffer, index+488);
 			int ay = makeInt(buffer, index+492);
-			int az = makeInt(buffer, index+496);
+			int ax = -makeInt(buffer, index+496);
 			
 			int state = makeInt(buffer, index+500);
 			
 			if (code != 0) {
-				System.out.println("size=" + size);
-				System.out.println("code=" + code);
-				System.out.println("model=" + ini);
-				System.out.println("npc=" + npc);
-				
-				System.out.println("posi=" + x + ", " + y + ", " + z);
-				System.out.println("face=" + ax + ", " + ay + ", " + az);
-				
-				System.out.println("state=" + state);
-				
-				System.out.println();
+				NPC npc = new NPC(model, script, new Vector3f(x, y, z), new Vector3f(ax/256f, ay/256f, az/256f), state);
+				npcs.add(npc);
 			}
 		}
 		
-		return null;
+		return npcs;
 	}
 	
 	/**
@@ -131,7 +130,7 @@ public class SpcLoader {
     }
 	
 	public static void main(String[] args) throws Exception {
-		SpcLoader loader = new SpcLoader();
-		loader.load("assets/server/Field/fore-3.ase.spc");
+		NpcLoader loader = new NpcLoader();
+		loader.load("../Assets/assets/server/Field/fore-3.ase.spc");
 	}
 }
