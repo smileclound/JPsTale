@@ -16,6 +16,18 @@ public class NPC {
 	private Vector3f rotation;// 绕轴旋转角度
 	private int state;// 状态
 
+	/**
+	 * 仅用于序列化。
+	 */
+	public NPC() {}
+	/**
+	 * 初始化NPC
+	 * @param model
+	 * @param script
+	 * @param position
+	 * @param rotation
+	 * @param state
+	 */
 	public NPC(String model, String script, Vector3f position,
 			Vector3f rotation, int state) {
 		this.model = model;

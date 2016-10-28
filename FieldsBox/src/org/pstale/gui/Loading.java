@@ -17,11 +17,6 @@ import javax.swing.JProgressBar;
  */
 public class Loading extends JFrame {
 
-	static String SERVER_ROOT = "../Assets/assets/";
-	static String SERVER_FIELD_DIR = "server/field/";
-	
-	static String CLIENT_ROOT = "assets";
-	
 	/**
 	 * 
 	 */

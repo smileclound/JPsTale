@@ -18,12 +18,27 @@ import com.jme3.math.Vector3f;
 
 public class FieldApp extends SimpleApplication {
 
+	/**
+	 * 客户端资源的根目录
+	 */
+	private String clientRoot;
+	
 	public FieldApp() {
 		super(new AxisAppState(),
 				new LoaderAppState(),
 				new MusicAppState(),
 				new FlyCamAppState(),
 				new ScreenshotAppState());
+	}
+	
+	public FieldApp(String clientRoot) {
+		super(new AxisAppState(),
+				new LoaderAppState(),
+				new MusicAppState(),
+				new FlyCamAppState(),
+				new ScreenshotAppState());
+		
+		this.clientRoot = clientRoot;
 	}
 
 	@Override
@@ -41,12 +56,9 @@ public class FieldApp extends SimpleApplication {
 		assetManager.registerLoader(SmdLoader.class, "smd");
 		assetManager.registerLocator("/", FileLocator.class);
 		assetManager.registerLocator("assets", FileLocator.class);
-		if (new File("D:/Priston Tale/0_素材/Client").isDirectory()) {
-			assetManager.registerLocator("D:/Priston Tale/0_素材/Client",
-					FileLocator.class);
-		}
-		if (new File("F:/1_DEVELOP/3_素材").isDirectory()) {
-			assetManager.registerLocator("F:/1_DEVELOP/3_素材", FileLocator.class);
+		
+		if (clientRoot != null && new File(clientRoot).isDirectory()) {
+			assetManager.registerLocator(clientRoot, FileLocator.class);
 		}
 
 		AmbientLight light = new AmbientLight();

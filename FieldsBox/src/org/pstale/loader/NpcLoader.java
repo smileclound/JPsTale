@@ -46,6 +46,7 @@ public class NpcLoader {
 		 */
 		File file = new File(fileName);
 		if (!file.exists()) {
+			System.out.println(fileName + " not found");
 			return null;
 		}
 

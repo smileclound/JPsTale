@@ -32,6 +32,7 @@ public class MonsterLoader {
 		// 加载文件
 		file = new File(name);
 		if (!file.exists()) {
+			System.out.println(name + " not found");
 			// 文件不存在
 			return null;
 		}
