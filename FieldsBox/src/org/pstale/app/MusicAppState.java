@@ -94,6 +94,7 @@ public class MusicAppState extends BaseAppState {
 				playing = song;
 			} catch (Exception e) {
 				System.out.println("加载音乐失败:" + song);
+				song = null;
 				e.printStackTrace();
 			}
 		}

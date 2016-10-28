@@ -16,14 +16,12 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.maxase.AseKey;
 import com.jme3.asset.maxase.FileLocator;
 import com.jme3.bounding.BoundingVolume;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
@@ -216,6 +214,7 @@ public class LoaderAppState extends BaseAppState {
 				pos = getLocationOnField(pos);
 				pos.y += 1;
 				
+				System.out.println("NPC Loc:" + pos);
 				createNPC(pos);
 			}
 		}

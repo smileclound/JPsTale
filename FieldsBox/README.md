@@ -1,5 +1,7 @@
 # FieldBox 刷怪点查看器
 
+![screenshots](screenshoots.png)
+
 * 此项目用于视化编辑精灵地图数据。
 * 可以添加/移除大地图。
 * 可以添加/编辑/移除传送门。
