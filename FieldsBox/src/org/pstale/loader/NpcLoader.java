@@ -90,7 +90,7 @@ public class NpcLoader {
 			int state = makeInt(buffer, index+500);
 			
 			if (code != 0) {
-				NPC npc = new NPC(model, script, new Vector3f(x, y, z), new Vector3f(ax/256f, ay/256f, az/256f), state);
+				NPC npc = new NPC(model, script, new Vector3f(x/256f, y/256f, z/256f), new Vector3f(ax/256f, ay/256f, az/256f), state);
 				npcs.add(npc);
 			}
 		}

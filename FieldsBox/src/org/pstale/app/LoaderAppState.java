@@ -30,6 +30,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.ui.Picture;
 
 /**
  * 加载模型
@@ -41,6 +42,7 @@ public class LoaderAppState extends BaseAppState {
 
 	private SimpleApplication app;
 	private Node rootNode;
+	private Node guiNode;
 
 	private InputManager inputManager;
 	private AssetManager assetManager;
@@ -52,6 +54,7 @@ public class LoaderAppState extends BaseAppState {
 	
 	public LoaderAppState() {
 		rootNode = new Node("LoaderRootNode");
+		guiNode = new Node("LoaderGuiNode");
 		fieldNode = new Node("Field");
 		rootNode.attachChild(fieldNode);
 	}
@@ -72,11 +75,13 @@ public class LoaderAppState extends BaseAppState {
 	@Override
 	protected void onEnable() {
 		this.app.getRootNode().attachChild(rootNode);
+		this.app.getGuiNode().attachChild(guiNode);
 	}
 
 	@Override
 	protected void onDisable() {
 		rootNode.removeFromParent();
+		guiNode.removeFromParent();
 	}
 	
 	public void setRootpath(String path) {
@@ -145,6 +150,20 @@ public class LoaderAppState extends BaseAppState {
 
 		// 移除旧的模型
 		fieldNode.detachAllChildren();
+		guiNode.detachAllChildren();
+		
+		Picture map = new Picture("map");
+		map.setImage(assetManager, field.getNameMap(), true);
+		map.setWidth(200);
+		map.setHeight(200);
+		guiNode.attachChild(map);
+		
+		Picture title = new Picture("title");
+		title.setImage(assetManager, field.getNameTitle(), true);
+		title.setWidth(200);
+		title.setHeight(30);
+		title.setLocalTranslation(0, 200, 0);
+		guiNode.attachChild(title);
 		
 		wireframe = false;
 		
@@ -210,11 +229,9 @@ public class LoaderAppState extends BaseAppState {
 				NPC npc = npcs.get(i);
 				Vector3f pos = new Vector3f(npc.getPosition());
 				pos.multLocal(scale);
-				
-				pos = getLocationOnField(pos);
 				pos.y += 1;
 				
-				System.out.println("NPC Loc:" + pos);
+				System.out.println("NPC Loc new:" + pos);
 				createNPC(pos);
 			}
 		}

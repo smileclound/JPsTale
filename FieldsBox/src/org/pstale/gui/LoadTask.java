@@ -5,13 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
-import org.ho.yaml.Yaml;
 import org.pstale.app.FieldApp;
 import org.pstale.fields.Field;
 import org.pstale.fields.NPC;
@@ -22,8 +23,8 @@ import org.pstale.loader.MonsterLoader;
 import org.pstale.loader.NpcLoader;
 import org.pstale.loader.SpawnLoader;
 import org.pstale.utils.FolderChooser;
+import org.pstale.utils.ImageDecoder;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
@@ -61,6 +62,13 @@ public class LoadTask implements Callable<Void> {
 
 		config();
 		value = 5;
+		
+		if (CLIENT_ROOT != null) {
+			// 解码小地图
+			imageDecode(CLIENT_ROOT + "/field/map");
+			// 解码标题
+			imageDecode(CLIENT_ROOT + "/field/title");
+		}
 
 		Field[] fields = new FieldLoader().load();
 		value = 10;
@@ -78,9 +86,17 @@ public class LoadTask implements Callable<Void> {
 			String model = field.getName();
 
 			// 检查所有图片是否已经是解密的，否则要使用ImageDecodeer对其进行解密。
+			int idx = model.lastIndexOf("/");
+			String folder = model.substring(0, idx);
+			if (CLIENT_ROOT != null) {
+				imageDecode(CLIENT_ROOT + "/" + folder);
+			}
+			
+			/*
 			String code = field.getCode();
 			String map = "field/map/" + code + ".tga";
 			String title = "field/title/" + code + "t.tga";
+			*/
 
 			// 尝试加载服务端文件
 			if (SERVER_ROOT != null) {
@@ -217,7 +233,7 @@ public class LoadTask implements Callable<Void> {
 	 * @param keyvalue
 	 *            键值
 	 */
-	public void writeProperties(String keyname, String keyvalue) {
+	void writeProperties(String keyname, String keyvalue) {
 		try {
 			OutputStream fos = new FileOutputStream(profilepath);
 			props.setProperty(keyname, keyvalue);
@@ -271,5 +287,80 @@ public class LoadTask implements Callable<Void> {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * 将指定文件夹下所有bmp和tga图片解码。
+	 * @param folder
+	 */
+	void imageDecode(String folder) {
+		File dir = new File(folder);
+
+		// 判断文件夹是否存在
+		if (dir.exists() && dir.isDirectory()) {
+
+			// 遍历bmp文件
+			File[] files = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String str = name.toLowerCase();
+					return str.endsWith(".bmp");
+				}
+			});// 读取文件列表
+			for (int i=0; i<files.length; i++) {
+				File file = files[i];
+				if (file.isFile()) {
+
+					try {
+						byte[] buffer = new byte[16];
+						RandomAccessFile raf = new RandomAccessFile(file, "rw");
+						raf.seek(0);
+						raf.readFully(buffer);
+						
+						// 解码
+						if (buffer[0] == 0x41 && buffer[1] == 0x38) {
+							System.out.println("Decode " + file.getAbsolutePath());
+							ImageDecoder.convertBMP(buffer, true);
+							raf.seek(0);
+							raf.write(buffer);
+						}
+						
+						raf.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} 
+				}
+			}
+			
+			// 遍历tga文件
+			files = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String str = name.toLowerCase();
+					return str.endsWith(".tga");
+				}
+			});// 读取文件列表
+			for (int i=0; i<files.length; i++) {
+				File file = files[i];
+				if (file.isFile()) {
+					try {
+						byte[] buffer = new byte[18];
+						RandomAccessFile raf = new RandomAccessFile(file, "rw");
+						raf.seek(0);
+						raf.readFully(buffer);
+						
+						// 解码
+						if (buffer[0] == 0x47 && buffer[1] == 0x38) {
+							System.out.println("Decode " + file.getAbsolutePath());
+							ImageDecoder.convertTGA(buffer, true);
+							raf.seek(0);
+							raf.write(buffer);
+						}
+						
+						raf.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} 
+				}
+			}
+		}
 	}
 }
