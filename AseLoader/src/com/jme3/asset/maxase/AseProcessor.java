@@ -615,6 +615,8 @@ public class AseProcessor implements CONSTANT {
 
 		private void changeImage() {
 			if (spatial instanceof Geometry) {
+				if (imgs.size() == 0)
+					return;
 				n++;
 				if (n >= imgs.size()) {
 					n = 0;
