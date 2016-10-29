@@ -133,6 +133,8 @@ public class LoadTask implements Callable<Void> {
 			}
 		}
 
+		calcRespawn(fields);
+		
 		/**
 		 * 创建jME3的Canvas
 		 */
@@ -362,5 +364,20 @@ public class LoadTask implements Callable<Void> {
 				}
 			}
 		}
+	}
+	
+	void calcRespawn(Field ... lists) {
+		int sum = 0;
+		for(int i=0; i<lists.length; i++) {
+			Field f = lists[i];
+			RespawnList rl = f.getRespawnList();
+			if (rl != null) {
+				sum += rl.LimitMax;
+				
+				System.out.println(f.getTitle() + " limit=" + rl.LimitMax);
+			}
+		}
+		
+		System.out.println("sum = " + sum);
 	}
 }

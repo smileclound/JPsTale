@@ -28,17 +28,17 @@ public class FieldApp extends SimpleApplication {
 		super(new AxisAppState(),
 				new LoaderAppState(),
 				new MusicAppState(),
+				new AmbientAppState(),
+				new FieldgateAppState(),
+				new WarpgateAppState(),
+				new MonsterAppState(),
+				new NpcAppState(),
 				new FlyCamAppState(),
 				new ScreenshotAppState());
 	}
 	
 	public FieldApp(String clientRoot) {
-		super(new AxisAppState(),
-				new LoaderAppState(),
-				new MusicAppState(),
-				new FlyCamAppState(),
-				new ScreenshotAppState());
-		
+		this();
 		this.clientRoot = clientRoot;
 	}
 

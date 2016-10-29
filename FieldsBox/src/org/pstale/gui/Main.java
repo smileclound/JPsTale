@@ -28,14 +28,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -406,15 +404,8 @@ public class Main extends JFrame {
 		File file = fileChooser.getFile();
 		if (file != null) {
 			final String path = file.getAbsolutePath();
-			app.enqueue(new Callable<Void>() {
-				public Void call() {
-					
-					LoaderAppState state = app.getStateManager().getState(LoaderAppState.class);
-					state.loadModel(path);
-					
-					return null;
-				}
-			});
+			
+			System.out.println("暂不支持:" + path);
 
 		}
 	}

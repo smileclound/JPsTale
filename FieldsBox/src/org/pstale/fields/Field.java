@@ -155,8 +155,8 @@ public class Field {
 	}
 
 	// FieldGate
-	public List<FieldGate> getFieldGate() {
-		return fieldGate;
+	public FieldGate[] getFieldGate() {
+		return fieldGate.toArray(new FieldGate[]{});
 	}
 	
 	/**
@@ -168,8 +168,8 @@ public class Field {
 	}
 	
 	// WarpGate
-	public List<WarpGate> getWarpGate() {
-		return warpGate;
+	public WarpGate[] getWarpGate() {
+		return warpGate.toArray(new WarpGate[]{});
 	}
 	
 	/**
@@ -192,8 +192,8 @@ public class Field {
 	}
 
 	// AmbientPos
-	public List<AmbientPos> getAmbientPos() {
-		return ambientPos;
+	public AmbientPos[] getAmbientPos() {
+		return ambientPos.toArray(new AmbientPos[]{});
 	}
 	
 	// 添加环境音效
@@ -317,8 +317,11 @@ public class Field {
 		this.respawnList = respawnList;
 	}
 
-	public ArrayList<NPC> getNpcs() {
-		return npcs;
+	public NPC[] getNpcs() {
+		if (npcs == null) {
+			return new NPC[]{};
+		}
+		return npcs.toArray(new NPC[]{});
 	}
 
 	public void setNpcs(ArrayList<NPC> npcs) {

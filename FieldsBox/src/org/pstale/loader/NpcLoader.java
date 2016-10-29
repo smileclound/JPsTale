@@ -70,7 +70,7 @@ public class NpcLoader {
 		for(int i=0; i<FIX_CHAR_MAX; i++) {
 			int index = i*STG_CHAR_INFO_SIZE;
 			
-			int size = makeInt(buffer, index);// 结构体的大小，实际上应该是504
+			//int size = makeInt(buffer, index);// 结构体的大小，实际上应该是504，没有什么用处。
 			int code = makeInt(buffer, index+4);// 这是一个标记，如果存在NPC的信息，那么code应该不为0，没有实际意义。
 			
 			String model = makeStr(buffer, index+40);// 这个字符串指向了NPC的模型、动画
