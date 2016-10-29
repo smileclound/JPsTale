@@ -12,6 +12,7 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.maxase.FileLocator;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -83,21 +84,28 @@ public class LoaderAppState extends SubAppState {
 		//rootNode.detachAllChildren();
 		guiNode.detachAllChildren();
 		
-		Picture map = new Picture("map");
-		map.setImage(assetManager, field.getNameMap(), true);
-		map.setWidth(200);
-		map.setHeight(200);
-		guiNode.attachChild(map);
+		try {
+			Picture map = new Picture("map");
+			map.setImage(assetManager, field.getNameMap(), true);
+			map.setWidth(200);
+			map.setHeight(200);
+			guiNode.attachChild(map);
+			
+			Picture title = new Picture("title");
+			title.setImage(assetManager, field.getNameTitle(), true);
+			title.setWidth(200);
+			title.setHeight(30);
+			title.setLocalTranslation(0, 200, 0);
+			guiNode.attachChild(title);
 		
-		Picture title = new Picture("title");
-		title.setImage(assetManager, field.getNameTitle(), true);
-		title.setWidth(200);
-		title.setHeight(30);
-		title.setLocalTranslation(0, 200, 0);
-		guiNode.attachChild(title);
-		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		if (fields.contains(field)) {
+			
+			// 播放背景音乐
+			playBGM(field);
 			
 			// 移动摄像机
 			moveCamera(field);
@@ -120,7 +128,15 @@ public class LoaderAppState extends SubAppState {
 			rootNode.attachChild(mainModel);
 			
 			// 移动摄像机
-			moveCamera(field);
+	
+			if (field.getCenter().length() == 0) {
+				Vector3f center = calcBoundingCenter(mainModel);
+				field.getCenter().set(center.x / scale, center.z / scale);
+			} else {
+				// 移动摄像机
+				moveCamera(field);
+			}
+			
 		} else {
 			System.out.println("加载地图模型失败");
 		}
@@ -143,12 +159,7 @@ public class LoaderAppState extends SubAppState {
 		/**
 		 * 背景音乐
 		 */
-		MusicAppState musicAppState = getStateManager().getState(MusicAppState.class);
-		if (musicAppState != null) {
-			int bgm = field.getBackMusicCode();
-			Music BGM = Music.get(bgm);
-			musicAppState.setSong(BGM.getFilename());
-		}
+		playBGM(field);
 		
 		/**
 		 * 环境音效
@@ -188,6 +199,7 @@ public class LoaderAppState extends SubAppState {
 					if (point != null && point.state != 0) {
 						Vector3f pos = new Vector3f(point.x, 0, point.z);
 						pos.multLocal(scale);
+						pos.y = 1000;
 						pos = getLocationOnField(pos);
 						pos.y += 1;
 						monsters.add(pos);
@@ -209,6 +221,18 @@ public class LoaderAppState extends SubAppState {
 	}
 	
 	/**
+	 * 播放背景音乐
+	 * @param field
+	 */
+	private void playBGM(Field field) {
+		MusicAppState musicAppState = getStateManager().getState(MusicAppState.class);
+		if (musicAppState != null) {
+			int bgm = field.getBackMusicCode();
+			Music BGM = Music.get(bgm);
+			musicAppState.setSong(BGM.getFilename());
+		}
+	}
+	/**
 	 * 移动摄像机到地图的中心
 	 * @param field
 	 */
@@ -216,9 +240,29 @@ public class LoaderAppState extends SubAppState {
 		// 移动摄像机
 		Vector2f center2f = field.getCenter();
 		Vector3f center = new Vector3f(center2f.x, 0, center2f.y).multLocal(scale);
+		center.y = 1000;
 		center = getLocationOnField(center);
 		center.y += 2;
 		app.getCamera().setLocation(center);
+	}
+	
+	/**
+	 * 当地图没有自定义中心点的时候，就计算一个出来。
+	 * @param model
+	 * @return
+	 */
+	private Vector3f calcBoundingCenter(Spatial model) {
+		Vector3f center = new Vector3f();
+		BoundingVolume bounding = model.getWorldBound();
+		if (bounding != null) {
+			center = bounding.getCenter();
+			center.y = 1000;
+			center = getLocationOnField(center);
+			center.y += 2;
+		}
+		
+		app.getCamera().setLocation(center);
+		return center;
 	}
 	
 	/**
@@ -237,8 +281,9 @@ public class LoaderAppState extends SubAppState {
 	 * @param po
 	 * @return
 	 */
+	Vector3f down = new Vector3f(0, -1, 0);
 	private Vector3f getLocationOnField(Vector3f pos) {
-		Ray ray = new Ray(pos, Vector3f.UNIT_Y);
+		Ray ray = new Ray(pos, down);
 		CollisionResults results = new CollisionResults();
 		rootNode.collideWith(ray, results);
 		

@@ -5,6 +5,7 @@ import java.io.File;
 import org.pstale.asset.loader.InxLoader;
 import org.pstale.asset.loader.SmdLoader;
 
+import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
@@ -33,6 +34,7 @@ public class FieldApp extends SimpleApplication {
 				new WarpgateAppState(),
 				new MonsterAppState(),
 				new NpcAppState(),
+				new DebugKeysAppState(),
 				new FlyCamAppState(),
 				new ScreenshotAppState());
 	}
