@@ -143,6 +143,7 @@ public interface CharKeys {
 	public final static String NPC_SELL_WEAPON = "*公扁魄概|*武器出售";
 	public final static String NPC_SELL_ARMOR = "*规绢备魄概|*防具出售";
 	public final static String NPC_SELL_ETC = "*棱拳魄概|*物品出售";
+	public final static String NOTHING = "无";
 	
 	public final static String NPC_SKILL_MASTER = "*胶懦荐访|*技能修炼";
 	public final static String NPC_SKILL_CHANGE_JOB = "*流诀傈券|*职业转换";

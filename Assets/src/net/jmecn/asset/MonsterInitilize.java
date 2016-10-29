@@ -412,6 +412,11 @@ public class MonsterInitilize extends ResourceInitilize<CharMonsterInfo>
 				// 查找装备编号
 				for(int i=1; i<token.length; i++) {
 					if (npc.SellAttackItemCount >= 32) break;
+					
+					if (token[i] .equals(NOTHING)) {
+						break;
+					}
+					
 					// 出售的商品列表
 					for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
 						if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[i])) {
@@ -426,6 +431,11 @@ public class MonsterInitilize extends ResourceInitilize<CharMonsterInfo>
 				// 查找装备编号
 				for(int i=1; i<token.length; i++) {
 					if (npc.SellDefenceItemCount >= 32) break;
+					
+					if (token[i] .equals(NOTHING)) {
+						break;
+					}
+					
 					// 出售的商品列表
 					for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
 						if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[i])) {
@@ -440,6 +450,10 @@ public class MonsterInitilize extends ResourceInitilize<CharMonsterInfo>
 				// 查找装备编号
 				for(int i=1; i<token.length; i++) {
 					if (npc.SellEtcItemCount >= 32) break;
+					
+					if (token[i] .equals(NOTHING)) {
+						break;
+					}
 					// 出售的商品列表
 					for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
 						if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[i])) {
