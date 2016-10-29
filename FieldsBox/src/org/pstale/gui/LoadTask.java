@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
+import javax.swing.JOptionPane;
+
 import org.pstale.app.FieldApp;
 import org.pstale.fields.Field;
 import org.pstale.fields.NPC;
@@ -190,40 +192,74 @@ public class LoadTask implements Callable<Void> {
 		}
 		
 		// 检查服务端文件夹
-		boolean confirmServer = false;
-		while (!checkServerRoot(SERVER_ROOT)) {
-			File file = folderChooser.getFile();
-			if (file != null) {
-				SERVER_ROOT = file.getAbsolutePath();
-				SERVER_ROOT = SERVER_ROOT.replaceAll("\\\\", "/");
-			} else {
-				confirmServer = true;
-				break;
+		if (!checkServerRoot(SERVER_ROOT)) {
+			int result = JOptionPane.showConfirmDialog(null,
+					"尚未找到服务端文件夹的路径，无法读取服务器配置数据，请先指定服务端文件夹的位置。\n点击\"确定\"开始选择，点击\"取消\"则以后再设置。",
+					"确认服务器路径", JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.WARNING_MESSAGE);
+			
+			if (result == JOptionPane.OK_OPTION) {
+				boolean confirmServer = false;
+				while (!checkServerRoot(SERVER_ROOT)) {
+					
+					File file = folderChooser.getFile();
+					if (file != null) {
+						SERVER_ROOT = file.getAbsolutePath();
+						SERVER_ROOT = SERVER_ROOT.replaceAll("\\\\", "/");
+					} else {
+						
+						int rt = JOptionPane.showConfirmDialog(null,
+								"尚未找到服务端文件夹的路径，取消此次操作吗?",
+								"确认服务器路径", JOptionPane.OK_CANCEL_OPTION,
+								JOptionPane.WARNING_MESSAGE);
+						if (rt == JOptionPane.OK_OPTION) {
+							confirmServer = true;
+							break;
+						}
+					}
+				}
+				if (!confirmServer) {
+					writeProperties("SERVER_ROOT", SERVER_ROOT);
+				} else {
+					SERVER_ROOT = null;
+				}
 			}
-		}
-		if (!confirmServer) {
-			writeProperties("SERVER_ROOT", SERVER_ROOT);
-		} else {
-			SERVER_ROOT = null;
 		}
 		
 		// 检查客户端文件夹
-		boolean confirmClient = false;
-		while (!checkClientRoot(CLIENT_ROOT)) {
-			File file = folderChooser.getFile();
-			if (file != null) {
-				CLIENT_ROOT = file.getAbsolutePath();
-				CLIENT_ROOT = CLIENT_ROOT.replaceAll("\\\\", "/");
-			} else {
-				confirmClient = true;
-				break;
+		if (!checkClientRoot(CLIENT_ROOT)) {
+			int result = JOptionPane.showConfirmDialog(null,
+					"尚未找到客户端文件夹的路径，无法读取地图、音乐等数据，请先指定客户端文件夹的位置。\n点击\"确定\"开始选择，点击\"取消\"则以后再设置。",
+					"确认客户端路径", JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.WARNING_MESSAGE);
+			
+			if (result == JOptionPane.OK_OPTION) {
+				boolean confirmClient = false;
+				while (!checkClientRoot(CLIENT_ROOT)) {
+					
+					File file = folderChooser.getFile();
+					if (file != null) {
+						CLIENT_ROOT = file.getAbsolutePath();
+						CLIENT_ROOT = CLIENT_ROOT.replaceAll("\\\\", "/");
+					} else {
+						int rt = JOptionPane.showConfirmDialog(null,
+								"尚未找到客户端的路径，取消此次操作吗?",
+								"确认客户端路径", JOptionPane.OK_CANCEL_OPTION,
+								JOptionPane.WARNING_MESSAGE);
+						if (rt == JOptionPane.OK_OPTION) {
+							confirmClient = true;
+							break;
+						}
+					}
+				}
+				if (!confirmClient) {
+					writeProperties("CLIENT_ROOT", CLIENT_ROOT);
+				} else {
+					CLIENT_ROOT = null;
+				}
 			}
 		}
-		if (!confirmClient) {
-			writeProperties("CLIENT_ROOT", CLIENT_ROOT);
-		} else {
-			CLIENT_ROOT = null;
-		}
+		
 
 	}
 

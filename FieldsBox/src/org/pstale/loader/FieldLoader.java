@@ -2,6 +2,8 @@ package org.pstale.loader;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -26,7 +28,7 @@ public class FieldLoader {
 		// 该文件为JSON格式，记录了所有地图的数据
 		String content = "";
 		try {
-			Scanner input = new Scanner(new FileInputStream("assets/FIELD.txt"));
+			Scanner input = new Scanner(new InputStreamReader(new FileInputStream("assets/FIELD.txt"), "utf-8"));
 			StringBuffer sb = new StringBuffer();
 			while(input.hasNext()) {
 				sb.append(input.nextLine()).append("\n");
@@ -35,7 +37,9 @@ public class FieldLoader {
 			content = sb.toString();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			
+			return null;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 			return null;
 		}
 

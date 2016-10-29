@@ -20,7 +20,7 @@ public class FolderChooser {
 		}
 		chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		chooser.setDialogTitle("请选择游戏根目录");
+		chooser.setDialogTitle("请选择根目录");
 	}
 	
 	public File getFile() {
