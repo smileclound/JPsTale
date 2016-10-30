@@ -118,7 +118,12 @@ public class LoaderAppState extends SubAppState {
 		/**
 		 * 地图主模型
 		 */
-		Spatial mainModel = loadModel(field.getName());
+		Spatial mainModel = null;
+		try {
+			mainModel = loadModel(field.getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (mainModel != null) {
 			// 加载成功
 			mainModel.scale(scale);
@@ -136,6 +141,7 @@ public class LoaderAppState extends SubAppState {
 			
 		} else {
 			System.out.println("加载地图模型失败");
+			return;
 		}
 		
 		/**
@@ -144,7 +150,12 @@ public class LoaderAppState extends SubAppState {
 		List<StageObject> objs = field.getStageObject();
 		if (objs.size() > 0) {
 			for(int i=0; i<objs.size(); i++) {
-				Spatial model = loadModel("Field/" + objs.get(i).getName());
+				Spatial model = null;
+				try {
+					model = loadModel("Field/" + objs.get(i).getName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				if (model != null) {
 					// 加载成功
 					model.scale(scale);

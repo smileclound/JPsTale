@@ -47,8 +47,9 @@ public abstract class SubAppState extends BaseAppState {
 	 * 加载模型
 	 * @param name
 	 * @return
+	 * @throws Exception 
 	 */
-	protected Spatial loadModel(final String name) {
+	protected Spatial loadModel(final String name) throws Exception {
 		Spatial model = null;
 		
 		AssetManager assetManager = getApplication().getAssetManager();
