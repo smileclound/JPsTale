@@ -18,9 +18,20 @@ public class SmdLoader extends AbstractLoader {
 		DrzMesh mesh = new DrzMesh();
 		mesh.mAnimation = new DrzAnimation();
 
-		ImportStage importSmd = new ImportStage(this);
-		importSmd.loadScene(inputStream);
+		Node node = null;
+		
+		try {
+			// 根据文件长度来判断是舞台还是角色
+			if (inputStream.available() > 262752) {// 舞台
+				// 首先尝试用舞台Loader加载
+				ImportStage importSmd = new ImportStage(this);
+				importSmd.loadScene(inputStream);
+				node = importSmd.rootNode;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		return importSmd.rootNode;
+		return node;
 	}
 }

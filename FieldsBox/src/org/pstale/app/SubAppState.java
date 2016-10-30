@@ -66,7 +66,7 @@ public abstract class SubAppState extends BaseAppState {
 			model = (Spatial) assetManager.loadAsset(key);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("加载"+smd+"失败，尝试加载ase模型");
+			System.out.println("加载"+smd+"失败，尝试加载原模型");
 			try {
 				// 如果加载失败，则尝试加载ase文件。
 				AseKey key = new AseKey(path);

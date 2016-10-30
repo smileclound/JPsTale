@@ -14,10 +14,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.maxase.FileLocator;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.CollisionResults;
-import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
@@ -26,6 +22,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
+import com.jme3.texture.Texture;
 import com.jme3.ui.Picture;
 
 /**
@@ -38,27 +35,26 @@ public class LoaderAppState extends SubAppState {
 
 	private SimpleApplication app;
 
-	private InputManager inputManager;
 	private AssetManager assetManager;
 
 	private boolean wireframe = false;
 	
 	@Override
 	public void initialize(Application app) {
-		this.inputManager = app.getInputManager();
 		this.assetManager = app.getAssetManager();
 		this.app = (SimpleApplication) app;
-		
-		initKeys();
 	}
 	
 	public void setRootpath(String path) {
 		assetManager.registerLocator(path, FileLocator.class);
 	}
 	
-	public void wireframe() {
+	public void wireframe(boolean wire) {
 		
-		wireframe = !wireframe;
+		if (wireframe == wire)
+			return;
+					
+		this.wireframe = wire;
 		
 		rootNode.depthFirstTraversal(new SceneGraphVisitor() {
 			@Override
@@ -82,26 +78,27 @@ public class LoaderAppState extends SubAppState {
 		
 		// 移除旧的模型
 		//rootNode.detachAllChildren();
-		guiNode.detachAllChildren();
 		
+		/**
+		 * 加载小地图
+		 */
+		Texture mapRes = null;
+		Texture titleRes = null;
 		try {
-			Picture map = new Picture("map");
-			map.setImage(assetManager, field.getNameMap(), true);
-			map.setWidth(200);
-			map.setHeight(200);
-			guiNode.attachChild(map);
-			
-			Picture title = new Picture("title");
-			title.setImage(assetManager, field.getNameTitle(), true);
-			title.setWidth(200);
-			title.setHeight(30);
-			title.setLocalTranslation(0, 200, 0);
-			guiNode.attachChild(title);
-		
+			mapRes = assetManager.loadTexture(field.getNameMap());
+			titleRes = assetManager.loadTexture(field.getNameTitle());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+		HudState hud = getStateManager().getState(HudState.class);
+		if (hud != null) {
+			hud.setMiniMap(titleRes, mapRes);
+		}
+		
+		/**
+		 * 判断缓存中是否已经有这个地图了。
+		 */
 		if (fields.contains(field)) {
 			
 			// 播放背景音乐
@@ -296,20 +293,6 @@ public class LoaderAppState extends SubAppState {
 	}
 	
 	boolean isVisiavle = true;
-
-	void initKeys() {
-		inputManager.addMapping("Wireframe", new KeyTrigger(KeyInput.KEY_F3));
-		inputManager.addListener(new ActionListener() {
-			@Override
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (isPressed) {
-					if (name.equals("Wireframe")) {
-						wireframe();
-					}
-				}
-			}
-		}, "Wireframe");
-	}
 
 	public void play(String name) {
 		

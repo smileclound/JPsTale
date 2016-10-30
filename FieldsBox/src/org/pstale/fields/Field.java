@@ -73,7 +73,7 @@ public class Field {
 	}
 	
 	public String getTitle() {
-		return "[" + id + "-" + this.title + "]";
+		return this.title;
 	}
 	
 	public String getCode() {
