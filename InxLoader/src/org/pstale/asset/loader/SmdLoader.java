@@ -70,10 +70,13 @@ public class SmdLoader extends AbstractLoader {
 		String head = getString();
 		
 		if ("SMD Stage data Ver 0.72".equals(head)) {// 地图
+			rootNode = new Node("SMD Stage");
 			loadStage();
 			node = rootNode;
 		} else if ("SMD Model data Ver 0.62".equals(head)){// 带动画的模型
-			
+			rootNode = new Node("SMD Model");
+			loadModel();
+			node = rootNode;
 		} else {
 			throw new RuntimeException("invalid smd file");
 		}
@@ -986,10 +989,9 @@ public class SmdLoader extends AbstractLoader {
 	/**
 	 * 加载模型的网格数据
 	 * 
-	 * @param inputStream
 	 * @throws IOException
 	 */
-	public synchronized boolean loadSmd() {
+	public synchronized boolean loadModel() throws IOException {
 		// Parse Materials
 		buffer.position(24);
 		int meshNum = getInt();
