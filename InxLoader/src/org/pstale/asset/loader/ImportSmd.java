@@ -788,8 +788,7 @@ public class ImportSmd extends ByteReader {
 				index++;
 			}
 
-			mesh.setBuffer(Type.Position, 3,
-					BufferUtils.createFloatBuffer(position));
+			mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(position));
 			mesh.setBuffer(Type.Index, 3, f);
 			mesh.setBuffer(Type.Normal, 3, BufferUtils.createFloatBuffer(vn));
 			mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv));
@@ -797,8 +796,9 @@ public class ImportSmd extends ByteReader {
 			// นว๗ภ
 			if (ske != null) {
 				mesh.setBuffer(Type.BoneIndex, 4, bi);
-				mesh.setBuffer(Type.BoneWeight, 1,
-						BufferUtils.createFloatBuffer(bw));
+				mesh.setBuffer(Type.BoneWeight, 1, BufferUtils.createFloatBuffer(bw));
+				mesh.setBuffer(Type.HWBoneIndex, 4, bi);
+				mesh.setBuffer(Type.HWBoneWeight, 1, BufferUtils.createFloatBuffer(bw));
 				mesh.setMaxNumWeights(1);
 				mesh.generateBindPose(true);
 			}
