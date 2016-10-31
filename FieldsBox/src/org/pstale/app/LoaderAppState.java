@@ -23,7 +23,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
-import com.jme3.ui.Picture;
 
 /**
  * 加载模型

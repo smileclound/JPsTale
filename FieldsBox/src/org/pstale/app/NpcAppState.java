@@ -30,8 +30,6 @@ public class NpcAppState extends SubAppState {
 	public void load(NPC ... npcs) {
 		//rootNode.detachAllChildren();
 		
-		AssetManager assetManager = getApplication().getAssetManager();
-		
 		for(int i=0; i<npcs.length; i++) {
 			NPC npc = npcs[i];
 			Vector3f pos = new Vector3f(npc.getPosition());
@@ -42,19 +40,20 @@ public class NpcAppState extends SubAppState {
 			 * 创建一个NPC模型
 			 * @param pos
 			 */
-//			try {
-//				// 首先尝试直接读取NPC模型
-//				Spatial model = this.loadModel(npc.getModel());
-//				model.scale(scale);
-//				model.setLocalTranslation(pos);
-//			} catch (Exception e) {
-//			}
-			// 加载失败，改为加载一个绿色方块代替NPC。
-			Box box = new Box(1, 1, 1);
-			Geometry geom = new Geometry("NPCFlag", box);
-			geom.setLocalTranslation(pos);
-			geom.setMaterial(getMaterial(ColorRGBA.Green));
-			rootNode.attachChild(geom);
+			try {
+				// 首先尝试直接读取NPC模型
+				Spatial model = this.loadModel(npc.getModel());
+				model.scale(scale);
+				model.setLocalTranslation(pos);
+			} catch (Exception e) {
+				// 加载失败，改为加载一个绿色方块代替NPC。
+				Box box = new Box(1, 1, 1);
+				Geometry geom = new Geometry("NPCFlag", box);
+				geom.setLocalTranslation(pos);
+				geom.setMaterial(getMaterial(ColorRGBA.Green));
+				geom.setUserData("script", npc.getScript());
+				rootNode.attachChild(geom);
+			}
 		}
 	}
 	

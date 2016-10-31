@@ -39,8 +39,9 @@ public class HudState extends SubAppState {
     private VersionedReference<Boolean> showMeshRef;
     private VersionedReference<Double> speedRef;
     
-	float width;// 屏幕宽度
-	float height;// 屏幕高度
+	private float width;// 屏幕宽度
+	private float height;// 屏幕高度
+	
 	@Override
 	protected void initialize(Application app) {
 		// 记录屏幕高宽
@@ -96,6 +97,9 @@ public class HudState extends SubAppState {
 	private void createMiniMap() {
 		Container window = new Container("glass");
 		guiNode.attachChild(window);
+		
+		// 使其可以拖拽
+		CursorEventControl.addListenersToSpatial(window, new DragHandler());
 
 		// 标题
 		// 地图的Title
@@ -160,8 +164,8 @@ public class HudState extends SubAppState {
 		listBox.setVisibleItems(12);
 		window.addChild(listBox);
 
-		// 添加按钮
-		final Action add = new Action("载入地图") {
+		// 载入按钮
+		final Action load = new Action("载入地图") {
 			@Override
 			public void execute(Button b) {
 				Integer selected = listBox.getSelectionModel().getSelection();
@@ -186,11 +190,20 @@ public class HudState extends SubAppState {
 				}
 			}
 		};
+		
+		// 编辑地图
+		final Action edit = new Action("Modify") {
+			@Override
+			public void execute(Button b) {
+				// not support yet
+			}
+		};
 
 		// 创建按钮面板
 		Container buttons = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even));
 		window.addChild(buttons);
-		buttons.addChild(new ActionButton(add, "glass"));
+		buttons.addChild(new ActionButton(load, "glass"));
+		buttons.addChild(new ActionButton(edit, "glass"));
 
 		// 限制窗口的最小宽度
         Vector3f hudSize = new Vector3f(140,0,0);
@@ -210,35 +223,36 @@ public class HudState extends SubAppState {
 	 * Create a top panel for some stats toggles.
 	 */
 	private void createOptionPanel() {
-		// Now construct some HUD panels in the "glass" style that
-        // we just configured above.
-		Container panel = new Container("glass");
-		panel.setLocalTranslation( 5, height - 20, 0 );
-		guiNode.attachChild(panel);
+		Container window = new Container("glass");
+		window.setLocalTranslation( 5, height - 20, 0 );
+		guiNode.attachChild(window);
 		
-		panel.setBackground(new QuadBackgroundComponent(new ColorRGBA(0,0f,0f,0.5f),5,5, 0.02f, false));
-        panel.addChild( new Label( "Settings", new ElementId("header"), "glass" ) );
-        panel.addChild( new Panel( 2, 2, ColorRGBA.White, "glass" ) ).setUserData( LayerComparator.LAYER, 2 );
+		// 使其可以拖拽
+		CursorEventControl.addListenersToSpatial(window, new DragHandler());
+				
+		window.setBackground(new QuadBackgroundComponent(new ColorRGBA(0,0f,0f,0.5f),5,5, 0.02f, false));
+        window.addChild( new Label( "Settings", new ElementId("header"), "glass" ) );
+        window.addChild( new Panel( 2, 2, ColorRGBA.White, "glass" ) ).setUserData( LayerComparator.LAYER, 2 );
 
         // Adding components returns the component so we can set other things
         // if we want.
-        Checkbox temp = panel.addChild( new Checkbox( "显示坐标系" ) );
+        Checkbox temp = window.addChild( new Checkbox( "显示坐标系" ) );
         temp.setChecked(true);
         showAxisRef = temp.getModel().createReference();
         
-        temp = panel.addChild( new Checkbox( "显示网格线" ) );
+        temp = window.addChild( new Checkbox( "显示网格线" ) );
         temp.setChecked(false);
         showMeshRef = temp.getModel().createReference();
         
-        panel.addChild( new Label( "摄像机速度:" ) );
+        window.addChild( new Label( "摄像机速度:" ) );
         final Slider redSlider = new Slider("glass");
         redSlider.setBackground(new QuadBackgroundComponent(new ColorRGBA(0.5f,0.1f,0.1f,0.5f),5,5, 0.02f, false));
         redSlider.getModel().setPercent(0.5f);
-        speedRef = panel.addChild( redSlider ).getModel().createReference();
+        speedRef = window.addChild( redSlider ).getModel().createReference();
         
         // 限制窗口的最小宽度
         Vector3f hudSize = new Vector3f(200,0,0);
-        hudSize.maxLocal(panel.getPreferredSize());
-        panel.setPreferredSize( hudSize );
+        hudSize.maxLocal(window.getPreferredSize());
+        window.setPreferredSize( hudSize );
 	}
 }

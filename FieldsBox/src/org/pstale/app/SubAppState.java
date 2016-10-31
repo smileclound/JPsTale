@@ -54,6 +54,7 @@ public abstract class SubAppState extends BaseAppState {
 		
 		AssetManager assetManager = getApplication().getAssetManager();
 		
+		// 文件路径
 		String path = name;
 		if (path != null) {
 			path = path.replaceAll("\\\\", "/");

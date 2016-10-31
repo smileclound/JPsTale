@@ -37,36 +37,37 @@ import com.simsilica.lemur.ProgressBar;
 
 /**
  * 进度条
- * @author Administrator
- *
+ * 
+ * @author yanmaoyuan
+ * 
  */
 public class LoadingAppState extends SubAppState {
 
 	static Logger log = Logger.getLogger(LoadingAppState.class);
-	
+
 	protected ProgressBar progressBar;
 	private Future<Data> future;
 	private ScheduledThreadPoolExecutor excutor;
 	private LoadingTask task;
-	
+
 	@Override
 	protected void initialize(Application app) {
-		
+
 		Camera cam = app.getCamera();
 		float h = cam.getHeight();
 		float w = cam.getWidth();
-		
+
 		float scale = h / 720f;
-		
+
 		float width = 600f;
 		float height = 30f;
 		Vector3f size = new Vector3f(width, height, 1f);
 		size.multLocal(scale);
 		progressBar = new ProgressBar();
 		progressBar.setPreferredSize(size);
-		
+
 		guiNode.attachChild(progressBar);
-		
+
 		float x = w * 0.5f - width * 0.5f * scale;
 		float y = h * 0.5f - height * 0.5f * scale;
 		progressBar.setLocalTranslation(x, y, 0);
@@ -92,22 +93,23 @@ public class LoadingAppState extends SubAppState {
 		future = null;
 	}
 
-	
 	private float time = 0f;// 计时，看看加载到底花了多少时间。
+
 	public void update(float tpf) {
 		time += tpf;
-		
+
 		if (task != null && future == null) {
 			future = excutor.submit(task);
 			time = 0;
 			log.info("开始载入数据");
 		}
-		
+
 		if (future != null && !future.isDone()) {
 			progressBar.setProgressPercent(task.value / 100f);
-			progressBar.setMessage("进度: " + task.value + "% ... " + task.message);
+			progressBar.setMessage("进度: " + task.value + "% ... "
+					+ task.message);
 		}
-		
+
 		if (future != null && future.isDone()) {
 			try {
 				Data data = future.get();
@@ -116,35 +118,32 @@ public class LoadingAppState extends SubAppState {
 				log.error("FIELD.txt数据加载失败", e);
 				getApplication().stop();
 			}
-			
+
 			task = null;
 			future = null;
-			
+
 			log.info("载入用时" + time + "s");
 		}
 	}
-	
+
 	/**
 	 * 初始化管理器所需的各种AppState
+	 * 
 	 * @param data
 	 */
 	private void initLoader(Data data) {
-		AppState[] states = {new AxisAppState(),
+		AppState[] states = { new AxisAppState(),
 				new DataState(data.serverRoot, data.clientRoot, data.fields),
-				new HudState(),
-				new LoaderAppState(),
-				new MusicAppState(),
-				new AmbientAppState(),
-				new FieldgateAppState(),
-				new WarpgateAppState(),
-				new MonsterAppState(),
-				new NpcAppState()};
-		
+				new HudState(), new LoaderAppState(), new MusicAppState(),
+				new AmbientAppState(), new FieldgateAppState(),
+				new WarpgateAppState(), new MonsterAppState(),
+				new NpcAppState() };
+
 		AppStateManager stateManager = getStateManager();
 		stateManager.attachAll(states);// 添加所需的AppStates
 		stateManager.detach(this);// 移除LoadingAppState
 	}
-	
+
 	/**
 	 * 服务端的路径
 	 */
@@ -153,19 +152,19 @@ public class LoadingAppState extends SubAppState {
 	static String MONSTER_DIR = "Monster";
 	static String OPENITEM_DIR = "OpenItem";
 	static String NPC_DIR = "NPC";
-	
+
 	/**
 	 * 客户端的路径
 	 */
 	static String CLIENT_ROOT;
-	
+
 	class Data {
 		public String serverRoot = "";
 		public String clientRoot = "/";
 		public Field[] fields;
-		
+
 	}
-	
+
 	class LoadingTask implements Callable<Data> {
 
 		/**
@@ -178,29 +177,33 @@ public class LoadingAppState extends SubAppState {
 		public Data call() throws Exception {
 
 			Data data = new Data();
-			
+
 			check();
-			
+
 			// 属性文件的路径
 			data.serverRoot = SERVER_ROOT;
 			data.clientRoot = CLIENT_ROOT;
-			
+
 			value = 2;
 			message = "Config..";
-			
+
 			if (CLIENT_ROOT != null) {
 				// 解码小地图
 				imageDecode(CLIENT_ROOT + "/field/map");
 				// 解码标题
 				imageDecode(CLIENT_ROOT + "/field/title");
-				// 解码角色模型
-				imageDecode(CLIENT_ROOT + "/char");
 			}
 
 			Field[] fields = new FieldLoader().load();
 			data.fields = fields;
 			value = 10;
 			message = "解析地区";
+
+			/**
+			 * 检查所有图片是否已经是解密的，否则要使用ImageDecoder对其进行解密。由于有些地图的图片放在同一个文件夹内，
+			 * 已经解码过的文件夹就不需要再次解码，因此用一个AraryList来保存这些已经解码过的文件夹，避免重复解码。
+			 */
+			// ArrayList<String> folders = new ArrayList<String>();
 
 			SpawnLoader sppLoader = new SpawnLoader();
 			MonsterLoader spmLoader = new MonsterLoader();
@@ -215,21 +218,33 @@ public class LoadingAppState extends SubAppState {
 				// 检查模型文件是否存在
 				String model = field.getName();
 
-				// 检查所有图片是否已经是解密的，否则要使用ImageDecodeer对其进行解密。
+				/**
+				 * 图片解码太耗时了，考虑暂时不在Loading时处理这个问题了。
+				 * 
+				// 使用ImageDecoder对地图的图片其进行解密。
 				int idx = model.lastIndexOf("/");
 				String folder = model.substring(0, idx);
 				if (CLIENT_ROOT != null) {
-					imageDecode(CLIENT_ROOT + "/" + folder);
+					String path = CLIENT_ROOT + "/" + folder;
+					if (!folders.contains(path)) {
+						
+						imageDecode(path);
+						folders.add(path);
+					}
 				}
-				
+				 */
+
 				// 尝试加载服务端文件
 				if (SERVER_ROOT != null) {
 					int index = model.lastIndexOf("/") + 1;
 					String name = model.substring(index);
-					String spp = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spp";
-					String spm = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spm";
-					String spc = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spc";
-		
+					String spp = SERVER_ROOT + "/" + FIELD_DIR + "/" + name
+							+ ".spp";
+					String spm = SERVER_ROOT + "/" + FIELD_DIR + "/" + name
+							+ ".spm";
+					String spc = SERVER_ROOT + "/" + FIELD_DIR + "/" + name
+							+ ".spc";
+
 					try {
 						// 怪物刷新点
 						StartPoint[] points = sppLoader.load(spp);
@@ -237,7 +252,7 @@ public class LoadingAppState extends SubAppState {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-		
+
 					try {
 						// 刷怪种类
 						RespawnList monsters = spmLoader.load(spm);
@@ -245,12 +260,12 @@ public class LoadingAppState extends SubAppState {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-		
+
 					try {
 						// NPC信息
 						ArrayList<NPC> npcs = spcLoader.load(spc);
 						field.setNpcs(npcs);
-		
+
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -269,9 +284,9 @@ public class LoadingAppState extends SubAppState {
 		String profilepath = "config.properties";
 		Properties props = new Properties();
 
-
 		/**
 		 * 将指定文件夹下所有bmp和tga图片解码。
+		 * 
 		 * @param folder
 		 */
 		void imageDecode(String folder) {
@@ -287,31 +302,33 @@ public class LoadingAppState extends SubAppState {
 						return str.endsWith(".bmp");
 					}
 				});// 读取文件列表
-				for (int i=0; i<files.length; i++) {
+				for (int i = 0; i < files.length; i++) {
 					File file = files[i];
 					if (file.isFile()) {
 
 						try {
 							byte[] buffer = new byte[16];
-							RandomAccessFile raf = new RandomAccessFile(file, "rw");
+							RandomAccessFile raf = new RandomAccessFile(file,
+									"rw");
 							raf.seek(0);
 							raf.readFully(buffer);
-							
+
 							// 解码
 							if (buffer[0] == 0x41 && buffer[1] == 0x38) {
-								System.out.println("Decode " + file.getAbsolutePath());
+								System.out.println("Decode "
+										+ file.getAbsolutePath());
 								ImageDecoder.convertBMP(buffer, true);
 								raf.seek(0);
 								raf.write(buffer);
 							}
-							
+
 							raf.close();
 						} catch (IOException e) {
 							e.printStackTrace();
-						} 
+						}
 					}
 				}
-				
+
 				// 遍历tga文件
 				files = dir.listFiles(new FilenameFilter() {
 					public boolean accept(File dir, String name) {
@@ -319,7 +336,7 @@ public class LoadingAppState extends SubAppState {
 						return str.endsWith(".tga");
 					}
 				});// 读取文件列表
-				for (int i=0; i<files.length; i++) {
+				for (int i = 0; i < files.length; i++) {
 					File file = files[i];
 					if (file.isFile()) {
 						try {
@@ -327,41 +344,43 @@ public class LoadingAppState extends SubAppState {
 							RandomAccessFile raf = new RandomAccessFile(file, "rw");
 							raf.seek(0);
 							raf.readFully(buffer);
-							
+
 							// 解码
 							if (buffer[0] == 0x47 && buffer[1] == 0x38) {
-								System.out.println("Decode " + file.getAbsolutePath());
+								System.out.println("Decode "
+										+ file.getAbsolutePath());
 								ImageDecoder.convertTGA(buffer, true);
 								raf.seek(0);
 								raf.write(buffer);
 							}
-							
+
 							raf.close();
 						} catch (IOException e) {
 							e.printStackTrace();
-						} 
+						}
 					}
 				}
 			}
 		}
-		
-		void calcRespawn(Field ... lists) {
+
+		void calcRespawn(Field... lists) {
 			int sum = 0;
-			for(int i=0; i<lists.length; i++) {
+			for (int i = 0; i < lists.length; i++) {
 				Field f = lists[i];
 				RespawnList rl = f.getRespawnList();
 				if (rl != null) {
 					sum += rl.LimitMax;
-					
+
 					System.out.println(f.getTitle() + " limit=" + rl.LimitMax);
 				}
 			}
-			
+
 			System.out.println("sum = " + sum);
 		}
-		
+
 		// 文件选择器
 		private JFileChooser chooser;
+
 		private JFileChooser getChooser() {
 			if (chooser == null) {
 				chooser = new JFileChooser();
@@ -371,9 +390,10 @@ public class LoadingAppState extends SubAppState {
 			}
 			return chooser;
 		}
-		
+
 		/**
 		 * 打开文件选择框，选择一个目录。若用户没有选择，返回null。
+		 * 
 		 * @return
 		 */
 		private File getFile() {
@@ -382,47 +402,52 @@ public class LoadingAppState extends SubAppState {
 			}
 			return chooser.getSelectedFile();
 		}
-		
+
 		/**
 		 * 检查配置文件是否正确存在。
+		 * 
 		 * @return
 		 */
 		public boolean check() {
 			/**
 			 * 首先检查配置文件是否存在，若不存在则自动生成一个配置文件，并提醒用户设置路径。
 			 */
-			
+
 			if (!exist()) {
 				return false;
 			} else {
 				// 检查服务端文件夹
 				if (!checkServerRoot(SERVER_ROOT)) {
-					int result = JOptionPane.showConfirmDialog(null,
-							"尚未找到服务端文件夹的路径，无法读取服务器配置数据，请先指定服务端文件夹的位置。\n点击\"确定\"开始选择，点击\"取消\"则以后再设置。",
-							"确认服务器路径", JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE);
-					
+					int result = JOptionPane
+							.showConfirmDialog(
+									null,
+									"尚未找到服务端文件夹的路径，无法读取服务器配置数据，请先指定服务端文件夹的位置。\n点击\"确定\"开始选择，点击\"取消\"则以后再设置。",
+									"确认服务器路径", JOptionPane.OK_CANCEL_OPTION,
+									JOptionPane.WARNING_MESSAGE);
+
 					if (result == JOptionPane.OK_OPTION) {
 						setupServer();
 					}
 				}
-				
+
 				// 检查客户端文件夹
 				if (!checkClientRoot(CLIENT_ROOT)) {
-					int result = JOptionPane.showConfirmDialog(null,
-							"尚未找到客户端文件夹的路径，无法读取地图、音乐等数据，请先指定客户端文件夹的位置。\n点击\"确定\"开始选择，点击\"取消\"则以后再设置。",
-							"确认客户端路径", JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE);
-					
+					int result = JOptionPane
+							.showConfirmDialog(
+									null,
+									"尚未找到客户端文件夹的路径，无法读取地图、音乐等数据，请先指定客户端文件夹的位置。\n点击\"确定\"开始选择，点击\"取消\"则以后再设置。",
+									"确认客户端路径", JOptionPane.OK_CANCEL_OPTION,
+									JOptionPane.WARNING_MESSAGE);
+
 					if (result == JOptionPane.OK_OPTION) {
 						setupClient();
 					}
 				}
 			}
-			
+
 			return true;
 		}
-		
+
 		/**
 		 * 
 		 * @return
@@ -443,29 +468,29 @@ public class LoadingAppState extends SubAppState {
 				SERVER_ROOT = "../Assets/assets/server";
 				writeProperties("SERVER_ROOT", SERVER_ROOT);
 			}
-			
+
 			CLIENT_ROOT = props.getProperty("CLIENT_ROOT");
 			if (CLIENT_ROOT == null) {
 				CLIENT_ROOT = "/";
 				writeProperties("CLIENT_ROOT", CLIENT_ROOT);
 			}
-			
+
 			return false;
 		}
-		
+
 		private void setupServer() {
 			boolean confirmServer = false;
 			while (!checkServerRoot(SERVER_ROOT)) {
-				
+
 				File file = getFile();
 				if (file != null) {
 					SERVER_ROOT = file.getAbsolutePath();
 					SERVER_ROOT = SERVER_ROOT.replaceAll("\\\\", "/");
 				} else {
-					
+
 					int rt = JOptionPane.showConfirmDialog(null,
-							"尚未找到服务端文件夹的路径，取消此次操作吗?",
-							"确认服务器路径", JOptionPane.OK_CANCEL_OPTION,
+							"尚未找到服务端文件夹的路径，取消此次操作吗?", "确认服务器路径",
+							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE);
 					if (rt == JOptionPane.OK_OPTION) {
 						confirmServer = true;
@@ -479,19 +504,19 @@ public class LoadingAppState extends SubAppState {
 				SERVER_ROOT = null;
 			}
 		}
-		
+
 		private void setupClient() {
 			boolean confirmClient = false;
 			while (!checkClientRoot(CLIENT_ROOT)) {
-				
+
 				File file = getFile();
 				if (file != null) {
 					CLIENT_ROOT = file.getAbsolutePath();
 					CLIENT_ROOT = CLIENT_ROOT.replaceAll("\\\\", "/");
 				} else {
 					int rt = JOptionPane.showConfirmDialog(null,
-							"尚未找到客户端的路径，取消此次操作吗?",
-							"确认客户端路径", JOptionPane.OK_CANCEL_OPTION,
+							"尚未找到客户端的路径，取消此次操作吗?", "确认客户端路径",
+							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE);
 					if (rt == JOptionPane.OK_OPTION) {
 						confirmClient = true;
@@ -505,7 +530,7 @@ public class LoadingAppState extends SubAppState {
 				CLIENT_ROOT = null;
 			}
 		}
-		
+
 		/**
 		 * 更新（或插入）一对properties信息(主键及其键值) 如果该主键已经存在，更新该主键的值； 如果该主键不存在，则插件一对键值。
 		 * 
@@ -526,6 +551,7 @@ public class LoadingAppState extends SubAppState {
 
 		/**
 		 * 检查客户端文件夹是否都存在
+		 * 
 		 * @param folder
 		 * @return
 		 */
@@ -535,18 +561,19 @@ public class LoadingAppState extends SubAppState {
 				return false;
 			}
 
-			String[] folders = {"effect", "field", "char", "wav", "sky"};
-			for(String subFolder : folders) {
+			String[] folders = { "effect", "field", "char", "wav", "sky" };
+			for (String subFolder : folders) {
 				if (!new File(folder + "/" + subFolder).exists()) {
 					return false;
 				}
 			}
-			
+
 			return true;
 		}
-		
+
 		/**
 		 * 检查服务端文件夹是否都存在
+		 * 
 		 * @param folder
 		 * @return
 		 */
@@ -556,8 +583,8 @@ public class LoadingAppState extends SubAppState {
 				return false;
 			}
 
-			String[] folders = {"Field", "Monster", "NPC", "OpenItem"};
-			for(String subFolder : folders) {
+			String[] folders = { "Field", "Monster", "NPC", "OpenItem" };
+			for (String subFolder : folders) {
 				if (!new File(folder + "/" + subFolder).exists()) {
 					return false;
 				}
@@ -565,5 +592,5 @@ public class LoadingAppState extends SubAppState {
 			return true;
 		}
 	}
-	
+
 }
