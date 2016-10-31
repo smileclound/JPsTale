@@ -18,7 +18,7 @@ import com.jme3.texture.Texture.WrapMode;
  * @author yanmaoyuan
  *
  */
-public abstract class AbstractLoader implements AssetLoader {
+public abstract class AbstractLoader extends ByteReader implements AssetLoader {
 	public AssetManager manager = null;
 	public AssetKey<?> key = null;
 	

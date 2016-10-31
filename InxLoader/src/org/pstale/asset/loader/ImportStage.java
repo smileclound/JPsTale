@@ -50,14 +50,22 @@ public class ImportStage extends ByteReader {
 		int length = inputStream.available();
 
 		if (length <= 67083) {
-			System.out
-					.println("Error: can't read inx-file (invalid file content)\n");
+			System.out.println("Error: can't read inx-file (invalid file content)\n");
 			return;
 		}
 
 		getByteBuffer(inputStream);
 
-		load();
+		String head = getString();
+		System.out.println("smd header:" + head);
+		
+		if ("SMD Stage data Ver 0.72".equals(head)) {// 地图
+			load();
+		} else if ("SMD Model data Ver 0.62".equals(head)){// 带动画的模型
+			
+		} else {
+			throw new RuntimeException("invalid smd file");
+		}
 
 	}
 
