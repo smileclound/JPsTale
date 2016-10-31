@@ -18,7 +18,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -457,15 +456,24 @@ public class Main extends JFrame {
 	public void setAnimList(Collection<String> collection) {
 		List<String> names = new ArrayList<String>();
 		names.addAll(collection);
-		names.sort(new Comparator<String>() {
-			@Override
-			public int compare(String a, String b) {
-				int i = a.indexOf(" ");
-				int j = b.indexOf(" ");
-				int n = Integer.parseInt(a.substring(0, i));
-				int m = Integer.parseInt(b.substring(0, j));
-				return n-m;
-			}});
+		
+		int len = names.size();
+		for(int i=0; i<len-1; i++) {
+			for(int j=i+1; j<len; j++) {
+				
+				String a = names.get(i);
+				String b = names.get(j);
+				
+				int ii = a.indexOf(" ");
+				int ji = b.indexOf(" ");
+				int n = Integer.parseInt(a.substring(0, ii));
+				int m = Integer.parseInt(b.substring(0, ji));
+				if (n-m > 0) { // a > b
+					names.set(j, a);
+					names.set(i, b);
+				}
+			}
+		}
 		for(String name : names) {
 			combo.addItem(name);
 		}
