@@ -203,7 +203,7 @@ public class LoadingAppState extends SubAppState {
 			 * 检查所有图片是否已经是解密的，否则要使用ImageDecoder对其进行解密。由于有些地图的图片放在同一个文件夹内，
 			 * 已经解码过的文件夹就不需要再次解码，因此用一个AraryList来保存这些已经解码过的文件夹，避免重复解码。
 			 */
-			// ArrayList<String> folders = new ArrayList<String>();
+			ArrayList<String> folders = new ArrayList<String>();
 
 			SpawnLoader sppLoader = new SpawnLoader();
 			MonsterLoader spmLoader = new MonsterLoader();
@@ -238,12 +238,9 @@ public class LoadingAppState extends SubAppState {
 				if (SERVER_ROOT != null) {
 					int index = model.lastIndexOf("/") + 1;
 					String name = model.substring(index);
-					String spp = SERVER_ROOT + "/" + FIELD_DIR + "/" + name
-							+ ".spp";
-					String spm = SERVER_ROOT + "/" + FIELD_DIR + "/" + name
-							+ ".spm";
-					String spc = SERVER_ROOT + "/" + FIELD_DIR + "/" + name
-							+ ".spc";
+					String spp = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spp";
+					String spm = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spm";
+					String spc = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spc";
 
 					try {
 						// 怪物刷新点
@@ -265,7 +262,26 @@ public class LoadingAppState extends SubAppState {
 						// NPC信息
 						ArrayList<NPC> npcs = spcLoader.load(spc);
 						field.setNpcs(npcs);
-
+						
+						if (npcs != null && npcs.size() > 0) {
+							for(int n = 0; n < npcs.size(); n++) {
+								NPC npc = npcs.get(n);
+								if (npc == null)
+									continue;
+								
+								String npcModel = npc.getModel().replaceAll("\\\\", "/");
+								// 使用ImageDecoder对地图的图片其进行解密。
+								int idx = npcModel.lastIndexOf("/");
+								String folder = npcModel.substring(0, idx);
+								if (CLIENT_ROOT != null) {
+									String path = CLIENT_ROOT + "/" + folder;
+									if (!folders.contains(path)) {
+										imageDecode(path);
+										folders.add(path);
+									}
+								}
+							}
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

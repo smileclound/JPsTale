@@ -3,6 +3,7 @@ package org.pstale.app;
 import java.util.Collection;
 
 import org.pstale.asset.loader.InxLoader;
+import org.pstale.asset.loader.SmbLoader;
 import org.pstale.asset.loader.SmdLoader;
 import org.pstale.desktop.Main;
 import org.pstale.state.AxisAppState;
@@ -57,6 +58,7 @@ public class LoaderApp extends SimpleApplication {
 		assetManager.registerLoader(AseLoader.class, "ase");
 		assetManager.registerLoader(InxLoader.class, "inx");
 		assetManager.registerLoader(SmdLoader.class, "smd");
+		assetManager.registerLoader(SmbLoader.class, "smb");
 		assetManager.registerLocator("/", FileLocator.class);
 
 		AmbientLight light = new AmbientLight();

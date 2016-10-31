@@ -3,6 +3,7 @@ package org.pstale.app;
 import java.io.File;
 
 import org.pstale.asset.loader.InxLoader;
+import org.pstale.asset.loader.SmbLoader;
 import org.pstale.asset.loader.SmdLoader;
 
 import com.jme3.app.DebugKeysAppState;
@@ -62,6 +63,7 @@ public class FieldApp extends SimpleApplication {
 		assetManager.registerLoader(AseLoader.class, "ase");
 		assetManager.registerLoader(InxLoader.class, "inx");
 		assetManager.registerLoader(SmdLoader.class, "smd");
+		assetManager.registerLoader(SmbLoader.class, "smb");
 		assetManager.registerLoader(WAVLoader.class, "bgm");
 		assetManager.registerLocator("/", FileLocator.class);
 		assetManager.registerLocator("assets", FileLocator.class);

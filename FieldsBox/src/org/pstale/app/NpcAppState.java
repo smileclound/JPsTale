@@ -2,13 +2,19 @@ package org.pstale.app;
 
 import org.pstale.fields.NPC;
 
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Skeleton;
 import com.jme3.app.Application;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.maxase.AseKey;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.shape.Box;
 
 /**
@@ -34,7 +40,6 @@ public class NpcAppState extends SubAppState {
 			NPC npc = npcs[i];
 			Vector3f pos = new Vector3f(npc.getPosition());
 			pos.multLocal(scale);
-			pos.y += 1;
 
 			/**
 			 * 创建一个NPC模型
@@ -42,13 +47,33 @@ public class NpcAppState extends SubAppState {
 			 */
 			try {
 				// 首先尝试直接读取NPC模型
-				Spatial model = this.loadModel(npc.getModel());
+				Node model = (Node)this.loadModel(npc.getModel());
+				
+				// Debug skeleton
+				final AnimControl ac = model.getControl(AnimControl.class);
+				if (ac != null) {
+					final Skeleton skel = ac.getSkeleton();
+					SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", skel);
+					final Material mat = new Material(getApplication().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+					mat.setColor("Color", ColorRGBA.Green);
+					mat.getAdditionalRenderState().setDepthTest(false);
+					skeletonDebug.setMaterial(mat);
+					model.attachChild(skeletonDebug);
+				}
+				
 				model.scale(scale);
 				model.setLocalTranslation(pos);
+				model.setLocalRotation(
+					new Matrix3f(1, 0, 0,
+								0, 0, 1,
+								0, -1, 0));
+				
+				rootNode.attachChild(model);
 			} catch (Exception e) {
 				// 加载失败，改为加载一个绿色方块代替NPC。
 				Box box = new Box(1, 1, 1);
 				Geometry geom = new Geometry("NPCFlag", box);
+				pos.y += 1;
 				geom.setLocalTranslation(pos);
 				geom.setMaterial(getMaterial(ColorRGBA.Green));
 				geom.setUserData("script", npc.getScript());
@@ -63,7 +88,7 @@ public class NpcAppState extends SubAppState {
 	 * @return
 	 */
 	protected Spatial loadModel(final String name) throws Exception {
-		Spatial model = null;
+		Node model = null;
 		
 		AssetManager assetManager = getApplication().getAssetManager();
 		
@@ -77,7 +102,20 @@ public class NpcAppState extends SubAppState {
 		path = path.substring(0, index) + ".inx";
 		
 		AseKey key = new AseKey(path);
-		model = (Spatial) assetManager.loadAsset(key);
+		model = (Node) assetManager.loadAsset(key);
+		
+		
+		// Debug skeleton
+		final AnimControl ac = model.getControl(AnimControl.class);
+		if (ac != null) {
+			final Skeleton skel = ac.getSkeleton();
+			SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", skel);
+			final Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+			mat.setColor("Color", ColorRGBA.Green);
+			mat.getAdditionalRenderState().setDepthTest(false);
+			skeletonDebug.setMaterial(mat);
+			model.attachChild(skeletonDebug);
+		}
 		
 		return model;
 	}
