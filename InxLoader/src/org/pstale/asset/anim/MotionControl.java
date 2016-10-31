@@ -117,10 +117,12 @@ public class MotionControl extends AbstractControl {
         }   
         this.spatial = spatial;
         
-		animControl = spatial.getControl(AnimControl.class);
-		if (animControl != null) {
-			channel = animControl.createChannel();
-		}
+        if (spatial != null) {
+			animControl = spatial.getControl(AnimControl.class);
+			if (animControl != null) {
+				channel = animControl.createChannel();
+			}
+        }
     }
 	
 	@Override

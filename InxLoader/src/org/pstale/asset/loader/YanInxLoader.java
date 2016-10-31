@@ -6,14 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import com.jme3.animation.Animation;
 import com.jme3.asset.maxase.AseKey;
 
 import org.pstale.asset.anim.DrzAnimation;
 import org.pstale.asset.anim.DrzAnimationSet;
 import org.pstale.asset.anim.DrzInxMeshInfo;
-import org.pstale.asset.anim.MotionControl;
-import org.pstale.asset.anim.SubAnimation;
 import org.pstale.asset.base.AbstractLoader;
 import org.pstale.asset.mesh.DrzMesh;
 
@@ -24,15 +21,16 @@ import com.jme3.scene.Node;
  * @author yanmaoyuan
  *
  */
-public class InxLoader extends AbstractLoader {
-	
+public class YanInxLoader extends AbstractLoader {
 	String smdFile;
 	String smbFile;
 	String inxFile;
 	String chainInxFile;
 	String sharedInxFile;
 	
-	protected Node rootNode = null;
+	protected Node rootNode = new Node();
+	
+	public HashMap<Integer, DrzAnimationSet> mAnimationSetMap = new HashMap<Integer, DrzAnimationSet>();
 
 	public Object parse(InputStream inputStream) throws IOException {
 		
@@ -60,17 +58,16 @@ public class InxLoader extends AbstractLoader {
 		}
 
 		// 解析inx文件
-		DrzAnimation anim = null;
 		if (buffer.limit() <= 67084) { // old inx file
 			buffer.position(61848);
 			sharedInxFile = getString();
 			handleShared();
-			anim = readAnimFromOld();
+			readAnimFromOld();
 		} else { // new inx file (KPT)
 			buffer.position(88472);
 			sharedInxFile = getString();
 			handleShared();
-			anim = readAnimFromNew();
+			readAnimFromNew();
 		}
 		
 		// Read Animation from smb
@@ -81,7 +78,7 @@ public class InxLoader extends AbstractLoader {
 			smbFile = str + ".smb";
 			
 			try {
-				rootNode = (Node)manager.loadAsset(new SmbKey(smbFile, anim));
+				manager.loadAsset(new AseKey(smbFile));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -95,11 +92,7 @@ public class InxLoader extends AbstractLoader {
 			smdFile = str + ".smd";
 			
 			try {
-				if (anim == null) {
-					return manager.loadAsset(new AseKey(smdFile));
-				} else {
-					return manager.loadAsset(new SmdKey(smdFile, anim, rootNode));
-				}
+				return manager.loadAsset(new AseKey(smdFile));
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
@@ -153,70 +146,7 @@ public class InxLoader extends AbstractLoader {
 		}
 	}
 
-	public String getAnimationSetNameById(int id) {
-		String ret = "unknown";
-
-		switch (id) {
-		case 64:
-			ret = "Idle";
-			break;
-		case 80:
-			ret = "Walk";
-			break;
-		case 96:
-			ret = "Run";
-			break;
-		case 128:
-			ret = "Fall";
-			break;
-		case 256:
-			ret = "Attack";
-			break;
-		case 272:
-			ret = "Damage";
-			break;
-		case 288:
-			ret = "Die";
-			break;
-		case 304:
-			ret = "Sometimes";
-			break;
-		case 320:
-			ret = "Potion";
-			break;
-		case 336:
-			ret = "Technique";
-			break;
-		case 368:
-			ret = "Landing (small)";
-			break;
-		case 384:
-			ret = "Landing (large)";
-			break;
-		case 512:
-			ret = "Standup";
-			break;
-		case 528:
-			ret = "Cry";
-			break;
-		case 544:
-			ret = "Hurray";
-			break;
-		case 576:
-			ret = "Jump";
-			break;
-		}
-
-		return ret;
-	}
-	
-	/**
-	 * 解析动画索引
-	 * @return
-	 */
-	private DrzAnimation readAnimFromOld() {
-		DrzAnimation animation = new DrzAnimation();
-		
+	private void readAnimFromOld() {
 		// Read The Mesh Def
 		readMeshDef();
 
@@ -237,82 +167,57 @@ public class InxLoader extends AbstractLoader {
 		// 解析动画索引
 		if (SubAnimationNum > 0) {
 
-			animation.SetSubAnimtionNum(SubAnimationNum);
-			
-			// 临时变量
-			int[] tmpInt = new int[2];
-			for (int id = 0; id < AnimationCount; id++) {
-				
-				/**
-				 * 动画的类型，看getAminationSetNameById就知道什么意思了
-				 */
-				buffer.position(AnimationOffset + (id * 120));
-				
+			for (int i = 0; i < AnimationCount; i++) {
+				buffer.position(AnimationOffset + (i * 120));
 				int AnimationId = getInt();
 
 				if (AnimationId < 1) // no more Animations
 					break;
-				
-				DrzAnimationSet animSet = new DrzAnimationSet();
+
+				DrzAnimationSet CurrentAnimationSet = new DrzAnimationSet();
 
 				// Set AnimationSetID
-				animSet.AnimationTypeId = AnimationId;
+				CurrentAnimationSet.AnimationTypeId = AnimationId;
 
-				// 开始帧
-				buffer.position(AnimationOffset + (id * 120) + 4);// current animation starts at this frame
-				tmpInt[0] = buffer.get()&0xFF;
-				buffer.position(AnimationOffset + (id * 120) + 6);
-				tmpInt[1] = buffer.get()&0xFF;
+				int[] val = new int[2];
 				
-				animSet.AnimationStartKey = (tmpInt[1] << 8) + tmpInt[0];
-
-				/**
-				 * 结束帧
-				 */
-				buffer.position(AnimationOffset + (id * 120) + 16);// current animation end at this frame
-				tmpInt[0] = buffer.get()&0xFF;
-				buffer.position(AnimationOffset + (id * 120) + 18);
-				tmpInt[1] = buffer.get()&0xFF;
-
-				animSet.AnimationEndKey1 = (tmpInt[1] << 8) + tmpInt[0];
-
-				/**
-				 * 动画是否重复播放
-				 */
-				buffer.position(AnimationOffset + (id * 120) + 108);
+				buffer.position(AnimationOffset + (i * 120) + 4);// current animation starts at this frame
+				val[0] = buffer.get()&0xFF;
+				buffer.position(AnimationOffset + (i * 120) + 6);
+				val[1] = buffer.get()&0xFF;
 				
-				animSet.Repeat = (getInt() == 1);
+				CurrentAnimationSet.AnimationStartKey = (val[1] << 8) + val[0];
 
-				// TODO 未知字符
-				buffer.position(AnimationOffset + (id * 120) + 112);
-				
-				animSet.UnkChar = buffer.getChar();
+				buffer.position(AnimationOffset + (i * 120) + 16);// current animation end at this frame
+				val[0] = buffer.get()&0xFF;
+				buffer.position(AnimationOffset + (i * 120) + 18);
+				val[1] = buffer.get()&0xFF;
+				CurrentAnimationSet.AnimationEndKey1 = (val[1] << 8) + val[0];
 
-				/**
-				 * 对应动画的索引号
-				 */
-				buffer.position(AnimationOffset + (id * 120) + 116);
-				
-				int animIndex = getInt();
-				if (animIndex > 0) {
-					animIndex--;
+				CurrentAnimationSet.Repeat = false;
+				buffer.position(AnimationOffset + (i * 120) + 108);
+				int iRepeat = getInt();
+				if (iRepeat == 1) {
+					CurrentAnimationSet.Repeat = true;
 				}
-				animSet.SubAnimationIndex = animIndex;
 
-				animation.mAnimationSetMap.put(id, animSet);
+				buffer.position(AnimationOffset + (i * 120) + 112);
+				CurrentAnimationSet.UnkChar = buffer.getChar();
+
+				buffer.position(AnimationOffset + (i * 120) + 116);
+				CurrentAnimationSet.SubAnimationIndex = getInt();
+				if (CurrentAnimationSet.SubAnimationIndex > 0) {
+					CurrentAnimationSet.SubAnimationIndex--;
+				}
+
+				// Add AnimationSet
+				CurrentAnimationSet.AnimationIndex = i;
+				mAnimationSetMap.put(i, CurrentAnimationSet);
 			}
 		}
-		
-		return animation;
 	}
 
-	/**
-	 * 解析动画索引
-	 * @return
-	 */
-	private DrzAnimation readAnimFromNew() {
-		DrzAnimation animation = new DrzAnimation();
-		
+	private void readAnimFromNew() {
 		// Read The Mesh Def
 		readMeshDef();
 
@@ -332,8 +237,6 @@ public class InxLoader extends AbstractLoader {
 
 		// 解析动画索引
 		if (SubAnimationNum > 0) {
-			animation.SetSubAnimtionNum(SubAnimationNum);
-
 			for (int i = 0; i < AnimationCount; i++) {
 				buffer.position(AnimationOffset + (i * 172));
 				int AnimationId = getInt();
@@ -385,11 +288,9 @@ public class InxLoader extends AbstractLoader {
 
 				// Add AnimationSet
 				CurrentAnimationSet.AnimationIndex = i;
-				animation.mAnimationSetMap.put(i, CurrentAnimationSet);
+				mAnimationSetMap.put(i, CurrentAnimationSet);
 			}
 		}
-		
-		return animation;
 	}
 
 	/**

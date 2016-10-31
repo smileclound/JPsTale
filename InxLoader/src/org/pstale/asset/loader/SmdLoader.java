@@ -53,29 +53,44 @@ public class SmdLoader extends AbstractLoader {
 	@Override
 	public Object parse(InputStream inputStream) throws IOException {
 
-		DrzMesh mesh = new DrzMesh();
-		mesh.mAnimation = new DrzAnimation();
+		mesh = new DrzMesh();
 
+		if (key instanceof SmdKey) {
+			SmdKey k = (SmdKey) key;
+			mesh.mAnimation = k.getDrzAnimation();
+			rootNode = k.getRootNode();
+		} else {
+			mesh.mAnimation = new DrzAnimation();
+			mesh.mAnimation.SetSubAnimtionNum(1);// TODO ?????不知道有用没用
+		}
+		
 		Node node = null;
 		
-		int length = inputStream.available();
-
-		if (length <= 67083) {
-			System.out.println("Error: can't read inx-file (invalid file content)\n");
-			return null;
-		}
-
 		getByteBuffer(inputStream);
 
 		String head = getString();
 		
 		if ("SMD Stage data Ver 0.72".equals(head)) {// 地图
-			rootNode = new Node("SMD Stage");
+			if (rootNode == null)
+				rootNode = new Node("SMD Stage");
 			loadStage();
 			node = rootNode;
 		} else if ("SMD Model data Ver 0.62".equals(head)){// 带动画的模型
-			rootNode = new Node("SMD Model");
+			if (rootNode == null)
+				rootNode = new Node("SMD Model");
 			loadModel();
+			
+			/**
+			// TODO 暂不支持动画
+			MotionControl mc = rootNode.getControl(MotionControl.class);
+			if (mc != null)rootNode.removeControl(mc);
+			AnimControl ac = rootNode.getControl(AnimControl.class);
+			if (ac != null)rootNode.removeControl(ac);
+			SkeletonControl sk = rootNode.getControl(SkeletonControl.class);
+			if (sk != null)rootNode.removeControl(sk);
+			
+			*/
+			
 			node = rootNode;
 		} else {
 			throw new RuntimeException("invalid smd file");
@@ -110,7 +125,7 @@ public class SmdLoader extends AbstractLoader {
 
 		// Parse Materials
 		int MaterialOffset = 262904;
-		int MaterialByteSize = ParseStageMaterials(MaterialOffset);
+		int MaterialByteSize = parseStageMaterials(MaterialOffset);
 
 		// parse vertices
 		int vertoffset = MaterialOffset + MaterialByteSize;
@@ -275,7 +290,12 @@ public class SmdLoader extends AbstractLoader {
 		createStageMesh(stageMesh);
 	}
 
-	private int ParseStageMaterials(final int offset) {
+	/**
+	 * 读取材质数据
+	 * @param offset
+	 * @return
+	 */
+	private int parseStageMaterials(final int offset) {
 		buffer.position(offset);
 
 		// Output Materials 
@@ -338,8 +358,10 @@ public class SmdLoader extends AbstractLoader {
 
 							if (drzMat.texture_name_count == 0) {
 								drzMat.TextureUniqueIdent1 = path;
-							} else {
+							} else if (drzMat.texture_name_count == 1){
 								drzMat.TextureUniqueIdent2 = path;
+							} else {
+								System.err.println("Unknown texture: " + drzMat.texture_name_count + " : " + path);
 							}
 
 							drzMat.texture_name_count++;
@@ -376,8 +398,7 @@ public class SmdLoader extends AbstractLoader {
 
 				buffer.position(submatbuf + 304);
 				if (getInt() != 0)
-					System.out
-							.println("WARNING: FIND MATOFFSET 304 poitive value");
+					System.out.println("WARNING: FIND MATOFFSET 304 poitive value");
 
 				mesh.MeshMaterials.put(i, drzMat);
 
@@ -569,423 +590,6 @@ public class SmdLoader extends AbstractLoader {
 	/**********
 	 * 加载角色模型
 	 */
-	
-	
-	class BONEBUFF {
-		public int s1;
-		public int s2;
-		public int s3;
-		public int s4;
-		public int s5;
-		public int s6;
-		public int s7;
-		public int s8;
-		public int s9;
-		public int s10;
-		public int s11;
-		public int s12;
-	}
-
-	private HashMap<String, BONEBUFF> mBoneMeshDataInfo = new HashMap<String, BONEBUFF>();
-
-	public synchronized boolean loadSmb(InputStream inputStream)
-			throws IOException {
-		getByteBuffer(inputStream);
-
-		buffer.position(24);
-		final int boneNum = getInt();
-		final int MaterialNum = getInt();
-
-		// check number of materials
-		if (MaterialNum > 0) {
-			System.out.println("Error while reading SMB file. MaterialNum("
-					+ MaterialNum + ") must be 0.");
-			return false;
-		}
-
-		// check number bones.
-		if (boneNum < 1) {
-			System.out
-					.println("Error while reading SMB file. No Bone Defintion.");
-			return false;
-		}
-
-		// Read number of Bones
-		for (int sa = 0; sa < mesh.mAnimation.mSubAnimationNum; sa++) {
-			mesh.mAnimation.mSubAnimtion[sa].SetAnimationNodeNum(boneNum);
-
-			mesh.mAnimation.mSubAnimtion[sa].mTicksPerSecond = 160 * 25;
-			mesh.mAnimation.mSubAnimtion[sa].mAllAniDurationTime = 0;
-		}
-
-		// Read bones
-		int boneoffset = 556 + boneNum * 40;
-		for (int i = 0; i < boneNum; i++) {
-			// Check header
-			buffer.position(boneoffset);
-			if (!((buffer.get() == 'D') || (buffer.get() == 'C') || (buffer
-					.get() == 'B'))) {
-				System.out.println("Error: Invalid GeoObject header. Bone(" + i
-						+ ")");
-				return false;
-			}
-
-			// Check max Bone Number
-			if (mesh.mAnimation.mSubAnimationNum > 128) {
-				System.out.println("to many bones("
-						+ mesh.mAnimation.mSubAnimationNum
-						+ ") max (128)  in smb file.");
-				return false;
-			}
-
-			// Read Vertex, Face etc
-			int mFaceNum = getInt(boneoffset + 80);
-			int mVertexNum = getInt(boneoffset + 84);
-			int mTVFaceNum = getInt(boneoffset + 92);
-
-			buffer.position(boneoffset + 172);
-			String BoneName = getString();
-			buffer.position(boneoffset + 204);
-			String ParentBoneName = getString();
-
-			// Create the BoneObject
-			BONEBUFF mBoneMeshTrans = new BONEBUFF();
-
-			// Load BoneMeshDataInfo
-			mBoneMeshTrans.s1 = getInt(boneoffset + 304);
-			mBoneMeshTrans.s5 = getInt();
-			mBoneMeshTrans.s9 = getInt();
-
-			mBoneMeshTrans.s2 = getInt(boneoffset + 304 + 16);
-			mBoneMeshTrans.s6 = getInt();
-			mBoneMeshTrans.s10 = getInt();
-
-			mBoneMeshTrans.s3 = getInt(boneoffset + 304 + 32);
-			mBoneMeshTrans.s7 = getInt();
-			mBoneMeshTrans.s11 = getInt();
-
-			mBoneMeshTrans.s4 = getInt(boneoffset + 304 + 48);
-			mBoneMeshTrans.s8 = getInt();
-			mBoneMeshTrans.s12 = getInt();
-
-			mBoneMeshDataInfo.put(BoneName, mBoneMeshTrans);
-
-			// Set AniKeyNums
-			int mNumRot = getInt(boneoffset + 684);
-			int mNumPos = getInt();
-			int mNumScl = getInt();
-			int numunk = mNumRot;
-
-			for (int sa = 0; sa < mesh.mAnimation.mSubAnimationNum; sa++) // max
-																			// 128
-			{
-				DrzAnimationNode node = mesh.mAnimation.mSubAnimtion[sa].mAnimNode[i];
-
-				node.mBoneIndex = i;
-
-				node.NodeName = BoneName;
-				node.ParentNodeName = ParentBoneName;
-
-				// Parse Bone Matrix
-				ParseMatrix(boneoffset + 240, node.mOrgFileTransform,
-						node.mTMRotation, node.mTMPos, node.mTMScale);
-
-				// Read AnimationFrames
-				int SubAniByteOffset = sa * 16;
-
-				// find rotation offsets
-				node.mlRotAnimationStartFrame = getInt(boneoffset + 696
-						+ SubAniByteOffset);
-				node.mlRotAnimationEndFrame = getInt(boneoffset + 696
-						+ SubAniByteOffset + 4);
-				int mRotMatOffset = getInt(boneoffset + 696 + SubAniByteOffset
-						+ 8);
-				int RotKeyNum = getInt(boneoffset + 696 + SubAniByteOffset + 12);
-
-				// find position offsets
-				node.mlPosAnimationStartFrame = getInt(boneoffset + 1208
-						+ SubAniByteOffset);
-				node.mlPosAnimationEndFrame = getInt(boneoffset + 1208
-						+ SubAniByteOffset + 4);
-				int mPosMatOffset = getInt(boneoffset + 1208 + SubAniByteOffset
-						+ 8);
-				int PosKeyNum = getInt(boneoffset + 1208 + SubAniByteOffset
-						+ 12);
-
-				// find scale offsets
-				node.mlSclAnimationStartFrame = getInt(boneoffset + 1720
-						+ SubAniByteOffset);
-				node.mlSclAnimationEndFrame = getInt(boneoffset + 1720
-						+ SubAniByteOffset + 4);
-				int SclMatOffset = getInt(boneoffset + 1720 + SubAniByteOffset
-						+ 8);
-				int SclKeyNum = getInt(boneoffset + 1720 + SubAniByteOffset
-						+ 12);
-
-				// parse all rotation keys
-				if (RotKeyNum > 0) {
-					int rotbuf = boneoffset + 2236 + (mVertexNum * 24)
-							+ (mFaceNum * 36) + (mTVFaceNum * 32);
-					ParseRotationAniBlock(rotbuf, node, RotKeyNum,
-							mRotMatOffset,
-							mesh.mAnimation.mSubAnimtion[0].mAnimNode[i]);
-				}
-
-				// parse all Position Keys
-				if (PosKeyNum > 0) {
-					int posbuf = boneoffset + 2236 + (mVertexNum * 24)
-							+ (mFaceNum * 36) + (mTVFaceNum * 32)
-							+ (mNumRot * 20);
-					ParsePositionAniBlock(posbuf, node, PosKeyNum,
-							mPosMatOffset,
-							mesh.mAnimation.mSubAnimtion[0].mAnimNode[i]);
-				}
-
-				// CONTROL_SCALE_TRACK
-				if (SclKeyNum > 0) {
-					int sclbuf = boneoffset + 2236 + (mVertexNum * 24)
-							+ (mFaceNum * 36) + (mTVFaceNum * 32)
-							+ (mNumRot * 20) + (mNumPos * 16);
-					ParseScaleAniBlock(sclbuf, node, SclKeyNum, SclMatOffset,
-							mesh.mAnimation.mSubAnimtion[0].mAnimNode[i]);
-				}
-			}
-
-			// Now we increase the position of the objbuf for the next object
-			boneoffset += 2236;
-			boneoffset += mVertexNum * 24;
-			boneoffset += mFaceNum * 36;
-			boneoffset += mTVFaceNum * 32;
-			boneoffset += mNumRot * 20;
-			boneoffset += mNumPos * 16;
-			boneoffset += mNumScl * 16;
-			boneoffset += numunk * 64;
-		}
-
-		addNodes(mesh.mAnimation);
-
-		if (mesh.mAnimation.mSubAnimationNum > 0) {
-			printSkeleton();
-			makeAnimation();
-		}
-
-		return true;
-	}
-
-	void printSkeleton() {
-		DrzAnimationNode[] nodes = mesh.mAnimation.mSubAnimtion[0].mAnimNode;
-
-		HashMap<String, Bone> boneMap = new HashMap<String, Bone>();
-		List<Bone> boneList = new ArrayList<Bone>();
-		for (int i = 0; i < nodes.length; i++) {
-			DrzAnimationNode obj = nodes[i];
-
-			Bone bone = new Bone(obj.NodeName);
-			bone.setBindTransforms(obj.mTMPos, obj.mTMRotation, obj.mTMScale);
-
-			boneMap.put(obj.NodeName, bone);
-			boneList.add(bone);
-
-			// I AM YOUR FATHER!!!
-			if (obj.ParentNodeName.length() > 0) {
-				Bone parent = boneMap.get(obj.ParentNodeName);
-				parent.addChild(bone);
-			}
-
-		}
-
-		Bone[] bones = boneList.toArray(new Bone[boneList.size()]);
-		Skeleton ske = new Skeleton(bones);
-
-		AnimControl ac = new AnimControl(ske);
-		rootNode.addControl(ac);
-
-		SkeletonControl sc = new SkeletonControl(ske);
-		rootNode.addControl(sc);
-	}
-
-	private Keyframe getOrMakeKeyframe(SortedMap<Long, Keyframe> keyframes,
-			long time) {
-		Keyframe k = keyframes.get(time);
-		if (k == null) {
-			k = new Keyframe();
-			keyframes.put(time, k);
-		}
-		return k;
-	}
-
-	void makeAnimation() {
-		AnimControl ac = rootNode.getControl(AnimControl.class);
-		Skeleton ske = ac.getSkeleton();
-
-		// 解析动画数据
-		for (int i = 0; i < mesh.mAnimation.mSubAnimationNum; i++) {
-
-			DrzSubAnimation animation = mesh.mAnimation.mSubAnimtion[i];
-
-			// 计算动画时长
-			float length = (float) animation.mAllAniDurationTime
-					/ (float) animation.mTicksPerSecond;
-			Animation anim = new Animation(i + "", length);
-
-			// Calculate tracks
-			TreeMap<Long, Keyframe> keyframes = new TreeMap<Long, Keyframe>();
-			for (DrzAnimationNode track : animation.mAnimNode) {
-				int targetBoneIndex = ske.getBoneIndex(track.NodeName);
-
-				for (DRZPOSITIONKEY key : track.mPositionKeys) {
-					Keyframe frame = getOrMakeKeyframe(keyframes, key.mTime);
-					frame.translation = key.mValue;
-				}
-
-				for (DRZROTATIONKEY key : track.mRotationKeys) {
-					Keyframe frame = getOrMakeKeyframe(keyframes, key.mTime);
-					frame.rotation = key.mValue;
-				}
-
-				for (DRZSCALEKEY key : track.mScaleKeys) {
-					Keyframe frame = getOrMakeKeyframe(keyframes, key.mTime);
-					frame.scale = key.mValue;
-				}
-
-				int size = keyframes.size();
-
-				// BoneTrack with no keyframes
-				if (size <= 0) {
-					continue;
-				}
-
-				float[] times = new float[size];
-				Vector3f[] translations = new Vector3f[size];
-				Quaternion[] rotations = new Quaternion[size];
-				Vector3f[] scales = new Vector3f[size];
-
-				int j = 0;
-				for (long time : keyframes.keySet()) {
-					times[j] = (float) time / 4000f;
-					Keyframe frame = keyframes.get(time);
-					translations[j] = frame.translation;
-					rotations[j] = frame.rotation;
-					scales[j] = frame.scale;
-
-					assert translations[j] != null;
-					assert rotations[j] != null;
-					assert scales[j] != null;
-
-					j++;
-				}
-
-				BoneTrack boneTrack = new BoneTrack(targetBoneIndex, times,
-						translations, rotations, scales);
-				anim.addTrack(boneTrack);
-			}
-
-			ac.addAnim(anim);
-
-		}
-
-		// 动作控制器
-		HashMap<Integer, SubAnimation> subAnimSet = new HashMap<Integer, SubAnimation>();
-		MotionControl mc = new MotionControl(subAnimSet);
-		rootNode.addControl(mc);
-		int animCount = mesh.mAnimation.mAnimationSetMap.size();
-		for (int id = 0; id < animCount; id++) {
-			DrzAnimationSet animSet = mesh.mAnimation.mAnimationSetMap.get(id);
-
-			int animIndex = animSet.SubAnimationIndex;
-			int type = animSet.AnimationTypeId;
-			boolean repeat = animSet.Repeat;
-			float startTime = 160 * (float) animSet.SetStartTime;
-			float endTime = 160 * (float) animSet.SetEndTime1;
-			float length = endTime - startTime;
-
-			SubAnimation anim = new SubAnimation(id, type, startTime, endTime,
-					length, repeat, animIndex);
-			subAnimSet.put(id, anim);
-		}
-	}
-
-	/**
-	 * 计算骨骼之间的继承关系，以及动画的时长。
-	 * 
-	 * @param animation
-	 * @return
-	 */
-	private boolean addNodes(final DrzAnimation animation) {
-		// List<Animation> animList
-		final DrzSubAnimation[] animList = animation.mSubAnimtion;
-
-		for (int sa = 0; sa < animation.mSubAnimationNum; sa++)// max 128
-		{
-			// Animation anim = animList.get(sa);
-			DrzSubAnimation anim = animList[sa];
-
-			int iHighestFirstFrame = 0;
-			int iHighestLastFrame = 0;
-
-			// Process each Node
-			for (int i = 0; i < anim.mAnimNodeNum; i++) {
-				// Tracks in Animation
-				DrzAnimationNode boneTrack = anim.mAnimNode[i];
-
-				// Get highest last frame of current subanimation
-				if (boneTrack.mlRotAnimationEndFrame > iHighestLastFrame) {
-					iHighestLastFrame = boneTrack.mlRotAnimationEndFrame;
-				}
-				if (boneTrack.mlPosAnimationEndFrame > iHighestLastFrame) {
-					iHighestLastFrame = boneTrack.mlPosAnimationEndFrame;
-				}
-				if (boneTrack.mlSclAnimationEndFrame > iHighestLastFrame) {
-					iHighestLastFrame = boneTrack.mlSclAnimationEndFrame;
-				}
-
-				// Get highest first frame of current subanimation
-				if (boneTrack.mlRotAnimationStartFrame > iHighestFirstFrame) {
-					iHighestFirstFrame = boneTrack.mlRotAnimationStartFrame;
-				}
-				if (boneTrack.mlPosAnimationStartFrame > iHighestFirstFrame) {
-					iHighestFirstFrame = boneTrack.mlPosAnimationStartFrame;
-				}
-				if (boneTrack.mlSclAnimationStartFrame > iHighestFirstFrame) {
-					iHighestFirstFrame = boneTrack.mlSclAnimationStartFrame;
-				}
-			}
-
-			// Set SubANimation Duration
-			anim.mAllAniDurationTime = iHighestLastFrame - iHighestFirstFrame;
-		}
-
-		SetupAnimationSets(animation);
-
-		return true;
-
-		/*****************************************
-		 * ASE Loader http://read.pudn.com/downloads177/sourcecode/graph/824287/
-		 * CASEMeshFileLoader.cpp__.htm
-		 *****************************************/
-	}
-
-	private void SetupAnimationSets(DrzAnimation pAnimation) {
-		if (pAnimation == null)
-			return;
-
-		// 动画轨迹数目
-		int animCount = pAnimation.mAnimationSetMap.size();
-		for (int i = 0; i < animCount; i++) {
-			DrzAnimationSet animSet = mesh.mAnimation.mAnimationSetMap.get(i);
-
-			// Get AnimationTime
-			animSet.SetStartTime = animSet.AnimationStartKey
-					/ pAnimation.mSubAnimtion[0].mTicksPerSecond;
-			animSet.SetEndTime1 = animSet.AnimationEndKey1
-					/ pAnimation.mSubAnimtion[0].mTicksPerSecond;
-
-			// set the start time of this animationset
-			animSet.AnimationDurationTime = animSet.SetEndTime1
-					- animSet.SetStartTime;
-		}
-	}
-
 	/**
 	 * 加载模型的网格数据
 	 * 
@@ -1009,8 +613,7 @@ public class SmdLoader extends AbstractLoader {
 
 			// Check header
 			buffer.position(meshOffset);
-			if (!((buffer.get() == 'D') || (buffer.get() == 'C') || (buffer
-					.get() == 'B'))) {
+			if (!((buffer.get() == 'D') || (buffer.get() == 'C') || (buffer.get() == 'B'))) {
 				System.out.println("Invalid mesh header. mesh(" + i + ")\n");
 				return false;
 			}
@@ -1039,8 +642,7 @@ public class SmdLoader extends AbstractLoader {
 			// Read vertices
 			if (mVertexNum > 0) {
 				buffer.position();
-				if (ParseVertexData(meshOffset + 2236, mVertexNum, mFaceNum,
-						mTVFaceNum, hasBones, subMesh) == false)
+				if (ParseVertexData(meshOffset + 2236, mVertexNum, mFaceNum, mTVFaceNum, hasBones, subMesh) == false)
 					return false;
 			}
 
@@ -1219,8 +821,7 @@ public class SmdLoader extends AbstractLoader {
 	 * @param mFaceNum
 	 * @param mTVFaceNum
 	 */
-	void printMesh(DrzSubMesh subMesh, int mVertexNum, int mFaceNum,
-			int mTVFaceNum) {
+	void printMesh(DrzSubMesh subMesh, int mVertexNum, int mFaceNum, int mTVFaceNum) {
 
 		AnimControl ac = rootNode.getControl(AnimControl.class);
 		Skeleton ske = ac.getSkeleton();
@@ -1284,6 +885,8 @@ public class SmdLoader extends AbstractLoader {
 		// 绑定动画
 		mesh.setBuffer(Type.BoneIndex, 4, bi);
 		mesh.setBuffer(Type.BoneWeight, 1, bw);
+		mesh.setBuffer(Type.HWBoneIndex, 4, bi);
+		mesh.setBuffer(Type.HWBoneWeight, 1, bw);
 		mesh.setMaxNumWeights(1);
 		mesh.generateBindPose(true);
 
@@ -1438,57 +1041,6 @@ public class SmdLoader extends AbstractLoader {
 		}
 	}
 
-	private void ParseMatrix(final int offset, final Matrix4f pMatrix,
-			final Quaternion pTMRotation, final Vector3f pTMPos,
-			final Vector3f pTMScale) {
-		buffer.position(offset);
-
-		// *TM_ROW0
-		pMatrix.m00 = getPTDouble();
-		pMatrix.m02 = getPTDouble();
-		pMatrix.m01 = getPTDouble();
-		pMatrix.m03 = getPTDouble();
-
-		// *TM_ROW2
-		pMatrix.m20 = getPTDouble();
-		pMatrix.m22 = getPTDouble();
-		pMatrix.m21 = getPTDouble();
-		pMatrix.m23 = getPTDouble();
-
-		// *TM_ROW1
-		pMatrix.m10 = getPTDouble();
-		pMatrix.m12 = getPTDouble();
-		pMatrix.m11 = getPTDouble();
-		pMatrix.m13 = getPTDouble();
-
-		// *TM_ROW3
-		pMatrix.m30 = getPTDouble();
-		pMatrix.m32 = getPTDouble();
-		pMatrix.m31 = getPTDouble();
-		pMatrix.m33 = getPTDouble();
-
-		// TMRotation
-		buffer.position(offset + 388);
-		float x = getFloat();
-		float y = getFloat();
-		float z = getFloat();
-		float w = getFloat();
-
-		pTMRotation.set(-x, -y, -z, w);
-
-		// *TM_SCALE
-		x = getPTDouble();
-		y = getPTDouble();
-		z = getPTDouble();
-		pTMScale.set(x, y, z);
-
-		// *TM_POS
-		x = getPTDouble();
-		y = getPTDouble();
-		z = getPTDouble();
-		pTMPos.set(x, y, z);
-	}
-
 	private boolean ParseVertexData(int offset, int mVertexNum, int mFaceNum,
 			int mTVFaceNum, boolean hasBones, DrzSubMesh submesh) {
 		buffer.position(offset);
@@ -1496,8 +1048,7 @@ public class SmdLoader extends AbstractLoader {
 		submesh.mBoneAssignmentList = new ArrayList<String>();
 
 		int vertoffset = offset;
-		int physoffset = offset + (mVertexNum * 24) + (mFaceNum * 36)
-				+ (mTVFaceNum * 32);
+		int physoffset = offset + (mVertexNum * 24) + (mFaceNum * 36) + (mTVFaceNum * 32);
 
 		BONEBUFF BoneBuff = new BONEBUFF();
 		if (hasBones == false) {
@@ -1536,8 +1087,8 @@ public class SmdLoader extends AbstractLoader {
 				// Since this one has bones, we must go through the bone file
 				buffer.position(physoffset);
 				strBoneName = getString();
-				if (mBoneMeshDataInfo.containsKey(strBoneName) == true) {
-					BoneBuff = mBoneMeshDataInfo.get(strBoneName);
+				if (SmbLoader.mBoneMeshDataInfo.containsKey(strBoneName) == true) {
+					BoneBuff = SmbLoader.mBoneMeshDataInfo.get(strBoneName);
 					BoneFound = true;
 				}
 
@@ -1603,9 +1154,7 @@ public class SmdLoader extends AbstractLoader {
 				submesh.mVertexList.add(vert);
 
 			} else {
-				System.out
-						.println("Vertex read error! No valid mesh matrix found. BoneName=["
-								+ strBoneName + "] hasBone=" + hasBones);
+				System.out.println("Vertex read error! No valid mesh matrix found. BoneName=" + strBoneName + " hasBone=" + hasBones + " Model=" + key.getName());
 				return false;
 			}
 
