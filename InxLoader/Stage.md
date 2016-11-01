@@ -1799,4 +1799,164 @@
 		int AngX,AngY;				//螟沥等 阿档 ( 坷瞒 裹困怒 )
 	};
 
+###材质
 
+
+	class smMATERIAL_GROUP {
+		DWORD	Head;
+	public:
+		smMATERIAL *smMaterial;
+		DWORD MaterialCount;
+	
+		int ReformTexture;		//府汽且 咆胶媚 蜡公
+	
+		int MaxMaterial;
+	
+		int LastSearchMaterial;
+		char szLastSearchName[64];
+	};
+
+	#define TEXFILENAME_SIZE	64
+	
+	//历厘且 单捞鸥狼 农扁甫 固府 舅妨淋
+	int smMATERIAL_GROUP::GetSaveSize()
+	{
+		int size;
+		DWORD cnt ,tcnt;
+		int	len,alen;
+	
+		size	 = sizeof( smMATERIAL_GROUP );
+	
+		for(cnt=0;cnt<MaterialCount;cnt++) {
+			size+= sizeof( smMATERIAL );
+			if ( smMaterial[cnt].InUse ) {
+				size += sizeof(int);					//咆胶媚 捞抚 辨捞啊 甸绢哎 int屈
+				for( tcnt=0; tcnt<smMaterial[cnt].TextureCounter ; tcnt++) {
+					len = lstrlen( smMaterial[cnt].smTexture[tcnt]->Name )+1;
+					alen = lstrlen( smMaterial[cnt].smTexture[tcnt]->NameA )+1;
+					size += len;
+					size += alen;
+				}
+	
+				for( tcnt=0; tcnt<smMaterial[cnt].AnimTexCounter ; tcnt++) {
+					len = lstrlen( smMaterial[cnt].smAnimTexture[tcnt]->Name )+1;
+					alen = lstrlen( smMaterial[cnt].smAnimTexture[tcnt]->NameA )+1;
+					size += len;
+					size += alen;
+				}
+	
+			}
+		}
+		return size;
+	}
+	
+	//单捞鸥甫 颇老肺 历厘 
+	int smMATERIAL_GROUP::SaveFile( HANDLE hFile )
+	{
+		DWORD	dwAcess;
+		DWORD cnt ,tcnt;
+		int	len;
+		int size;
+	
+		size =	WriteFile( hFile , &Head	, sizeof( smMATERIAL_GROUP )	, &dwAcess , NULL );
+	
+		for(cnt=0;cnt<MaterialCount;cnt++) {
+			//皋飘府倔 历厘
+			size+= WriteFile( hFile , &smMaterial[cnt] , sizeof( smMATERIAL )	, &dwAcess , NULL );
+	
+			if ( smMaterial[cnt].InUse ) {
+	
+				//咆胶媚 颇老 格废俊 措茄 捞抚 辨捞 拌魂
+				len = 0;
+				for( tcnt=0; tcnt<smMaterial[cnt].TextureCounter ; tcnt++) {
+					len += lstrlen( smMaterial[cnt].smTexture[tcnt]->Name )+1;
+					len += lstrlen( smMaterial[cnt].smTexture[tcnt]->NameA )+1;
+				}
+				for( tcnt=0; tcnt<smMaterial[cnt].AnimTexCounter ; tcnt++) {
+					len += lstrlen( smMaterial[cnt].smAnimTexture[tcnt]->Name )+1;
+					len += lstrlen( smMaterial[cnt].smAnimTexture[tcnt]->NameA )+1;
+				}
+				//巩磊凯 辨捞 固府 拌魂
+				size+= WriteFile( hFile , &len , sizeof(int) , &dwAcess , NULL );
+	
+				//咆胶媚 颇老 捞抚阑 楷加利栏肺 历厘
+				for( tcnt=0; tcnt<smMaterial[cnt].TextureCounter ; tcnt++) {
+					len = lstrlen( smMaterial[cnt].smTexture[tcnt]->Name )+1;
+					size+= WriteFile( hFile , smMaterial[cnt].smTexture[tcnt]->Name , len , &dwAcess , NULL );
+					len = lstrlen( smMaterial[cnt].smTexture[tcnt]->NameA )+1;
+					size+= WriteFile( hFile , smMaterial[cnt].smTexture[tcnt]->NameA , len , &dwAcess , NULL );
+				}
+	
+				for( tcnt=0; tcnt<smMaterial[cnt].AnimTexCounter ; tcnt++) {
+					len = lstrlen( smMaterial[cnt].smAnimTexture[tcnt]->Name )+1;
+					size+= WriteFile( hFile , smMaterial[cnt].smAnimTexture[tcnt]->Name , len , &dwAcess , NULL );
+					len = lstrlen( smMaterial[cnt].smAnimTexture[tcnt]->NameA )+1;
+					size+= WriteFile( hFile , smMaterial[cnt].smAnimTexture[tcnt]->NameA , len , &dwAcess , NULL );
+				}
+	
+			}
+		}
+	
+		return size;
+	}
+	
+	//颇老俊辑 单捞鸥甫 肺靛 
+	int smMATERIAL_GROUP::LoadFile( HANDLE hFile )
+	{
+		DWORD	dwAcess;
+		DWORD	cnt ,tcnt;
+		int		StrLen;
+		int		size;
+		char	szNameBuff[4096];
+		char	*lpNameBuff;
+		char	*szName , *szNameA;
+	
+		//弊缝狼 郴侩阑 佬绢咳
+		size=ReadFile( hFile , &Head , sizeof( smMATERIAL_GROUP ) , &dwAcess , NULL );
+	
+		//皋飘府倔 皋葛府 棱澜
+		smMaterial = new smMATERIAL[ MaterialCount ];
+	
+		for(cnt=0;cnt<MaterialCount;cnt++) {
+			//皋飘府倔 单捞鸥 佬绢咳
+			size+=	ReadFile( hFile , &smMaterial[cnt] , sizeof( smMATERIAL ) , &dwAcess , NULL );
+	
+			if ( smMaterial[cnt].InUse ) {
+				//咆胶媚 匙烙 滚欺 农扁 佬澜
+				size+=	ReadFile( hFile , &StrLen , sizeof( int ) , &dwAcess , NULL );
+				//咆胶媚 匙烙 滚欺 农扁父怒 单捞鸥 佬澜 
+				size+=	ReadFile( hFile , szNameBuff , StrLen, &dwAcess , NULL );
+	
+				lpNameBuff = szNameBuff;
+	
+				//咆胶媚 汲沥
+				for( tcnt=0; tcnt<smMaterial[cnt].TextureCounter ; tcnt++) {
+					szName = lpNameBuff;
+					lpNameBuff += lstrlen( szName )+1;
+					szNameA = lpNameBuff;
+					lpNameBuff += lstrlen( szNameA )+1;
+	
+					if ( szNameA[0] )
+						smMaterial[cnt].smTexture[tcnt] = smTexture.Add( szName , szNameA );
+					else
+						smMaterial[cnt].smTexture[tcnt] = smTexture.Add( szName );
+				}
+	
+				//俊聪皋捞记 咆胶媚 汲沥
+				for( tcnt=0; tcnt<smMaterial[cnt].AnimTexCounter ; tcnt++) {
+					szName = lpNameBuff;
+					lpNameBuff += lstrlen( szName )+1;
+					szNameA = lpNameBuff;
+					lpNameBuff += lstrlen( szNameA )+1;
+	
+					if ( szNameA[0] )
+						smMaterial[cnt].smAnimTexture[tcnt] = smTexture.Add( szName , szNameA );
+					else
+						smMaterial[cnt].smAnimTexture[tcnt] = smTexture.Add( szName );
+				}
+			}
+	
+		}
+	
+		return size;
+	}

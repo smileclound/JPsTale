@@ -135,4 +135,27 @@ public class ByteReader {
 		}
 		return stringBuffer.toString();
 	}
+	
+	/**
+	 * This reads bytes until it gets 0x00 and returns the corresponding string.
+	 */
+	public String getString(int size) {
+		int count=0;
+		StringBuffer stringBuffer = new StringBuffer();
+		char charIn = (char) buffer.get();
+		count++;
+		while (charIn != 0x00) {
+			stringBuffer.append(charIn);
+			charIn = (char) buffer.get();
+			count++;
+		}
+		
+		// skip useless byte
+		if (count < size) {
+			for(int i=count; i< size; i++) {
+				buffer.get();
+			}
+		}
+		return stringBuffer.toString();
+	}
 }
