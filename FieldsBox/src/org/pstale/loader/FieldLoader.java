@@ -21,8 +21,6 @@ import com.jme3.math.Vector3f;
 public class FieldLoader {
 	
 	
-	public static final float SCALE = 0.15f;
-
 	public Field[] load() {
 		// 读取FIELD.txt文件中的数据
 		// 该文件为JSON格式，记录了所有地图的数据
@@ -332,7 +330,4 @@ public class FieldLoader {
 		return new Vector2f(x, z);
 	}
 	
-	float height = 1800 * SCALE;
-	float bodyHeight = 60 * SCALE;
-
 }

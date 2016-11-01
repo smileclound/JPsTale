@@ -33,14 +33,14 @@ public class FieldgateAppState extends SubAppState {
 			
 			Vector3f pos = new Vector3f(gate.getPosition());
 			pos.multLocal(scale);
-			pos.y += 50;
+			pos.y += 1000 * scale;
 			
 			gate.getToField();
 			
 			/**
 			 * 创建一个门户标记
 			 */
-			Box box = new Box(1, 100, 1);
+			Box box = new Box(1, 2000 * scale, 1);
 			Geometry geom = new Geometry("GateFlag", box);
 			geom.setLocalTranslation(pos);
 			geom.setMaterial(getMaterial(ColorRGBA.White));

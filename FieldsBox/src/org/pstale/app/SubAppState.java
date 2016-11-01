@@ -17,7 +17,7 @@ import com.jme3.scene.Spatial;
  */
 public abstract class SubAppState extends BaseAppState {
 
-	protected float scale = 0.05f;
+	protected float scale = 0.5f;
 	protected Node rootNode;
 	protected Node guiNode;
 	

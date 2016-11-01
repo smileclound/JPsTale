@@ -42,7 +42,7 @@ public class WarpgateAppState extends SubAppState {
 			/**
 			 * 创建一个传送门标记
 			 */
-			Cylinder cylinder = new Cylinder(5, 6, height, size, true, true);
+			Cylinder cylinder = new Cylinder(5, 6, height, size, true, false);
 			Geometry geom = new Geometry("WarpFlag", cylinder);
 			geom.rotate(FastMath.HALF_PI, 0, 0);
 			geom.setLocalTranslation(pos);

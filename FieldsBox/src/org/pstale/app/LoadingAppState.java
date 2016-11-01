@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -16,6 +17,11 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+
+import net.jmecn.asset.ItemInitilize;
+import net.jmecn.asset.MonsterInitilize;
+import net.jmecn.asset.chars.CharMonsterInfo;
+import net.jmecn.asset.item.ItemInfo;
 
 import org.apache.log4j.Logger;
 import org.pstale.fields.Field;
@@ -106,8 +112,7 @@ public class LoadingAppState extends SubAppState {
 
 		if (future != null && !future.isDone()) {
 			progressBar.setProgressPercent(task.value / 100f);
-			progressBar.setMessage("进度: " + task.value + "% ... "
-					+ task.message);
+			progressBar.setMessage("进度: " + task.value + "% ... " + task.message);
 		}
 
 		if (future != null && future.isDone()) {
@@ -133,10 +138,17 @@ public class LoadingAppState extends SubAppState {
 	 */
 	private void initLoader(Data data) {
 		AppState[] states = { new AxisAppState(),
-				new DataState(data.serverRoot, data.clientRoot, data.fields),
-				new HudState(), new LoaderAppState(), new MusicAppState(),
-				new AmbientAppState(), new FieldgateAppState(),
-				new WarpgateAppState(), new MonsterAppState(),
+				new DataState(data.serverRoot,
+						data.allMonster, data.allNpc, data.allItem,
+						data.clientRoot, data.fields),
+				//new CursorState(),
+				new HudState(),
+				new LoaderAppState(),
+				new MusicAppState(),
+				new AmbientAppState(),
+				new FieldgateAppState(),
+				new WarpgateAppState(),
+				new MonsterAppState(),
 				new NpcAppState() };
 
 		AppStateManager stateManager = getStateManager();
@@ -158,11 +170,19 @@ public class LoadingAppState extends SubAppState {
 	 */
 	static String CLIENT_ROOT;
 
-	class Data {
+	/**
+	 * 这个类用于临时存储线程中解析的数据。在线程执行结束后，会从Future中获得最终的结果。
+	 * @author yanmaoyuan
+	 *
+	 */
+	private class Data {
 		public String serverRoot = "";
+		public List<CharMonsterInfo> allMonster;
+		public List<CharMonsterInfo> allNpc;
+		public List<ItemInfo> allItem;
+		
 		public String clientRoot = "/";
 		public Field[] fields;
-
 	}
 
 	class LoadingTask implements Callable<Data> {
@@ -186,17 +206,64 @@ public class LoadingAppState extends SubAppState {
 
 			value = 2;
 			message = "Config..";
+			
+			// 解析服务端数据
+			if (SERVER_ROOT != null) {
+				// 所有怪物数据
+				MonsterInitilize mi = new MonsterInitilize();
+				mi.setFolder(SERVER_ROOT + "/" + MONSTER_DIR);
+				mi.init();
+				data.allMonster = mi.getList();
+				
+				value = 8;
+				message = "Monster:" + data.allMonster.size();
+				log.info(message);
+				for(int i=0; i<data.allMonster.size(); i++) {
+					CharMonsterInfo monster = data.allMonster.get(i);
+					log.info("EnName:" + monster.enName + " LocalName:" + monster.szName +  " File:" + monster.File);
+				}
+				
+				// 所有NPC数据
+				mi.setFolder(SERVER_ROOT + "/" + NPC_DIR);
+				mi.init();
+				data.allNpc = mi.getList();
+				
+				value = 11;
+				message = "NPC:" + data.allNpc.size();
+				log.info(message);
+				for(int i=0; i<data.allNpc.size(); i++) {
+					CharMonsterInfo npc = data.allNpc.get(i);
+					log.info("EnName:" + npc.enName + " LocalName:" + npc.szName + " File:" + npc.File);
+				}
+				
+				// 所有装备数据
+				ItemInitilize ii = new ItemInitilize();
+				ii.setFolder(SERVER_ROOT + "/" + OPENITEM_DIR);
+				ii.init();
+				data.allItem = ii.getList();
+				
+				value = 20;
+				message = "Item:" + data.allItem.size();
+				log.info(message);
+				
+			} else {
+				value = 20;
+				message = "No server found";
+				log.info(message);
+			}
 
 			if (CLIENT_ROOT != null) {
 				// 解码小地图
 				imageDecode(CLIENT_ROOT + "/field/map");
 				// 解码标题
 				imageDecode(CLIENT_ROOT + "/field/title");
+				// 解码鼠标图片
+				imageDecode(CLIENT_ROOT + "/image/Sinimage/Cursor");
 			}
 
 			Field[] fields = new FieldLoader().load();
 			data.fields = fields;
-			value = 10;
+			value = 25;
 			message = "解析地区";
 
 			/**
@@ -212,7 +279,7 @@ public class LoadingAppState extends SubAppState {
 			for (int i = 0; i < size; i++) {
 				Field field = fields[i];
 				// 计算进度
-				value = 10 + 90 * (i + 1) / (size + 1);
+				value = 25 + 75 * (i + 1) / (size + 1);
 				message = "解析:" + field.getTitle();
 
 				// 检查模型文件是否存在
@@ -221,18 +288,18 @@ public class LoadingAppState extends SubAppState {
 				/**
 				 * 图片解码太耗时了，考虑暂时不在Loading时处理这个问题了。
 				 * 
+				 */
 				// 使用ImageDecoder对地图的图片其进行解密。
 				int idx = model.lastIndexOf("/");
 				String folder = model.substring(0, idx);
 				if (CLIENT_ROOT != null) {
 					String path = CLIENT_ROOT + "/" + folder;
 					if (!folders.contains(path)) {
-						
+
 						imageDecode(path);
 						folders.add(path);
 					}
 				}
-				 */
 
 				// 尝试加载服务端文件
 				if (SERVER_ROOT != null) {
@@ -262,17 +329,17 @@ public class LoadingAppState extends SubAppState {
 						// NPC信息
 						ArrayList<NPC> npcs = spcLoader.load(spc);
 						field.setNpcs(npcs);
-						
+
 						if (npcs != null && npcs.size() > 0) {
-							for(int n = 0; n < npcs.size(); n++) {
+							for (int n = 0; n < npcs.size(); n++) {
 								NPC npc = npcs.get(n);
 								if (npc == null)
 									continue;
-								
+
 								String npcModel = npc.getModel().replaceAll("\\\\", "/");
 								// 使用ImageDecoder对地图的图片其进行解密。
-								int idx = npcModel.lastIndexOf("/");
-								String folder = npcModel.substring(0, idx);
+								idx = npcModel.lastIndexOf("/");
+								folder = npcModel.substring(0, idx);
 								if (CLIENT_ROOT != null) {
 									String path = CLIENT_ROOT + "/" + folder;
 									if (!folders.contains(path)) {
@@ -324,15 +391,13 @@ public class LoadingAppState extends SubAppState {
 
 						try {
 							byte[] buffer = new byte[16];
-							RandomAccessFile raf = new RandomAccessFile(file,
-									"rw");
+							RandomAccessFile raf = new RandomAccessFile(file, "rw");
 							raf.seek(0);
 							raf.readFully(buffer);
 
 							// 解码
 							if (buffer[0] == 0x41 && buffer[1] == 0x38) {
-								System.out.println("Decode "
-										+ file.getAbsolutePath());
+								log.info("Decode " + file.getAbsolutePath());
 								ImageDecoder.convertBMP(buffer, true);
 								raf.seek(0);
 								raf.write(buffer);
@@ -363,8 +428,7 @@ public class LoadingAppState extends SubAppState {
 
 							// 解码
 							if (buffer[0] == 0x47 && buffer[1] == 0x38) {
-								System.out.println("Decode "
-										+ file.getAbsolutePath());
+								log.info("Decode " + file.getAbsolutePath());
 								ImageDecoder.convertTGA(buffer, true);
 								raf.seek(0);
 								raf.write(buffer);
@@ -387,11 +451,11 @@ public class LoadingAppState extends SubAppState {
 				if (rl != null) {
 					sum += rl.LimitMax;
 
-					System.out.println(f.getTitle() + " limit=" + rl.LimitMax);
+					log.info(f.getTitle() + " limit=" + rl.LimitMax);
 				}
 			}
 
-			System.out.println("sum = " + sum);
+			log.info("sum = " + sum);
 		}
 
 		// 文件选择器
@@ -561,7 +625,7 @@ public class LoadingAppState extends SubAppState {
 				props.setProperty(keyname, keyvalue);
 				props.store(fos, "Update '" + keyname + "' value");
 			} catch (IOException e) {
-				System.err.println("属性文件更新错误");
+				log.warn("属性文件更新错误", e);
 			}
 		}
 

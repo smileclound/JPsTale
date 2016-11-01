@@ -18,6 +18,7 @@ public class AmbientAppState extends SubAppState {
 	@Override
 	protected void initialize(Application app) {
 		getMaterial(new ColorRGBA(0f, 1f, 1f, 1f));
+		defaultMat.getAdditionalRenderState().setWireframe(true);
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package org.pstale.app;
 
+import net.jmecn.asset.chars.CharMonsterInfo;
+
 import org.pstale.fields.NPC;
 
 import com.jme3.animation.AnimControl;
@@ -79,6 +81,16 @@ public class NpcAppState extends SubAppState {
 				geom.setUserData("script", npc.getScript());
 				rootNode.attachChild(geom);
 			}
+			
+			DataState dataState = getStateManager().getState(DataState.class);
+			if (dataState != null) {
+				CharMonsterInfo cmNPC= dataState.findNPC(npc.getScript());
+				if (cmNPC != null) {
+					System.out.println(cmNPC.NpcMessage);
+				} else {
+					System.err.println("找不到NPC脚本:" + npc.getScript());
+				}
+			}
 		}
 	}
 	
@@ -103,7 +115,6 @@ public class NpcAppState extends SubAppState {
 		
 		AseKey key = new AseKey(path);
 		model = (Node) assetManager.loadAsset(key);
-		
 		
 		// Debug skeleton
 		final AnimControl ac = model.getControl(AnimControl.class);

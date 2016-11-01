@@ -6,9 +6,11 @@ import org.pstale.fields.Field;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.BaseAppState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import com.simsilica.lemur.Action;
 import com.simsilica.lemur.ActionButton;
@@ -30,7 +32,12 @@ import com.simsilica.lemur.event.CursorEventControl;
 import com.simsilica.lemur.event.DragHandler;
 import com.simsilica.lemur.style.ElementId;
 
-public class HudState extends SubAppState {
+/**
+ * 主界面
+ * @author yanmaoyuan
+ *
+ */
+public class HudState extends BaseAppState {
 
 	private ListBox<String> listBox;
 	private VersionedList<String> fieldList = new VersionedList<String>();
@@ -42,6 +49,11 @@ public class HudState extends SubAppState {
 	private float width;// 屏幕宽度
 	private float height;// 屏幕高度
 	
+	private Node guiNode;
+	
+	public HudState() {
+		guiNode = new Node("LemurGUI");
+	}
 	@Override
 	protected void initialize(Application app) {
 		// 记录屏幕高宽
@@ -66,6 +78,17 @@ public class HudState extends SubAppState {
 	@Override
 	protected void cleanup(Application app) {}
 	
+	@Override
+	protected void onEnable() {
+		SimpleApplication simpleApp = (SimpleApplication)getApplication();
+		simpleApp.getGuiNode().attachChild(guiNode);
+	}
+
+	@Override
+	protected void onDisable() {
+		guiNode.removeFromParent();
+	}
+	
 	public void update(float tpf) {
 		if( showAxisRef.update() ) {
 			AxisAppState axis = getStateManager().getState(AxisAppState.class);
@@ -89,11 +112,15 @@ public class HudState extends SubAppState {
 	}
 	
 	/**
+	 * 将小地图的标题和内容做成变量，这样就可以通过
+	 * {@code public void setMiniMap(Texture titleRes, Texture mapRes)}
+	 * 方法来修改小地图了。
+	 */
+	private Container title;
+	private Container map;
+	/**
 	 * 创建小地图面板
 	 */
-	Container title;
-	Container map;
-	
 	private void createMiniMap() {
 		Container window = new Container("glass");
 		guiNode.attachChild(window);
