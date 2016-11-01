@@ -3,21 +3,8 @@ package org.pstale.asset.loader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
-import org.pstale.asset.anim.DRZPOSITIONKEY;
-import org.pstale.asset.anim.DRZROTATIONKEY;
-import org.pstale.asset.anim.DRZSCALEKEY;
 import org.pstale.asset.anim.DrzAnimation;
-import org.pstale.asset.anim.DrzAnimationNode;
-import org.pstale.asset.anim.DrzAnimationSet;
-import org.pstale.asset.anim.DrzSubAnimation;
-import org.pstale.asset.anim.Keyframe;
-import org.pstale.asset.anim.MotionControl;
-import org.pstale.asset.anim.SubAnimation;
 import org.pstale.asset.base.AbstractLoader;
 import org.pstale.asset.mesh.DrzFaceTextureId;
 import org.pstale.asset.mesh.DrzLight;
@@ -26,18 +13,12 @@ import org.pstale.asset.mesh.DrzMesh;
 import org.pstale.asset.mesh.DrzSubMesh;
 
 import com.jme3.animation.AnimControl;
-import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
-import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
-import com.jme3.animation.SkeletonControl;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Matrix4f;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
@@ -1201,94 +1182,4 @@ public class SmdLoader extends AbstractLoader {
 		}
 	}
 
-	private void ParseRotationAniBlock(final int _offset,
-			final DrzAnimationNode ppAniNode, final int RotKeyNum,
-			final int RotMatOffset, final DrzAnimationNode AseExportRootNode) {
-
-		int buf = _offset;
-		buf += RotMatOffset * 20;
-
-		Quaternion cur = new Quaternion();
-		for (int i = RotMatOffset; i < RotMatOffset + RotKeyNum; i++) {
-			int time = getInt(buf);
-			float x = getFloat();
-			float y = getFloat();
-			float z = getFloat();
-			float w = getFloat();
-
-			Quaternion q = new Quaternion(-x, -y, -z, w);
-
-			if (i - RotMatOffset != 0) {
-				cur.multLocal(q);
-			} else {
-				cur.set(q);
-			}
-
-			DRZROTATIONKEY rotKey = new DRZROTATIONKEY();
-			rotKey.mTime = time - ppAniNode.mlRotAnimationStartFrame;
-			rotKey.mValue = new Quaternion(cur);
-
-			// need this to get to my quaternion conventions
-			ppAniNode.mRotationKeys.add(rotKey);
-
-			// We need non reversed and stand alone Quaternion for ase files. So
-			// i create an export list, insteed reverse the dx quats
-			DRZROTATIONKEY AseExportRotKey = new DRZROTATIONKEY();
-			AseExportRotKey.mTime = time;
-			AseExportRotKey.mValue = new Quaternion(y, -z, x, w);
-			AseExportRootNode.mAseExportRotationKeys.add(AseExportRotKey);
-
-			buf += 20;
-		}
-	}
-
-	private void ParsePositionAniBlock(final int _offset,
-			final DrzAnimationNode ppAniNode, final int PosKeyNum,
-			final int PosMatOffset, final DrzAnimationNode AseExportRootNode) {
-		int buf = _offset;
-		buf += PosMatOffset * 16;
-		for (int i = PosMatOffset; i < PosMatOffset + PosKeyNum; i++) {
-			int time = getInt(buf);
-			float x = getFloat();
-			float y = getFloat();
-			float z = getFloat();
-
-			DRZPOSITIONKEY posKey = new DRZPOSITIONKEY();
-			posKey.mTime = time - ppAniNode.mlPosAnimationStartFrame;
-			posKey.mValue = new Vector3f(x, y, z);
-			ppAniNode.mPositionKeys.add(posKey);
-
-			DRZPOSITIONKEY posKey2 = new DRZPOSITIONKEY();
-			posKey2.mTime = time;
-			posKey2.mValue = new Vector3f(x, y, z);
-			AseExportRootNode.mAseExportPositionKeys.add(posKey2);
-
-			buf += 16;
-		}
-	}
-
-	private void ParseScaleAniBlock(final int _offset,
-			final DrzAnimationNode ppAniNode, final int SclKeyNum,
-			final int SclMatOffset, final DrzAnimationNode AseExportRootNode) {
-		int buf = _offset;
-		buf += SclMatOffset * 16;
-		for (int i = SclMatOffset; i < SclMatOffset + SclKeyNum; i++) {
-			int time = getInt(buf);
-			float x = getPTDouble();
-			float y = getPTDouble();
-			float z = getPTDouble();
-
-			DRZSCALEKEY sclKey = new DRZSCALEKEY();
-			sclKey.mTime = time - ppAniNode.mlSclAnimationStartFrame;
-			sclKey.mValue = new Vector3f(x, y, z);
-			ppAniNode.mScaleKeys.add(sclKey);
-
-			DRZSCALEKEY sclKey2 = new DRZSCALEKEY();
-			sclKey2.mTime = time;
-			sclKey2.mValue = new Vector3f(z, y, x);
-			AseExportRootNode.mAseExportScaleKeys.add(sclKey2);
-
-			buf += 16;
-		}
-	}
 }
