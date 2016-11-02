@@ -1,5 +1,5 @@
 /bin
 /config.properties
-/debug.log
+/debug.log*
 /lwjgl64.dll
 /OpenAL64.dll

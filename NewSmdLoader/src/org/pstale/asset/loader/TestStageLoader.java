@@ -34,7 +34,7 @@ public class TestStageLoader extends SimpleApplication {
 
 		assetManager.registerLoader(StageLoader.class, "smd");
 		
-		Node model = (Node)assetManager.loadAsset(new SmdKey("Field/forest/fore-3.smd", SmdKey.SMDTYPE.STAGE3D));
+		Node model = (Node)assetManager.loadAsset(new SmdKey("Field/dungeon/dun-1.smd", SmdKey.SMDTYPE.STAGE3D));
 		Node solid = (Node)model.getChild("SMMAT_STAT_CHECK_FACE");
 		Node other = (Node)model.getChild("SMMAT_STAT_NOT_CHECK_FACE");
 		rootNode.attachChild(solid);
@@ -43,10 +43,13 @@ public class TestStageLoader extends SimpleApplication {
 		solid.scale(0.01f);
 		other.scale(0.01f);
 		
-		other.move(0, 10, 0);
+		// ¶¯»­Ä£ÐÍ
+		Node ani = (Node)assetManager.loadAsset(new SmdKey("Field/dungeon/dun-1-wheel.smd", SmdKey.SMDTYPE.STAGE_OBJ));
+		rootNode.attachChild(ani);
+		ani.scale(0.01f);
 		
-		cam.setLocation(solid.getWorldBound().getCenter());
-		flyCam.setMoveSpeed(10f);
+		cam.setLocation(ani.getWorldBound().getCenter());
+		flyCam.setMoveSpeed(100f);
 		
 		viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 0.9f, 1));
 		
