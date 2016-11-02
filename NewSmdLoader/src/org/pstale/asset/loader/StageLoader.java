@@ -8,8 +8,6 @@ import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
 import com.jme3.asset.AssetManager;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
@@ -37,7 +35,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	
 	private final static int OBJ_FRAME_SEARCH_MAX = 32;
 
-	private class SmdFramePos {
+	class SmdFramePos {
 		int startFrame;
 		int endFrame;
 		int posNum;
@@ -50,7 +48,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 * @author yanmaoyuan
 	 *
 	 */
-	private class MATERIAL {
+	class MATERIAL {
 		int InUse;
 		int TextureCounter;
 		TEXTUREHANDLE[] smTexture = new TEXTUREHANDLE[8];
@@ -91,15 +89,15 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		int AnimationFrame; // 橇饭烙 锅龋 ( 绊沥老 版快 橇饭烙蔼 / SMTEX_AUTOANIMATION 篮 磊悼 )
 	}
 	
-	private class TEXTUREHANDLE {
-		public String Name;// [64];
-		public String NameA;// [64];
-		public int Width, Height;
-		public int UsedTime;
-		public int UseCounter;// 这个变量是给缓存器的标志位，记录这个Texture是否已经使用。
-		public int MapOpacity; // 是否透明( TRUE , FALSE )
-		public int TexSwapMode; // ( TRUE / FALSE )
-		public TEXTUREHANDLE TexChild;
+	class TEXTUREHANDLE {
+		String Name;// [64];
+		String NameA;// [64];
+		int Width, Height;
+		int UsedTime;
+		int UseCounter;// 这个变量是给缓存器的标志位，记录这个Texture是否已经使用。
+		int MapOpacity; // 是否透明( TRUE , FALSE )
+		int TexSwapMode; // ( TRUE / FALSE )
+		TEXTUREHANDLE TexChild;
 	}
 	
 	class FTPOINT {
@@ -126,7 +124,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	/**
 	 * size = 28
 	 */
-	private class STAGE_VERTEX {
+	class STAGE_VERTEX {
 	    int sum;
 	    //smRENDVERTEX *lpRendVertex;
 	    float x,y,z;
@@ -137,7 +135,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 * size = 28
 	 *
 	 */
-	private class STAGE_FACE {
+	class STAGE_FACE {
 	    int sum;
 	    int CalcSum;
 	    int a, b, c, mat_id;
@@ -151,7 +149,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 * size = 32
 	 *
 	 */
-	private class TEXLINK {
+	class TEXLINK {
 		float[] u = new float[3];
 		float[] v = new float[3];
 		int hTexture;
@@ -162,7 +160,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	/**
 	 * size = 22
 	 */
-	private class LIGHT3D {
+	class LIGHT3D {
 	    int type;
 	    float x,y,z;
 	    float Range;
@@ -365,111 +363,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		/*************
 		 * 生成jme3对象
 		 */
-		Node solidNode = new Node("solid");// 用来存放需要进行碰撞检测的部分
-		Node otherNode = new Node("noSolid");// 用来存放不需要进行碰撞检测的部分
-		Node rootNode = new Node("Smd Root");
-		rootNode.attachChild(solidNode);
-		rootNode.attachChild(otherNode);
 		
-		// 创建材质
-		for(int mat_id=0; mat_id<materialCount; mat_id++) {
-			Material mat = createLightMaterial(smMaterial[mat_id]);
-			
-			// 统计材质为mat_id的面一共有多少个
-			int size = 0;
-			for (int i = 0; i < nFace; i++) {
-				if (Face[i].mat_id != mat_id)
-					continue;
-				size++;
-			}
-			if (size < 1)
-				continue;
-						
-			Mesh mesh = new Mesh();
-			Geometry geom = new Geometry(key.getName() + "#" + mat_id, mesh);
-			geom.setMaterial(mat);
-			
-			// 透明
-			if (smMaterial[mat_id].MapOpacity == 1) {
-				geom.setQueueBucket(Bucket.Translucent);
-			}
-			
-			if (smMaterial[mat_id].MeshState == 0) {
-				otherNode.attachChild(geom);
-			} else {
-				solidNode.attachChild(geom);
-			}
-			
-			Vector3f[] position = new Vector3f[size * 3];
-			int[] f = new int[size * 3];
-			Vector2f[] uv1 = new Vector2f[size * 3];
-			Vector2f[] uv2 = new Vector2f[size * 3];
-
-			int index = 0;
-			// Prepare MeshData
-			for (int i = 0; i < nFace; i++) {
-				// Check the MaterialIndex
-				if (Face[i].mat_id != mat_id)
-					continue;
-
-				// 顶点 VERTEX
-				position[index * 3 + 0] = new Vector3f(Vertex[Face[i].a].x, Vertex[Face[i].a].y, Vertex[Face[i].a].z);
-				position[index * 3 + 1] = new Vector3f(Vertex[Face[i].b].x, Vertex[Face[i].b].y, Vertex[Face[i].b].z);
-				position[index * 3 + 2] = new Vector3f(Vertex[Face[i].c].x, Vertex[Face[i].c].y, Vertex[Face[i].c].z);
-
-				// 面 FACE
-				if (i < nFace) {
-					f[index * 3 + 0] = index * 3 + 0;
-					f[index * 3 + 1] = index * 3 + 1;
-					f[index * 3 + 2] = index * 3 + 2;
-				}
-
-				// 原地图可能有多个贴图，因此使用多个UV坐标
-				for(int k=0; k<smMaterial[mat_id].TextureCounter; k++) {
-					
-				}
-				// 纹理映射
-				TEXLINK tl = Face[i].TexLink;
-				if(tl != null) {
-					// 第1组uv坐标
-					uv1[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
-					uv1[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
-					uv1[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
-				} else {
-					uv1[index * 3 + 0] = new Vector2f();
-					uv1[index * 3 + 1] = new Vector2f();
-					uv1[index * 3 + 2] = new Vector2f();
-				}
-				
-				// 第2组uv坐标
-				if (tl != null && tl.NextTex != null) {
-					tl = tl.NextTex;
-					
-					uv2[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
-					uv2[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
-					uv2[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
-				} else {
-					uv2[index * 3 + 0] = new Vector2f();
-					uv2[index * 3 + 1] = new Vector2f();
-					uv2[index * 3 + 2] = new Vector2f();
-				}
-				
-				index++;
-			}
-
-			mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(position));
-			mesh.setBuffer(Type.Index, 3, f);
-			// DiffuseMap UV
-			mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv1));
-			// LightMap UV
-			mesh.setBuffer(Type.TexCoord2, 2, BufferUtils.createFloatBuffer(uv2));
-
-			mesh.setStatic();
-			mesh.updateBound();
-			mesh.updateCounts();
-		}
-		
-		return rootNode;
+		return buildStage3D();
 	}
 	
 	/**
@@ -837,7 +732,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		return line;
 	}
 	/**
-	 * 创建材质
+	 * 创建纹理
 	 * 
 	 * @param name
 	 */
@@ -856,22 +751,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	}
 	
 	/**
-	 * load a light material
-	 * 
+	 * 创建材质
+	 * @param m
 	 * @return
 	 */
-	private Material getLightMaterial() {
-		Material material = new Material(manager, "Common/MatDefs/Light/Lighting.j3md");
-		material.setColor("Ambient", ColorRGBA.White);
-		material.setColor("Diffuse", ColorRGBA.White);
-		material.setColor("Specular", ColorRGBA.White);
-		material.setColor("GlowColor", ColorRGBA.Black);
-		material.setFloat("Shininess", 25f);
-		material.setFloat("AlphaDiscardThreshold", 0.01f);
-
-		return material;
-	}
-	
 	private Material createLightMaterial(MATERIAL m) {
 		Material mat = new Material(manager, "Common/MatDefs/Light/Lighting.j3md");
 		mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.x, m.Diffuse.y, m.Diffuse.z, 1));
@@ -886,45 +769,30 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			rs.setFaceCullMode(FaceCullMode.FrontAndBack);
 		}
 		
-		// 根据材质类型，决定如何创建材质
-		switch (m.TextureType) {
-		case 0://SMTEX_TYPE_MULTIMIX		0x0000
-			if (m.TwoSide == 1)
-				rs.setFaceCullMode(FaceCullMode.Off);
-			
-			if (m.MapOpacity == 1)
-				mat.setFloat("AlphaDiscardThreshold", 0.01f);
-
-			// 设置贴图
-			if (m.TextureCounter > 0) {
-				mat.setTexture("DiffuseMap", createTexture(m.smTexture[0].Name));
-			}
-			if (m.TextureCounter > 1) {
-				mat.setBoolean("SeparateTexCoord", true);
-				mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
-			}
-			
-			break;
-		case 1://SMTEX_TYPE_ANIMATION		0x0001
-			if (m.TextureCounter > 0) {
-				mat.setTexture("DiffuseMap", createTexture(m.smTexture[0].Name));
-			}
-			
-			if (m.MapOpacity == 1)
-				mat.setFloat("AlphaDiscardThreshold", 0.01f);
-			
-			break;
-		}
+		if (m.TwoSide == 1)
+			rs.setFaceCullMode(FaceCullMode.Off);
 		
+		if (m.MapOpacity != 0) {
+			mat.setFloat("AlphaDiscardThreshold", 0.01f);
+		}
+
+		// 设置贴图
+		if (m.TextureCounter > 0) {
+			mat.setTexture("DiffuseMap", createTexture(m.smTexture[0].Name));
+		}
+		if (m.TextureCounter > 1) {
+			mat.setBoolean("SeparateTexCoord", true);
+			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
+		}
 
 		/**
-#define SMMAT_BLEND_NONE		0x00
-#define SMMAT_BLEND_ALPHA		0x01
-#define SMMAT_BLEND_COLOR		0x02
-#define SMMAT_BLEND_SHADOW		0x03
-#define SMMAT_BLEND_LAMP		0x04
-#define SMMAT_BLEND_ADDCOLOR	0x05
-#define SMMAT_BLEND_INVSHADOW	0x06
+			#define SMMAT_BLEND_NONE		0x00
+			#define SMMAT_BLEND_ALPHA		0x01
+			#define SMMAT_BLEND_COLOR		0x02
+			#define SMMAT_BLEND_SHADOW		0x03
+			#define SMMAT_BLEND_LAMP		0x04
+			#define SMMAT_BLEND_ADDCOLOR	0x05
+			#define SMMAT_BLEND_INVSHADOW	0x06
 		 */
 		switch (m.BlendType) {
 		case 0:// SMMAT_BLEND_NONE
@@ -946,89 +814,171 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		case 6:
 			break;
 		default:
-			log.info("未知的BlendType=" + m.BlendType);
+			log.info("Unknown BlendType=" + m.BlendType);
 		};
+		
 		
 		return mat;
 	}
 	
-	private Material createUnshadedMaterial(MATERIAL m) {
-		Material mat = new Material(manager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mat.setColor("Color", new ColorRGBA(m.Diffuse.x, m.Diffuse.y, m.Diffuse.z, 1));
-		mat.setBoolean("UseMaterialColor", false);
+	/**
+	 * 生成STAGE3D对象
+	 * @return
+	 */
+	private Node buildStage3D() {
+		Node solidNode = new Node("SMMAT_STAT_CHECK_FACE");// 用来存放需要进行碰撞检测的部分
+		Node otherNode = new Node("SMMAT_STAT_NOT_CHECK_FACE");// 用来存放不需要进行碰撞检测的部分
 		
-		RenderState rs = mat.getAdditionalRenderState();
+		Node rootNode = new Node("STAGE3D:" + key.getName());
+		rootNode.attachChild(solidNode);
+		rootNode.attachChild(otherNode);
 		
-		// TODO 由于有些面看不清楚，这里用法不太对。
-		rs.setFaceCullMode(FaceCullMode.Off);
-		
-		if(m.TextureCounter == 0) {
-			rs.setFaceCullMode(FaceCullMode.FrontAndBack);
+		// 创建材质
+		for(int mat_id=0; mat_id<materialCount; mat_id++) {
+			
+			/**
+			 * 判断这个面是否被使用。
+			 * 实际上smd文件中存储的材质都是被用到的材质，否则是不会存储的。
+			 * 因此这个判断并没有实际意义。
+			 */
+			if (smMaterial[mat_id].InUse == 0) {
+				continue;
+			}
+			
+			/**
+			 * 统计材质为mat_id的面一共有多少个面，用于计算需要生成多少个子网格。
+			 */
+			int size = 0;
+			for (int i = 0; i < nFace; i++) {
+				if (Face[i].mat_id != mat_id)
+					continue;
+				size++;
+			}
+			if (size < 1)
+				continue;
+			
+			// 计算网格
+			Mesh mesh = buildStage3DMesh(size, mat_id);
+			Geometry geom = new Geometry(key.getName() + "#" + mat_id, mesh);
+			
+			// 创建材质
+			Material mat = createLightMaterial(smMaterial[mat_id]);
+			geom.setMaterial(mat);
+			
+			// 透明度
+			if (smMaterial[mat_id].MapOpacity != 0) {
+				geom.setQueueBucket(Bucket.Translucent);
+			}
+			
+			if (smMaterial[mat_id].MeshState == 0) {
+				otherNode.attachChild(geom);
+				log.debug(mat_id + " MeshState 0");
+			} else {
+				solidNode.attachChild(geom);
+			}
+			
+			if (smMaterial[mat_id].TextureType == 0) {
+				// SMTEX_TYPE_MULTIMIX		0x0000
+			} else {
+				// SMTEX_TYPE_ANIMATION		0x0001
+				// 有多个动画
+				if (smMaterial[mat_id].AnimTexCounter > 0) {
+					FrameAnimControl control = createFrameAnimControl(smMaterial[mat_id]);
+					geom.addControl(control);
+				}
+			}
+
 		}
 		
-		// 根据材质类型，决定如何创建材质
-		switch (m.TextureType) {
-		case 0://SMTEX_TYPE_MULTIMIX		0x0000
-			if (m.TwoSide == 1)
-				rs.setFaceCullMode(FaceCullMode.Off);
-			
-			if (m.MapOpacity == 1)
-				mat.setFloat("AlphaDiscardThreshold", 0.01f);
+		return rootNode;
+	}
 
-			// 设置贴图
-			if (m.TextureCounter > 0) {
-				mat.setTexture("ColorMap", createTexture(m.smTexture[0].Name));
+	private Mesh buildStage3DMesh(int size, int mat_id) {
+		
+		Vector3f[] position = new Vector3f[size * 3];
+		int[] f = new int[size * 3];
+		Vector2f[] uv1 = new Vector2f[size * 3];
+		Vector2f[] uv2 = new Vector2f[size * 3];
+
+		int index = 0;
+		// Prepare MeshData
+		for (int i = 0; i < nFace; i++) {
+			// Check the MaterialIndex
+			if (Face[i].mat_id != mat_id)
+				continue;
+
+			// 顶点 VERTEX
+			position[index * 3 + 0] = new Vector3f(Vertex[Face[i].a].x, Vertex[Face[i].a].y, Vertex[Face[i].a].z);
+			position[index * 3 + 1] = new Vector3f(Vertex[Face[i].b].x, Vertex[Face[i].b].y, Vertex[Face[i].b].z);
+			position[index * 3 + 2] = new Vector3f(Vertex[Face[i].c].x, Vertex[Face[i].c].y, Vertex[Face[i].c].z);
+
+			// 面 FACE
+			if (i < nFace) {
+				f[index * 3 + 0] = index * 3 + 0;
+				f[index * 3 + 1] = index * 3 + 1;
+				f[index * 3 + 2] = index * 3 + 2;
 			}
-			if (m.TextureCounter > 1) {
-				mat.setBoolean("SeparateTexCoord", true);
-				mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
+
+			// 原地图可能有多个贴图，因此使用多个UV坐标
+			for(int k=0; k<smMaterial[mat_id].TextureCounter; k++) {
+				
+			}
+			// 纹理映射
+			TEXLINK tl = Face[i].TexLink;
+			if(tl != null) {
+				// 第1组uv坐标
+				uv1[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
+				uv1[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
+				uv1[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
+			} else {
+				uv1[index * 3 + 0] = new Vector2f();
+				uv1[index * 3 + 1] = new Vector2f();
+				uv1[index * 3 + 2] = new Vector2f();
 			}
 			
-			break;
-		case 1://SMTEX_TYPE_ANIMATION		0x0001
-			if (m.TextureCounter > 0) {
-				mat.setTexture("ColorMap", createTexture(m.smTexture[0].Name));
+			// 第2组uv坐标
+			if (tl != null && tl.NextTex != null) {
+				tl = tl.NextTex;
+				
+				uv2[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
+				uv2[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
+				uv2[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
+			} else {
+				uv2[index * 3 + 0] = new Vector2f();
+				uv2[index * 3 + 1] = new Vector2f();
+				uv2[index * 3 + 2] = new Vector2f();
 			}
 			
-			if (m.MapOpacity == 1)
-				mat.setFloat("AlphaDiscardThreshold", 0.01f);
-			
-			break;
+			index++;
 		}
-		
 
-		/**
-#define SMMAT_BLEND_NONE		0x00
-#define SMMAT_BLEND_ALPHA		0x01
-#define SMMAT_BLEND_COLOR		0x02
-#define SMMAT_BLEND_SHADOW		0x03
-#define SMMAT_BLEND_LAMP		0x04
-#define SMMAT_BLEND_ADDCOLOR	0x05
-#define SMMAT_BLEND_INVSHADOW	0x06
-		 */
-		switch (m.BlendType) {
-		case 0:// SMMAT_BLEND_NONE
-			rs.setBlendMode(BlendMode.Off);
-			break;
-		case 1:// SMMAT_BLEND_ALPHA
-			rs.setBlendMode(BlendMode.Alpha);
-			break;
-		case 2:// SMMAT_BLEND_COLOR
-			rs.setBlendMode(BlendMode.Color);
-			break;
-		case 3:// SMMAT_BLEND_SHADOW
-			break;
-		case 4:// SMMAT_BLEND_LAMP
-			break;
-		case 5:// SMMAT_BLEND_ADDCOLOR
-			rs.setBlendMode(BlendMode.Additive);
-			break;
-		case 6:
-			break;
-		default:
-			log.info("未知的BlendType=" + m.BlendType);
-		};
+		Mesh mesh = new Mesh();
+		mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(position));
+		mesh.setBuffer(Type.Index, 3, f);
+		// DiffuseMap UV
+		mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv1));
+		// LightMap UV
+		mesh.setBuffer(Type.TexCoord2, 2, BufferUtils.createFloatBuffer(uv2));
+
+		mesh.setStatic();
+		mesh.updateBound();
+		mesh.updateCounts();
 		
-		return mat;
+		return mesh;
+	}
+	
+	/**
+	 * AminTexCounter大于0说明有轮播动画，创建一个Control，定时更新画面。
+	 * @param m
+	 * @return
+	 */
+	private FrameAnimControl createFrameAnimControl(MATERIAL m) {
+		FrameAnimControl control = new FrameAnimControl(m.AnimTexCounter);
+		
+		for(int i=0; i<m.AnimTexCounter; i++) {
+			Texture tex = createTexture(m.smAnimTexture[i].Name);
+			control.animTexture.add(tex);
+		}
+		return control;
 	}
 }

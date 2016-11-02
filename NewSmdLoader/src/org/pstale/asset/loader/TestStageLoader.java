@@ -19,6 +19,7 @@ public class TestStageLoader extends SimpleApplication {
 
 	@Override
 	public void simpleInitApp() {
+		
 		// 属性文件的路径
 		Properties props = new Properties();
 		try {
@@ -33,16 +34,23 @@ public class TestStageLoader extends SimpleApplication {
 
 		assetManager.registerLoader(StageLoader.class, "smd");
 		
-		Node model = (Node)assetManager.loadAsset(new SmdKey("field/dungeon/dun-1.smd", SmdKey.SMDTYPE.STAGE3D));
-		rootNode.attachChild(model);
+		Node model = (Node)assetManager.loadAsset(new SmdKey("Field/forest/fore-3.smd", SmdKey.SMDTYPE.STAGE3D));
+		Node solid = (Node)model.getChild("SMMAT_STAT_CHECK_FACE");
+		Node other = (Node)model.getChild("SMMAT_STAT_NOT_CHECK_FACE");
+		rootNode.attachChild(solid);
+		rootNode.attachChild(other);
 		
-		model.scale(0.01f);
-		model.center().move(0, 0, 0);
+		solid.scale(0.01f);
+		other.scale(0.01f);
 		
-		viewPort.setBackgroundColor(new ColorRGBA(0.6f, 0.7f, 0.8f, 1));
+		cam.setLocation(solid.getWorldBound().getCenter());
+		flyCam.setMoveSpeed(10f);
 		
-		rootNode.addLight(new AmbientLight());
-		//rootNode.addLight(new DirectionalLight(new Vector3f(0.0f, -372.0f, -93.0f)));
+		viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 0.9f, 1));
+		
+		AmbientLight light = new AmbientLight();
+		//light.setColor(new ColorRGBA(0.625f, 0.625f, 0.625f, 1f));
+		rootNode.addLight(light);
 	}
 
 }
