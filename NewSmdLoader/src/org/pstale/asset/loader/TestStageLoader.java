@@ -43,6 +43,8 @@ public class TestStageLoader extends SimpleApplication {
 		solid.scale(0.01f);
 		other.scale(0.01f);
 		
+		other.move(0, 10, 0);
+		
 		cam.setLocation(solid.getWorldBound().getCenter());
 		flyCam.setMoveSpeed(10f);
 		

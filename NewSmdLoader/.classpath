@@ -6,7 +6,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-desktop"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-lwjgl"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-bullet"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-terrain"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

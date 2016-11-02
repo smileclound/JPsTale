@@ -48,7 +48,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 * @author yanmaoyuan
 	 *
 	 */
-	class MATERIAL {
+	private class MATERIAL {
 		int InUse;
 		int TextureCounter;
 		TEXTUREHANDLE[] smTexture = new TEXTUREHANDLE[8];
@@ -467,6 +467,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					texture.NameA = getString();
 					
 					// TODO 将texture.Name存入缓存中，避免多次加载。
+					
+					if (texture.NameA.length() > 0) {
+						log.info("TEX MIPMAP:" + texture.NameA);
+					}
 				}
 				
 				smMaterial[i].smAnimTexture = new TEXTUREHANDLE[smMaterial[i].AnimTexCounter];
@@ -477,6 +481,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					texture.NameA = getString();
 					
 					// TODO 将texture.Name存入缓存中，避免多次加载。
+
+					if (texture.NameA.length() > 0) {
+						log.info("Anim MIPMAP:" + texture.NameA);
+					}
 				}
 			}
 		}
@@ -556,7 +564,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		mat.TextureClip = getInt(); //
 
 		// 皋浆 包访 加己
-		mat.UseState = getInt(); // 侩档 ( 荤侩 加己 )
+		mat.UseState = getInt(); // ScriptState
 		/**
 		 * 是否进行碰撞检测
 		 * #define SMMAT_STAT_CHECK_FACE	0x00000001
@@ -564,7 +572,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		mat.MeshState = getInt();
 
 		// Mesh 函屈 包访 汲沥
-		mat.WindMeshBottom = getInt(); // 官恩阂扁 皋浆 函屈 矫累 蔼
+		mat.WindMeshBottom = getInt(); // TODO @see smTexture.cpp 脚本的编号
 
 		// 俊聪皋捞记 咆胶媚 加己
 		for(int i=0; i<32; i++) {
@@ -710,9 +718,6 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	
 	
 	
-	
-	
-	
 	/*******************************************************
 	 * 下面的代码用于根据精灵的数据结构创建JME3的纹理、材质、网格等对象
 	 *******************************************************/
@@ -769,8 +774,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			rs.setFaceCullMode(FaceCullMode.FrontAndBack);
 		}
 		
-		if (m.TwoSide == 1)
+		if (m.TwoSide == 1) {
 			rs.setFaceCullMode(FaceCullMode.Off);
+		}
 		
 		if (m.MapOpacity != 0) {
 			mat.setFloat("AlphaDiscardThreshold", 0.01f);
@@ -817,7 +823,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			log.info("Unknown BlendType=" + m.BlendType);
 		};
 		
-		
+		// TODO 继续读smRender3d.cpp
+		if (m.Transparency <= 0.2f) {
+			rs.setDepthWrite(true);
+		}
 		return mat;
 	}
 	
@@ -835,13 +844,13 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		
 		// 创建材质
 		for(int mat_id=0; mat_id<materialCount; mat_id++) {
-			
+			MATERIAL m = smMaterial[mat_id];
 			/**
 			 * 判断这个面是否被使用。
 			 * 实际上smd文件中存储的材质都是被用到的材质，否则是不会存储的。
 			 * 因此这个判断并没有实际意义。
 			 */
-			if (smMaterial[mat_id].InUse == 0) {
+			if (m.InUse == 0) {
 				continue;
 			}
 			
@@ -866,23 +875,43 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			geom.setMaterial(mat);
 			
 			// 透明度
-			if (smMaterial[mat_id].MapOpacity != 0) {
+			if (m.MapOpacity != 0) {
 				geom.setQueueBucket(Bucket.Translucent);
 			}
 			
-			if (smMaterial[mat_id].MeshState == 0) {
+			if (m.MeshState == 0) {
 				otherNode.attachChild(geom);
-				log.debug(mat_id + " MeshState 0");
+				log.debug("ID:" + mat_id + " MeshState=" + m.MeshState);// 透明度
 			} else {
 				solidNode.attachChild(geom);
 			}
 			
-			if (smMaterial[mat_id].TextureType == 0) {
+			// 从smTexture.cpp中可知，只有Transparency==0的物体才需要检测碰撞网格。
+			if (m.Transparency != 0) {
+				otherNode.attachChild(geom);
+				log.debug("Transparency=" + m.Transparency);// 透明度
+			}
+			
+			if (m.ReformTexture > 0) {
+				log.debug("ReformTexture=" + m.ReformTexture);// 需要被加密的图片数目
+			}
+			if (m.SelfIllum > 0.0f) {
+				log.debug("SelfIllum=" + m.SelfIllum);// 自发光
+			}
+			if (m.UseState != 0) {//ScriptState
+				log.debug("UseState=" + m.UseState);// 有脚本？？
+			}
+			
+			if (m.TextureType == 0) {
 				// SMTEX_TYPE_MULTIMIX		0x0000
 			} else {
 				// SMTEX_TYPE_ANIMATION		0x0001
+				
+				// 动画也是默认显示2面
+				mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+				
 				// 有多个动画
-				if (smMaterial[mat_id].AnimTexCounter > 0) {
+				if (m.AnimTexCounter > 0) {
 					FrameAnimControl control = createFrameAnimControl(smMaterial[mat_id]);
 					geom.addControl(control);
 				}
