@@ -72,6 +72,18 @@ public class ByteReader {
 	}
 	
 	/**
+	 * 读取精灵的坐标点
+	 * @return
+	 */
+	public Vector3f getPTPoint3f() {
+		float z = -buffer.getInt() / 256f;
+		float y = buffer.getInt() / 256f;
+		float x = -buffer.getInt() / 256f;
+
+		return new Vector3f(x, y, z);
+	}
+	
+	/**
 	 * Reads 3 floats x,z,y from the chunkbuffer. Since 3ds has z as up and y as
 	 * pointing in whereas java3d has z as pointing forward and y as pointing
 	 * up; this returns new Point3f(x,-z,y)

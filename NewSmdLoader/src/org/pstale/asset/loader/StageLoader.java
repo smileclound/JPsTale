@@ -1,10 +1,16 @@
 package org.pstale.asset.loader;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.pstale.asset.loader.SmdKey.SMDTYPE;
 
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Bone;
+import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
@@ -14,13 +20,18 @@ import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
@@ -37,7 +48,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	private final static int OBJ_FRAME_SEARCH_MAX = 32;
 
 	private FILE_HEADER smd_file_header;
-	private PAT3D smPhysique = null;
+	/**
+	 * 骨骼
+	 */
+	private PAT3D BipPattern = null;
 	
 	/**
 	 * size = 64
@@ -77,6 +91,11 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			_31 = 0; _32 = 0; _33 = 1; _34 = 0;
 			_41 = 0; _42 = 0; _43 = 0; _44 = 1;
 		}
+		
+		/**
+		 * 这个矩阵的特征值是256，所有元素除以256后的行列式是1。
+		 * @param init
+		 */
 		MATRIX(boolean init) {
 			_11 = getInt(); _12 = getInt(); _13 = getInt(); _14 = getInt();
 			_21 = getInt(); _22 = getInt(); _23 = getInt(); _24 = getInt();
@@ -91,14 +110,16 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class TM_ROT {
 		int frame;
-		float x, y, z, w;
-		
+		Quaternion quad;
 		TM_ROT() {
 			frame = getInt();
+			
+			float x, y, z, w;
 			x = getFloat();
 			y = getFloat();
 			z = getFloat();
 			w = getFloat();
+			quad = new Quaternion(-x, -y, -z, w);
 		}
 	}
 
@@ -107,12 +128,15 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class TM_POS {
 		int frame;
-		float x, y, z;
+		Vector3f vec3;
 		TM_POS() {
 			frame = getInt();
+			float x, y, z;
 			x = getFloat();
 			y = getFloat();
 			z = getFloat();
+			
+			vec3 = new Vector3f(x, y, z);
 		}
 	}
 	
@@ -121,12 +145,14 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class TM_SCALE {
 		int frame;
-		int x, y, z;
+		Vector3f scale;
 		TM_SCALE() {
 			frame = getInt();
-			x = getInt();
-			y = getInt();
-			z = getInt();
+			float x, y, z;
+			x = getPTDouble();
+			y = getPTDouble();
+			z = getPTDouble();
+			scale = new Vector3f(x, y, z);
 		}
 	}
 	
@@ -184,8 +210,17 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 * size = 40
 	 */
 	class FILE_OBJINFO {
+		/**
+		 * 物体的名称
+		 */
 		String NodeName;// 32字节
+		/**
+		 * 这个Obj3D区块在文件中所占的字节数。
+		 */
 		int Length;
+		/**
+		 * 这个Obj3D区块在文件中的其实位置。
+		 */
 		int ObjFilePoint;
 		
 		FILE_OBJINFO() {
@@ -198,7 +233,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	
 	/**
 	 * 若文件头中的mat>0，说明有材质。
-	 * 接下来第三部分应该是一个完整的smMATERIAL_GROUP对象。size = 88。
+	 * 接下来第三部分应该是一个完整的smMATERIAL_GROUP对象。
+	 * size = 88。
 	 */
 	class MATERIAL_GROUP {
 		// DWORD Head
@@ -217,6 +253,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		 * 读取smMATERIAL_GROUP数据
 		 */
 		MATERIAL_GROUP() {
+			int start = buffer.position();
+			
 			getInt();// Head
 			getInt();// *smMaterial
 			materialCount = getInt();
@@ -227,7 +265,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			
 			size += 88;
 			
-			assert buffer.position() == 262904;
+			assert buffer.position() - start == 88;
 		}
 		
 		/**
@@ -245,32 +283,24 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					size += 4;
 					size += strLen;
 					
-					materials[i].smTexture = new TEXTUREHANDLE[materials[i].TextureCounter];
+					materials[i].smTexture = new TEXTURE[materials[i].TextureCounter];
 					for(int j=0; j<materials[i].TextureCounter; j++) {
-						TEXTUREHANDLE texture = new TEXTUREHANDLE();
+						TEXTURE texture = new TEXTURE();
 						materials[i].smTexture[j] = texture;
 						texture.Name = getString();
 						texture.NameA = getString();
 						
-						// TODO 将texture.Name存入缓存中，避免多次加载。
-						
 						if (texture.NameA.length() > 0) {
-							log.info("TEX MIPMAP:" + texture.NameA);
+							log.debug("TEX MIPMAP:" + texture.NameA);
 						}
 					}
 					
-					materials[i].smAnimTexture = new TEXTUREHANDLE[materials[i].AnimTexCounter];
+					materials[i].smAnimTexture = new TEXTURE[materials[i].AnimTexCounter];
 					for(int j=0; j<materials[i].AnimTexCounter; j++) {
-						TEXTUREHANDLE texture = new TEXTUREHANDLE();
+						TEXTURE texture = new TEXTURE();
 						materials[i].smAnimTexture[j] = texture;
 						texture.Name = getString();
 						texture.NameA = getString();
-						
-						// TODO 将texture.Name存入缓存中，避免多次加载。
-
-						if (texture.NameA.length() > 0) {
-							log.info("Anim MIPMAP:" + texture.NameA);
-						}
 					}
 				}
 			}
@@ -286,44 +316,106 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 *
 	 */
 	class MATERIAL {
+		/**
+		 * 判断这个面是否被使用。
+		 * 实际上smd文件中存储的材质都是被用到的材质，否则是不会存储的。
+		 * 因此判断这个变量并没有实际意义。
+		 */
 		int InUse;
+		/**
+		 * 纹理的数量。
+		 */
 		int TextureCounter;
-		TEXTUREHANDLE[] smTexture = new TEXTUREHANDLE[8];
+		/**
+		 * 纹理图片的名称。
+		 * 对于STAGE3D来说，第1个纹理是DiffuseMap，第2个纹理应该是LightMap。
+		 * 多余的纹理并不知道有什么用。
+		 */
+		TEXTURE[] smTexture = new TEXTURE[8];
 		int[] TextureStageState = new int[8];
 		int[] TextureFormState = new int[8];
 		int ReformTexture;
 
-		int MapOpacity; // 甘 坷乔矫萍 咯何 ( TRUE , FALSE )
+		/**
+		 * 是否透明 ( TRUE , FALSE )
+		 */
+		int MapOpacity;
 
-		// 老馆利牢 加己
-		int TextureType; // 咆胶媚 鸥涝 ( 钢萍雇胶 / 局聪皋捞记 )
-		int BlendType; // 宏罚靛 屈侥 ( SMMAT_BLEND_XXXX )
+		/**
+		 * 纹理类型：混色或动画<pre>
+		 * #define SMTEX_TYPE_MULTIMIX		0x0000
+		 * #define SMTEX_TYPE_ANIMATION		0x0001</pre>
+		 */
+		int TextureType;
+		
+		/**
+		 * 混色方式<pre>
+		 * #define SMMAT_BLEND_NONE		0x00
+		 * #define SMMAT_BLEND_ALPHA		0x01
+		 * #define SMMAT_BLEND_COLOR		0x02
+		 * #define SMMAT_BLEND_SHADOW		0x03
+		 * #define SMMAT_BLEND_LAMP		0x04
+		 * #define SMMAT_BLEND_ADDCOLOR	0x05
+		 * #define SMMAT_BLEND_INVSHADOW	0x06</pre>
+		 */
+		int BlendType;// SMMAT_BLEND_XXXX
 
-		int Shade; // 溅捞爹 规侥 ( 畴溅捞靛 / 弊肺溅捞靛 )
+		/**
+		 * TODO 未知属性
+		 * TRUE or FALSE
+		 */
+		int Shade;
+		/**
+		 * 是否两面都显示 TRUE or FALSE
+		 */
 		int TwoSide; // 剧搁 荤侩 咯何
 		int SerialNum; // 皋飘府倔俊 措茄 绊蜡 锅龋
 
-		Vector3f Diffuse; // Diffuse 祸惑
-		float Transparency; // 捧疙档
-		float SelfIllum; // 磊眉 惯堡
+		/**
+		 * 材质的颜色
+		 */
+		FCOLOR Diffuse;
+		/**
+		 * 透明度，取值范围(0~1f)。若材质的透明度大于0.2，则这个模型不需要进行碰撞检测。
+		 */
+		float Transparency;
+		/**
+		 * 发光程度
+		 */
+		float SelfIllum;
 
 		int TextureSwap; // 咆胶媚 胶客俏
 		int MatFrame; // 荤侩橇饭烙 ( 荤侩矫 悼扁甫 嘎眠扁 困窃 )
 		int TextureClip; // 胶客俏侩 咆胶媚 努赋蜡公 ( TRUE 搁 咆胶媚 努府俏 倾啊 )
 
-		// 皋浆 包访 加己
-		int UseState; // 侩档 ( 荤侩 加己 )
-		int MeshState; // MESH狼 龙皑 加己蔼
+		/**
+		 * 等于ASE模型中的ScriptState
+		 */
+		int UseState;
+		/**
+		 * 是否进行碰撞检测<pre>
+		 * #define SMMAT_STAT_CHECK_FACE	0x00000001</pre>
+		 */
+		int MeshState;
 
 		// Mesh 函屈 包访 汲沥
 		int WindMeshBottom; // 官恩阂扁 皋浆 函屈 矫累 蔼
 
 		// 俊聪皋捞记 咆胶媚 加己
-		TEXTUREHANDLE[] smAnimTexture = new TEXTUREHANDLE[32]; // 局聪皋捞记 咆胶媚 勤甸 府胶飘
-		int AnimTexCounter; // 局固匙捞记 咆胶媚 墨款磐
+		TEXTURE[] smAnimTexture = new TEXTURE[32]; // 局聪皋捞记 咆胶媚 勤甸 府胶飘
+		/**
+		 * 动画有几张图NumTex
+		 */
+		int AnimTexCounter;
 		int FrameMask; // 局聪皋捞记侩 橇饭烙 付胶农
-		int Shift_FrameSpeed; // 橇饭烙 刘啊 加档 ( 鸥捞赣甫 Shift 窍咯 拌魂 )
-		int AnimationFrame; // 橇饭烙 锅龋 ( 绊沥老 版快 橇饭烙蔼 / SMTEX_AUTOANIMATION 篮 磊悼 )
+		/**
+		 * 动画切换速度。
+		 */
+		int Shift_FrameSpeed;
+		/**
+		 * SMTEX_AUTOANIMATION
+		 */
+		int AnimationFrame;
 		
 		/**
 		 * 读取MATERIAL数据结构
@@ -344,47 +436,26 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			}
 			ReformTexture = getInt();
 
-			/**
-			 * 透明
-			 */
-			MapOpacity = getInt(); // TRUE or FALSE
+			
+			MapOpacity = getInt();
 
-			/**
-			 * 纹理类型
-			 * #define SMTEX_TYPE_MULTIMIX		0x0000
-			 * #define SMTEX_TYPE_ANIMATION		0x0001
-			 */
 			TextureType = getInt();
-			/**
-			 * 混色方式
-			 * #define SMMAT_BLEND_NONE			0x00
-			 * #define SMMAT_BLEND_ALPHA		0x01
-			 * #define SMMAT_BLEND_COLOR		0x02
-			 * #define SMMAT_BLEND_SHADOW		0x03
-			 * #define SMMAT_BLEND_LAMP			0x04
-			 * #define SMMAT_BLEND_ADDCOLOR		0x05
-			 * #define SMMAT_BLEND_INVSHADOW	0x06
-			 */
-			BlendType = getInt(); // SMMAT_BLEND_XXXX
 
-			Shade = getInt(); // TRUE or FALSE
-			TwoSide = getInt(); // TRUE or FALSE
-			SerialNum = getInt(); // 皋飘府倔俊 措茄 绊蜡 锅龋
+			BlendType = getInt();
 
-			Diffuse = getVector3f(); // Diffuse 祸惑
-			Transparency = getFloat(); //
+			Shade = getInt();
+			TwoSide = getInt();
+			SerialNum = getInt();
+
+			Diffuse = new FCOLOR();
+			Transparency = getFloat();
 			SelfIllum = getFloat(); //
 
 			TextureSwap = getInt(); //
 			MatFrame = getInt(); //
 			TextureClip = getInt(); //
 
-			// 皋浆 包访 加己
 			UseState = getInt(); // ScriptState
-			/**
-			 * 是否进行碰撞检测
-			 * #define SMMAT_STAT_CHECK_FACE	0x00000001
-			 */
 			MeshState = getInt();
 
 			// Mesh 函屈 包访 汲沥
@@ -394,9 +465,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			for(int i=0; i<32; i++) {
 				getInt();// *smAnimTexture[32]
 			}
-			AnimTexCounter = getInt(); // 动画有几张图NumTex
+			AnimTexCounter = getInt(); 
 			FrameMask = getInt(); // NumTex-1
-			Shift_FrameSpeed = getInt(); // 动画切换速度，默认是6
+			Shift_FrameSpeed = getInt();
 			
 			/**
 			 * 是否自动播放动画
@@ -409,7 +480,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		}
 	}
 	
-	class TEXTUREHANDLE {
+	class TEXTURE {
 		String Name;// [64];
 		String NameA;// [64];
 		int Width, Height;
@@ -417,9 +488,21 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		int UseCounter;// 这个变量是给缓存器的标志位，记录这个Texture是否已经使用。
 		int MapOpacity; // 是否透明( TRUE , FALSE )
 		int TexSwapMode; // ( TRUE / FALSE )
-		TEXTUREHANDLE TexChild;
+		TEXTURE TexChild;
 	}
 	
+	/**
+	 * MaterialGroup中使用这个类来记录Diffuse
+	 * size = 12。
+	 */
+	class FCOLOR {
+		float r, g, b;
+		FCOLOR() {
+			r = getFloat();
+			g = getFloat();
+			b = getFloat();
+		}
+	}
 	// size = 8
 	class FTPOINT {
 	    float u,v;
@@ -448,16 +531,12 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 *
 	 */
 	class VERTEX {
-		float x,y,z;// 坐标
-		float nx,ny,nz;// normals 法向量
+		Vector3f v;// 坐标
+		Vector3f n;// normals 法向量
 		
 		VERTEX() {
-			x = getInt() / 256f;
-			y = getInt() / 256f;
-			z = getInt() / 256f;
-			nx = getInt() / 256f;
-			ny = getInt() / 256f;
-			nz = getInt() / 256f;
+			v = getPTPoint3f();
+			n = getPTPoint3f();
 		}
 	}
 	
@@ -488,23 +567,23 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	class STAGE_VERTEX {
 	    int sum;
 	    //smRENDVERTEX *lpRendVertex;
-	    float x,y,z;
-	    float r, g, b, a;// 除以256才能用作ColorRGBA
+	    Vector3f v;
+	    ColorRGBA vectorColor;
 	    
 	    STAGE_VERTEX() {
 	    	sum = getInt();
 			getInt();// *lpRendVertex
 
 			// Vectex // 除以256才是实际的值
-			x = getInt() / 256f;
-			y = getInt() / 256f;
-			z = getInt() / 256f;
+			v = getPTPoint3f();
 			
 			// VectorColor
-			r = getShort() / 256f;
-			g = getShort() / 256f;
-			b = getShort() / 256f;
-			a = getShort() / 256f;
+			// 除以256才能用作ColorRGBA
+			float r = getShort() / 256f;
+			float g = getShort() / 256f;
+			float b = getShort() / 256f;
+			float a = getShort() / 256f;
+			vectorColor = new ColorRGBA(r, g, b, a);
 	    }
 	}
 	
@@ -515,7 +594,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	class STAGE_FACE {
 	    int sum;
 	    int CalcSum;
-	    int a, b, c, mat_id;
+	    int v[] = new int[4];//a, b, c, mat_id;
 	    int lpTexLink;// 这是一个指针，指向TEXLINK结构体
 	    TEXLINK TexLink;// 若lpTexLink != 0，则TexLink指向一个实际的对象象
 
@@ -525,10 +604,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	    	sum = getInt();
 			CalcSum = getInt();
 			
-			a = getUnsignedShort();
-			b = getUnsignedShort();
-			c = getUnsignedShort();
-			mat_id = getUnsignedShort();// 材质的索引号
+			for(int i=0; i<4; i++) {
+				v[i] = getUnsignedShort();
+			}
 			
 			lpTexLink = getInt();// 纹理坐标的指针。smTEX_LINK *lpTexLink
 			
@@ -569,20 +647,22 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class LIGHT3D {
 	    int type;
-	    float x,y,z;
-	    float Range;
-	    float r,g,b;
+	    
+	    Vector3f location;
+	    float range;
+	    ColorRGBA color;
 	    
 	    LIGHT3D() {
 	    	type = getInt();
-			x = getInt() / 256f;
-			y = getInt() / 256f;
-			z = getInt() / 256f;
-			Range = getInt() / 64f / 256f;
+	    	
+	    	location = getPTPoint3f();
+	    	
+			range = getInt() / 256f / 256f;
 			
-			r = getUnsignedShort() / 255f;
-			g = getUnsignedShort() / 255f;
-			b = getUnsignedShort() / 255f;
+			float r = getUnsignedShort() / 255f;
+			float g = getUnsignedShort() / 255f;
+			float b = getUnsignedShort() / 255f;
+			color = new ColorRGBA(r, g, b, 1f);
 	    }
 	}
 	
@@ -634,6 +714,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		 * 初始化Stage3D对象
 		 */
 		protected STAGE3D() {
+			int start = buffer.position();
+			
 		    // Head = FALSE;
 			getInt();// Head
 			buffer.get(new byte[262144]);//*StageArea[MAP_SIZE][MAP_SIZE]; 4 * 256 * 256 = 262144
@@ -674,10 +756,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			int minY = getInt();
 			int maxX = getInt();
 			int maxY = getInt();
-			log.info("下列数值是地图的边缘，x,z平面的矩形。矩形的边长被放大了256倍");
-			log.info(String.format("min(%d, %d) max(%d, %d)", minX, minY, maxX, maxY));
+			log.debug("下列数值是地图的边缘，x,z平面的矩形。矩形的边长被放大了256倍");
+			log.debug(String.format("min(%d, %d) max(%d, %d)", minX, minY, maxX, maxY));
 			
-			assert buffer.position() == 262816;
+			assert buffer.position() - start== 262260;
 		}
 		
 		/**
@@ -752,10 +834,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		 * @return
 		 */
 		Node buildStage3D() {
+			Node rootNode = new Node("STAGE3D:" + key.getName());
+			
 			Node solidNode = new Node("SMMAT_STAT_CHECK_FACE");// 用来存放需要进行碰撞检测的部分
 			Node otherNode = new Node("SMMAT_STAT_NOT_CHECK_FACE");// 用来存放不需要进行碰撞检测的部分
-			
-			Node rootNode = new Node("STAGE3D:" + key.getName());
 			rootNode.attachChild(solidNode);
 			rootNode.attachChild(otherNode);
 			
@@ -764,11 +846,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			// 创建材质
 			for(int mat_id=0; mat_id<materialCount; mat_id++) {
 				MATERIAL m = materials[mat_id];
-				/**
-				 * 判断这个面是否被使用。
-				 * 实际上smd文件中存储的材质都是被用到的材质，否则是不会存储的。
-				 * 因此这个判断并没有实际意义。
-				 */
+				
 				if (m.InUse == 0) {
 					continue;
 				}
@@ -778,7 +856,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				 */
 				int size = 0;
 				for (int i = 0; i < nFace; i++) {
-					if (Face[i].mat_id != mat_id)
+					if (Face[i].v[3] != mat_id)
 						continue;
 					size++;
 				}
@@ -838,7 +916,50 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 			}
 			
+			if (nLight > 0) {
+				rootNode.attachChild(lightNode());
+			}
+			
 			return rootNode;
+		}
+		
+		Node lightNode() {
+			
+			Node lightNode = new Node("LIGHT3D");// 灯光节点，存放所有的模拟灯光位置，仅用于调试。
+			
+			for(int i=0; i<nLight; i++) {
+				Sphere mesh = new Sphere(12, 12, Light[i].range);
+				FloatBuffer fb = (FloatBuffer)mesh.getBuffer(Type.Position).getData();
+				// 顶点数目
+				int cnt = fb.capacity() / 3;
+				for(int n=0; n<cnt; n++) {
+					float x = fb.get(n*3);
+					float y = fb.get(n*3+1);
+					float z = fb.get(n*3+2);
+					
+					x+= Light[i].location.x;
+					y+= Light[i].location.y;
+					z+= Light[i].location.z;
+					
+					fb.put(n*3, x);
+					fb.put(n*3+1, y);
+					fb.put(n*3+2, z);
+				}
+				//mesh.setBuffer(Type.Position, 3, fb);
+				mesh.updateBound();
+				
+				Geometry geom = new Geometry("Light"+i, mesh);
+				
+				// 材质
+				Material mat = new Material(manager, "Common/MatDefs/Misc/Unshaded.j3md");
+				mat.setColor("Color", Light[i].color);
+				mat.getAdditionalRenderState().setWireframe(true);
+				geom.setMaterial(mat);
+				
+				lightNode.attachChild(geom);
+			}
+			
+			return lightNode;
 		}
 
 		Mesh buildStage3DMesh(int size, int mat_id) {
@@ -852,51 +973,34 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			// Prepare MeshData
 			for (int i = 0; i < nFace; i++) {
 				// Check the MaterialIndex
-				if (Face[i].mat_id != mat_id)
+				if (Face[i].v[3] != mat_id)
 					continue;
 
-				// 顶点 VERTEX
-				position[index * 3 + 0] = new Vector3f(Vertex[Face[i].a].x, Vertex[Face[i].a].y, Vertex[Face[i].a].z);
-				position[index * 3 + 1] = new Vector3f(Vertex[Face[i].b].x, Vertex[Face[i].b].y, Vertex[Face[i].b].z);
-				position[index * 3 + 2] = new Vector3f(Vertex[Face[i].c].x, Vertex[Face[i].c].y, Vertex[Face[i].c].z);
-
-				// 面 FACE
-				if (i < nFace) {
-					f[index * 3 + 0] = index * 3 + 0;
-					f[index * 3 + 1] = index * 3 + 1;
-					f[index * 3 + 2] = index * 3 + 2;
-				}
-
-				// 原地图可能有多个贴图，因此使用多个UV坐标
-				for(int k=0; k<materials[mat_id].TextureCounter; k++) {
+				// 顺序处理3个顶点
+				for(int vIndex=0; vIndex<3; vIndex++) {
+					// 顶点 VERTEX
+					position[index * 3 + vIndex] = Vertex[Face[i].v[vIndex]].v;
+	
+					// 面 FACE
+					f[index * 3 + vIndex] = index * 3 + vIndex;
+	
+					// 纹理映射
+					TEXLINK tl = Face[i].TexLink;
+					if(tl != null) {
+						// 第1组uv坐标
+						uv1[index * 3 + vIndex] = new Vector2f(tl.u[vIndex], 1f - tl.v[vIndex]);
+					} else {
+						uv1[index * 3 + vIndex] = new Vector2f();
+					}
 					
+					// 第2组uv坐标
+					if (tl != null && tl.NextTex != null) {
+						tl = tl.NextTex;
+						uv2[index * 3 + vIndex] = new Vector2f(tl.u[vIndex], 1f - tl.v[vIndex]);
+					} else {
+						uv2[index * 3 + vIndex] = new Vector2f();
+					}
 				}
-				// 纹理映射
-				TEXLINK tl = Face[i].TexLink;
-				if(tl != null) {
-					// 第1组uv坐标
-					uv1[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
-					uv1[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
-					uv1[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
-				} else {
-					uv1[index * 3 + 0] = new Vector2f();
-					uv1[index * 3 + 1] = new Vector2f();
-					uv1[index * 3 + 2] = new Vector2f();
-				}
-				
-				// 第2组uv坐标
-				if (tl != null && tl.NextTex != null) {
-					tl = tl.NextTex;
-					
-					uv2[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
-					uv2[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
-					uv2[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
-				} else {
-					uv2[index * 3 + 0] = new Vector2f();
-					uv2[index * 3 + 1] = new Vector2f();
-					uv2[index * 3 + 2] = new Vector2f();
-				}
-				
 				index++;
 			}
 
@@ -916,8 +1020,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		}
 	}
 
-	class SMotionStEndInfo
-	{
+	class SMotionStEndInfo {
 		int	StartFrame;
 		int	EndFrame;
 	}
@@ -963,7 +1066,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		OBJ3D pParent;			// 何葛 坷宏璃飘 器牢磐
 
 		MATRIX	Tm;				// 扁夯 TM 青纺
-		MATRIX	TmInvert;		// Tm 狼 开青纺 
+		MATRIX	TmInvert;		// 逆矩阵
 		FMATRIX	TmResult;		// 局聪皋捞记 青纺
 		MATRIX	TmRotate;		// 扁夯利 雀傈 青纺 
 
@@ -1018,11 +1121,11 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		void readOBJ3D() {
 			int start = buffer.position();
 			
-			getInt();// Head
-			getInt();// smVERTEX	*Vertex;				// 滚咆胶
-			getInt();// smFACE		*Face;					// 其捞胶
-			lpOldTexLink = getInt();// smTEXLINK	*TexLink;				//咆胶媚 谅钎 府胶飘
-			lpPhysuque = getInt();// smOBJ3D		**Physique;				// 阿 滚咆胶狼 乔瘤农 坷宏璃飘
+			getInt();// Head `DCB\0`
+			getInt();// smVERTEX	*Vertex;
+			getInt();// smFACE		*Face;
+			lpOldTexLink = getInt();// smTEXLINK	*TexLink;
+			lpPhysuque = getInt();// smOBJ3D		**Physique;
 			
 			ZeroVertex = new VERTEX();
 			
@@ -1135,6 +1238,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			relinkFaceAndTex();
 			
 			if ( lpPhysuque != 0 && PatPhysique != null ) {
+				
 				Physique = new OBJ3D [ nVertex ];
 				
 				String[] names = new String[nVertex];
@@ -1147,6 +1251,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				}
 
 			}
+			
 			
 		}
 		
@@ -1169,12 +1274,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		}
 
 		Geometry buildOBJ3D() {
-				
 			// 计算网格
 			Mesh mesh = buildOBJ3DMesh();
 			Geometry geom = new Geometry(NodeName, mesh);
 			
-			log.debug("NodeName:" + NodeName);
 			return geom;
 		}
 
@@ -1189,9 +1292,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			for (int i = 0; i < nFace; i++) {
 
 				// 顶点 VERTEX
-				position[index * 3 + 0] = new Vector3f(Vertex[Face[i].v[0]].x, Vertex[Face[i].v[0]].y, Vertex[Face[i].v[0]].z);
-				position[index * 3 + 1] = new Vector3f(Vertex[Face[i].v[1]].x, Vertex[Face[i].v[1]].y, Vertex[Face[i].v[1]].z);
-				position[index * 3 + 2] = new Vector3f(Vertex[Face[i].v[2]].x, Vertex[Face[i].v[2]].y, Vertex[Face[i].v[2]].z);
+				position[index * 3 + 0] = Vertex[Face[i].v[0]].v;
+				position[index * 3 + 1] = Vertex[Face[i].v[1]].v;
+				position[index * 3 + 2] = Vertex[Face[i].v[2]].v;
 
 				// 面 FACE
 				if (i < nFace) {
@@ -1336,30 +1439,38 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			smMaterialGroup = null;
 		}
 		void loadFile(String NodeName) {
+			log.debug("模型文件:" + key.getName());
+			
 			OBJ3D obj;
 			PAT3D BipPat;
 			FILE_HEADER	FileHeader = smd_file_header;
 
 			init();
 			
-			BipPat = smPhysique;
+			BipPat = BipPattern;
 			
+			// 读取Obj3D物体信息
 			FILE_OBJINFO[] FileObjInfo = new FILE_OBJINFO [ FileHeader.objCounter ];
 			for(int i=0; i<FileHeader.objCounter; i++) {
 				FileObjInfo[i] = new FILE_OBJINFO();
 			}
 			
+			// 记录文件头中的动画的帧数，拷贝每帧的数据。
 			TmFrameCnt = FileHeader.tmFrameCounter;
 			for(int i=0; i<32; i++) {
 				TmFrame[i] = FileHeader.TmFrame[i];
 			}
 			
+			// 读取材质
+			// 骨骼文件(.smb)中不包含材质，因此可能没有这一段数据。
 			if ( FileHeader.matCounter > 0) {
 				smMaterialGroup = new MATERIAL_GROUP();
 				smMaterialGroup.loadFile();
 			}
 			
 			if ( NodeName != null ) {
+				log.debug("NodeName != null && NodeName == " + NodeName);
+				// 加载指定名称的3D物体
 				for(int i=0;i<FileHeader.objCounter;i++) {
 					if ( NodeName.equals( FileObjInfo[i].NodeName ) ) {
 						obj = new OBJ3D();
@@ -1371,8 +1482,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 						break;
 					}
 				}
-			}
-			else {
+			} else {
+				// 读取全部3D对象
 				for(int i=0;i<FileHeader.objCounter;i++) {
 					obj = new OBJ3D();
 					if ( obj != null ) {
@@ -1387,14 +1498,13 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		}
 		
 		boolean addObject(OBJ3D obj ) {
-			int frame;
-
-			if ( nObj3d< 128 ) {
+			// 限制物体的数量，最多128个
+			if ( nObj3d < 128 ) {
 				obj3d[ nObj3d ] = obj;
 				nObj3d ++;
 
-				frame = 0;
-
+				// 统计动画帧数
+				int frame = 0;
 				if ( obj.TmRotCnt>0 && obj.TmRot != null) 
 					frame = obj.TmRot[ obj.TmRotCnt-1 ].frame;
 				if ( obj.TmPosCnt>0 && obj.TmPos != null ) 
@@ -1413,15 +1523,16 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					dBound = obj.dBound;
 				}
 
-
 				return true;
 			}
 
 			return false;
 		}
 		
+		/**
+		 * 计算物体之间的父子关系。
+		 */
 		void linkObject() {
-			// 畴靛 匙烙栏肺 何葛 磊侥 楷搬
 			for(int i=0; i<nObj3d ; i++ ) {
 				if ( obj3d[i].NodeParent != null) {
 					for(int k=0; k<nObj3d; k++ ) {
@@ -1437,26 +1548,32 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 			int NodeCnt =0;
 
+			// 清零
 			for(int i=0;i<128;i++) {
 				TmSort[i]=0;
 			}
 
-			// ROOT(何葛啊 绝绰) 坷宏璃飘  
+			// 首先记录根节点
 			for(int i=0;i<nObj3d; i++ ) {
-				if ( obj3d[i].pParent==null ) 
+				if ( obj3d[i].pParent == null ) 
 					TmSort[NodeCnt++] = (byte)i;
 			}
 
 			// 何葛俊 崔妨乐绰 磊侥阑 茫酒 鉴辑措肺 历厘
 			for(int j=0;j<nObj3d; j++ ) {
 				for(int i=0; i<nObj3d; i++ ) {
-					if ( obj3d[i].pParent!=null && obj3d[TmSort[j]]==obj3d[i].pParent ) {
+					if ( obj3d[i].pParent !=null && obj3d[TmSort[j]]==obj3d[i].pParent ) {
 						TmSort[NodeCnt++] = (byte)i;
 					}
 				}
-			}  
+			}
 		}
 		
+		/**
+		 * 根据结点名称，查询Obj3D对象。
+		 * @param name
+		 * @return
+		 */
 		OBJ3D getObjectFromName(String name) {
 			for(int i=0; i<nObj3d; i++) {
 				if(obj3d[i].NodeName.equals(name)) {
@@ -1466,7 +1583,85 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			return null;
 		}
 		
+		/**
+		 * 生成骨骼
+		 */
+		void buildSkeleton() {
+			/*
+			for(int i=0; i<nObj3d; i++) {
+				MATRIX TmInvert = obj3d[i].TmInvert;
+				log.debug(obj3d[i].NodeName + " Invert:");
+				log.debug(TmInvert._11 + ", " + TmInvert._12 + ", " + TmInvert._13 + ", " + TmInvert._14);
+				log.debug(TmInvert._21 + ", " + TmInvert._22 + ", " + TmInvert._23 + ", " + TmInvert._24);
+				log.debug(TmInvert._31 + ", " + TmInvert._32 + ", " + TmInvert._33 + ", " + TmInvert._34);
+				log.debug(TmInvert._41 + ", " + TmInvert._42 + ", " + TmInvert._43 + ", " + TmInvert._44);
 		
+			}
+			*/
+			
+			HashMap<String, Bone> boneMap = new HashMap<String, Bone>();
+			Bone[] bones = new Bone[nObj3d];
+			for (int i = 0; i < nObj3d; i++) {
+				byte n = TmSort[i];
+				OBJ3D obj = obj3d[n];
+
+				Bone bone = new Bone(obj.NodeName);
+				boneMap.put(obj.NodeName, bone);
+				bone.setBindTransforms(obj.TmPos[0].vec3, obj.TmRot[0].quad, obj.TmScale[0].scale);
+				bones[i] = bone;
+
+				// I AM YOUR FATHER!!!
+				if (obj.NodeParent != null) {
+					Bone parent = boneMap.get(obj.NodeParent);
+					if (parent != null)
+						parent.addChild(bone);
+				}
+
+			}
+
+			Skeleton ske = new Skeleton(bones);
+
+			AnimControl ac = new AnimControl(ske);
+
+			SkeletonControl sc = new SkeletonControl(ske);
+		}
+		
+		/**
+		 * 将顺序读取的3个int，用TmInvert进行转置，获得一个GL坐标系的顶点。
+		 * @param res1
+		 * @param res2
+		 * @param res3
+		 * @param tm
+		 */
+		Vector3f mult(long res1, long res2, long res3, MATRIX tm ) {
+			// reverting..
+			long v1 = -(
+					(res2 * tm._33 * tm._21 - res2 * tm._23 * tm._31 - res1 * tm._33 * tm._22
+					+ res1 * tm._23 * tm._32 - res3 * tm._21 * tm._32 + res3 * tm._31 * tm._22
+					+ tm._43 * tm._21 * tm._32 - tm._43 * tm._31 * tm._22 - tm._33 * tm._21 * tm._42
+					+ tm._33 * tm._41 * tm._22 + tm._23 * tm._31 * tm._42 - tm._23 * tm._41 * tm._32) << 8)
+					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
+					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
+			long v2 = (
+					(res2 * tm._11 * tm._33 - res1 * tm._33 * tm._12 - res3 * tm._11 * tm._32
+					+ res3 * tm._31 * tm._12 - res2 * tm._31 * tm._13 + res1 * tm._32 * tm._13
+					+ tm._11 * tm._43 * tm._32 - tm._43 * tm._31 * tm._12 - tm._11 * tm._33 * tm._42
+					+ tm._33 * tm._41 * tm._12 + tm._31 * tm._42 * tm._13 - tm._41 * tm._32 * tm._13) << 8)
+					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
+					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
+			long v3 = -(
+					(res2 * tm._11 * tm._23 - res1 * tm._23 * tm._12 - res3 * tm._11 * tm._22
+					+ res3 * tm._21 * tm._12 - res2 * tm._21 * tm._13 + res1 * tm._22 * tm._13
+					+ tm._11 * tm._43 * tm._22 - tm._43 * tm._21 * tm._12 - tm._11 * tm._23 * tm._42
+					+ tm._23 * tm._41 * tm._12 + tm._21 * tm._42 * tm._13 - tm._41 * tm._22 * tm._13) << 8)
+					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
+					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
+
+			float x = (float) v1 / 256.0f;
+			float y = (float) v2 / 256.0f;
+			float z = (float) v3 / 256.0f;
+			return new Vector3f(x, y, z);
+		}
 		Node buildPAT3D() {
 			Node rootNode = new Node("STAGEOBJ:" + key.getName());
 			
@@ -1474,12 +1669,18 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				if (obj3d[i].nFace > 0) {
 					Geometry geom = obj3d[i].buildOBJ3D();
 					// 创建材质
-					int mat_id = obj3d[i].Face[i].v[3];
+					int mat_id = obj3d[i].Face[0].v[3];
 					MATERIAL m = smMaterialGroup.materials[mat_id];
 					Material mat = createLightMaterial(m);
 					geom.setMaterial(mat);
 					rootNode.attachChild(geom);
 				}
+			}
+			
+			
+			// 生成骨骼
+			if (BipPattern != null) {
+				BipPattern.buildSkeleton();
 			}
 			
 			return rootNode;
@@ -1498,53 +1699,56 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		key = assetInfo.getKey();
 		manager = assetInfo.getManager();
 		
-		/**
-		 * 缓存文件
-		 */
-		getByteBuffer(assetInfo.openStream());
+		// 确认用户使用了SmdKey
+		if (!(key instanceof SmdKey)) {
+			log.error("用户未使用SmdKey来加载模型:" + key.getName());
+			throw new RuntimeException("请使用SmdKey来加载精灵的smd模型。");
+		}
 		
 		/**
-		 * 读取文件头
+		 * 将物理对象初始化为null
 		 */
-		smd_file_header = new FILE_HEADER();
+		BipPattern = null;
 		
 		/**
 		 * 若用户使用了SmdKey，就根据type来决定采用哪种方式来加载模型。
 		 */
-		if (key instanceof SmdKey) {
-			SmdKey smdkey = (SmdKey) key;
-			SMDTYPE type = smdkey.type;
-			switch (type) {
-			case STAGE3D:
-				STAGE3D stage3D = new STAGE3D();
-				stage3D.loadFile();
-				return stage3D.buildStage3D();
-			case STAGE_OBJ:
-				PAT3D pat = new PAT3D();
-				pat.loadFile(null);
-				return pat.buildPAT3D();
-			case PAT3D:
-			case MODEL:
-			case BONE:
-			}
-			
+		SmdKey smdkey = (SmdKey) key;
+		SMDTYPE type = smdkey.type;
+		switch (type) {
+		case STAGE3D:{// 主地图
+			getByteBuffer(assetInfo.openStream());
+			smd_file_header = new FILE_HEADER();
+			STAGE3D stage3D = new STAGE3D();
+			stage3D.loadFile();
+			return stage3D.buildStage3D();
+		}
+		case STAGE_OBJ_BIP: {// 舞台物体，有动画
+			// 将文件名后缀改为smb
+			String smb = key.getName();
+			smb = smb.replaceAll("smd", "smb");
+			BipPattern = (PAT3D)manager.loadAsset(new SmdKey(smb, SMDTYPE.BONE));
+		}
+		case STAGE_OBJ:{// 舞台物体，无动画
+			getByteBuffer(assetInfo.openStream());
+			smd_file_header = new FILE_HEADER();
+			PAT3D pat = new PAT3D();
+			pat.loadFile(null);
+			return pat.buildPAT3D();
+		}
+		case PAT3D:
 			return null;
-		} else {
-			/**
-			 * 若用户没有使用SmdKey，就根据文件头来判断。
-			 * 尝试加载Stage或Model
-			 */
-			if ("SMD Stage data Ver 0.72".equals(smd_file_header.header)) {// 地图
-				STAGE3D stage3D = new STAGE3D();
-				stage3D.loadFile();
-				return stage3D.buildStage3D();
-			} else if ("SMD Model data Ver 0.62".equals(smd_file_header.header)){// 模型
-				
-				return null;
-			} else {
-				
-				return null;
-			}
+		case MODEL:
+			return null;
+		case BONE: {
+			getByteBuffer(assetInfo.openStream());
+			smd_file_header = new FILE_HEADER();
+			PAT3D bone = new PAT3D();
+			bone.loadFile(null);
+			return bone;
+		}
+		default:
+			return null;
 		}
 	}
 	
@@ -1573,6 +1777,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	private Texture createTexture(String name) {
 		name = changeName(name);
+		
+		// TODO 将texture.Name存入缓存中，避免多次加载。
+		
 		Texture texture = null;
 		try {
 			texture = manager.loadTexture(key.getFolder() + name);
@@ -1592,13 +1799,10 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	private Material createLightMaterial(MATERIAL m) {
 		Material mat = new Material(manager, "Common/MatDefs/Light/Lighting.j3md");
-		mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.x, m.Diffuse.y, m.Diffuse.z, 1));
+		mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.r, m.Diffuse.g, m.Diffuse.b, 1));
 		//mat.setBoolean("UseMaterialColors", true);
 		
 		RenderState rs = mat.getAdditionalRenderState();
-		
-		// TODO 由于有些面被拆件了，这里强行使它们可见。应该根据MATERIAL中的参数来决定。
-		rs.setFaceCullMode(FaceCullMode.Off);
 		
 		if(m.TextureCounter == 0) {
 			rs.setFaceCullMode(FaceCullMode.FrontAndBack);
@@ -1666,12 +1870,68 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 * @return
 	 */
 	private FrameAnimControl createFrameAnimControl(MATERIAL m) {
-		FrameAnimControl control = new FrameAnimControl(m.AnimTexCounter);
-		
+		FrameAnimControl control = new FrameAnimControl(m.AnimTexCounter, m.Shift_FrameSpeed);
 		for(int i=0; i<m.AnimTexCounter; i++) {
 			Texture tex = createTexture(m.smAnimTexture[i].Name);
-			control.animTexture.add(tex);
+			control.textures[i] = tex;
 		}
 		return control;
 	}
+	
+	/**
+	 * 帧动画控制器
+	 * 精灵的部分动画是通过图片轮播来实现的。
+	 * @author yanmaoyuan
+	 *
+	 */
+	class FrameAnimControl extends AbstractControl {
+		/**
+		 * 纹理数据数据
+		 */
+		private Texture[] textures;
+		/**
+		 * 动画帧数
+		 */
+		private final int numTex;
+		/**
+		 * 帧切换的时间间隔，单位为秒。
+		 */
+		private final float internal;
+		
+		/**
+		 * 
+		 * @param numTex
+		 * @param shiftFrameSpeed 帧的切换速度，为2的n次方，单位是毫秒。
+		 */
+		public FrameAnimControl(int numTex, int shiftFrameSpeed) {
+			this.numTex = numTex;
+			this.textures = new Texture[numTex];
+			this.internal = (1 << shiftFrameSpeed) / 1000f;
+		}
+		
+		private float time = 0;
+		private int index = 0;
+		
+		@Override
+		protected void controlUpdate(float tpf) {
+			time += tpf;
+			if (time > internal) {
+				time -= internal;
+
+				// 切换图片
+				index++;
+				if (index == numTex) {
+					index = 0;
+				}
+				
+				Material mat = ((Geometry) spatial).getMaterial();
+				mat.setTexture("DiffuseMap", textures[index]);
+			}
+		}
+		
+		@Override
+		protected void controlRender(RenderManager rm, ViewPort vp) {}
+
+	}
+
 }
