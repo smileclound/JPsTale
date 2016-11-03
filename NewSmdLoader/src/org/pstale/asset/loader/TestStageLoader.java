@@ -5,14 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Skeleton;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
+import com.jme3.scene.debug.SkeletonDebugger;
 
 public class TestStageLoader extends SimpleApplication {
 
-	float scale = 0.01f;
+	float scale = 0.2f;
 	
 	public static void main(String[] args) {
 		new TestStageLoader().start();
@@ -36,16 +40,15 @@ public class TestStageLoader extends SimpleApplication {
 
 		assetManager.registerLoader(StageLoader.class, "smd", "smb");
 		
-		iron2();
+		dk();
 		
-		viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 0.9f, 1));
+		//viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 0.9f, 1));
 		
 		AmbientLight ambient = new AmbientLight();
-		//light.setColor(new ColorRGBA(0.625f, 0.625f, 0.625f, 1f));
+		ambient.setColor(new ColorRGBA(0.625f, 0.625f, 0.625f, 1f));
 		rootNode.addLight(ambient);
 		
-		
-		flyCam.setMoveSpeed(10f);
+		flyCam.setMoveSpeed(50f);
 	}
 
 	void ricarden() {
@@ -59,6 +62,13 @@ public class TestStageLoader extends SimpleApplication {
 		solid.scale(scale);
 		other.scale(scale);
 		
+		for(int i=1; i<4; i++) {
+			String file = String.format("Field/Ricarten/v-ani%02d.smd", i);
+			Node ani = (Node)assetManager.loadAsset(new SmdKey(file, SmdKey.SMDTYPE.STAGE_OBJ));
+			
+			rootNode.attachChild(ani);
+			ani.scale(scale);
+		}
 		// 灯光节点，bug用
 		if (model.getChild("LIGHT3D") != null) {
 			Node light = (Node)model.getChild("LIGHT3D");
@@ -120,6 +130,65 @@ public class TestStageLoader extends SimpleApplication {
 		rootNode.attachChild(ani);
 		ani.scale(scale);
 		
+		// Debug skeleton
+		final AnimControl ac = ani.getControl(AnimControl.class);
+		if (ac != null) {
+			final Skeleton skel = ac.getSkeleton();
+			SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", skel);
+			skeletonDebug.scale(scale);
+			final Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+			mat.setColor("Color", ColorRGBA.Green);
+			mat.getAdditionalRenderState().setDepthTest(false);
+			skeletonDebug.setMaterial(mat);
+			rootNode.attachChild(skeletonDebug);
+			
+		}
 		cam.setLocation(solid.getWorldBound().getCenter());
+		
+	}
+	
+	void archer() {
+		// 动画模型
+		Node ani = (Node)assetManager.loadAsset(new SmdKey("char/npc/TN-004/TN-004.smd", SmdKey.SMDTYPE.STAGE_OBJ_BIP));
+		rootNode.attachChild(ani);
+		ani.scale(scale);
+		
+		// Debug skeleton
+		final AnimControl ac = ani.getControl(AnimControl.class);
+		if (ac != null) {
+			final Skeleton skel = ac.getSkeleton();
+			SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", skel);
+			skeletonDebug.scale(scale);
+			final Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+			mat.setColor("Color", ColorRGBA.Red);
+			mat.getAdditionalRenderState().setDepthTest(false);
+			skeletonDebug.setMaterial(mat);
+			rootNode.attachChild(skeletonDebug);
+			
+		}
+		// 播放动画
+		if (ac != null) {
+			ac.createChannel().setAnim("Anim");;
+		}
+	}
+	
+	void dk() {
+		// 动画模型
+		Node ani = (Node)assetManager.loadAsset(new SmdKey("char/monster/d_ar/dar.smd", SmdKey.SMDTYPE.STAGE_OBJ_BIP));
+		rootNode.attachChild(ani);
+		ani.scale(scale);
+		
+		// Debug skeleton
+		final AnimControl ac = ani.getControl(AnimControl.class);
+		if (ac != null) {
+			final Skeleton skel = ac.getSkeleton();
+			SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", skel);
+			skeletonDebug.scale(scale);
+			final Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+			mat.setColor("Color", ColorRGBA.Red);
+			mat.getAdditionalRenderState().setDepthTest(false);
+			skeletonDebug.setMaterial(mat);
+			rootNode.attachChild(skeletonDebug);
+		}
 	}
 }

@@ -3,12 +3,16 @@ package org.pstale.asset.loader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.pstale.asset.loader.SmdKey.SMDTYPE;
 
 import com.jme3.animation.AnimControl;
+import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
+import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetInfo;
@@ -110,16 +114,13 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class TM_ROT {
 		int frame;
-		Quaternion quad;
+		float x, y, z, w;
 		TM_ROT() {
 			frame = getInt();
-			
-			float x, y, z, w;
 			x = getFloat();
 			y = getFloat();
 			z = getFloat();
 			w = getFloat();
-			quad = new Quaternion(-x, -y, -z, w);
 		}
 	}
 
@@ -128,15 +129,12 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class TM_POS {
 		int frame;
-		Vector3f vec3;
+		float x, y, z;
 		TM_POS() {
 			frame = getInt();
-			float x, y, z;
 			x = getFloat();
 			y = getFloat();
 			z = getFloat();
-			
-			vec3 = new Vector3f(x, y, z);
 		}
 	}
 	
@@ -145,15 +143,20 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class TM_SCALE {
 		int frame;
-		Vector3f scale;
+		float x, y, z;
 		TM_SCALE() {
 			frame = getInt();
-			float x, y, z;
 			x = getPTDouble();
 			y = getPTDouble();
 			z = getPTDouble();
-			scale = new Vector3f(x, y, z);
 		}
+	}
+	
+	class Keyframe {
+		int frame;
+		Vector3f translation = new Vector3f(0, 0, 0);
+		Quaternion rotation = new Quaternion(0, 0, 0, 1);
+		Vector3f scale = new Vector3f(1, 1, 1);
 	}
 	
 	/**
@@ -531,11 +534,16 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 *
 	 */
 	class VERTEX {
+		long x, y, z;
 		Vector3f v;// 坐标
 		Vector3f n;// normals 法向量
 		
 		VERTEX() {
-			v = getPTPoint3f();
+			x = getInt();
+			y = getInt();
+			z = getInt();
+			
+			v = new Vector3f(x/256f, y/256f, z/256f);
 			n = getPTPoint3f();
 		}
 	}
@@ -1076,8 +1084,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		int		lFrame;				// 弥饶 橇饭烙
 
 		float	qx,qy,qz,qw;		// 雀傈 孽磐聪攫
-		int		sx,sy,sz;			// 胶纳老 谅钎
-		int		px,py,pz;			// 器瘤记 谅钎
+		float	sx,sy,sz;			// 胶纳老 谅钎
+		float	px,py,pz;			// 器瘤记 谅钎
 
 		TM_ROT[] TmRot;			// 橇饭烙喊 雀傈 局聪皋捞记
 		TM_POS[] TmPos;			// 橇饭烙喊 器瘤记 局聪皋捞记
@@ -1171,8 +1179,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			lFrame = getInt();
 
 			qx = getFloat();qy = getFloat();qz = getFloat();qw = getFloat();
-			sx = getInt();sy = getInt();sz = getInt();
-			px = getInt();py = getInt();pz = getInt();
+			sx = getPTDouble();sy = getPTDouble();sz = getPTDouble();
+			px = getPTDouble();py = getPTDouble();pz = getPTDouble();
 			
 			getInt();// smTM_ROT	*TmRot;
 			getInt();// smTM_POS	*TmPos;
@@ -1237,6 +1245,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			
 			relinkFaceAndTex();
 			
+			// 绑定动画骨骼
 			if ( lpPhysuque != 0 && PatPhysique != null ) {
 				
 				Physique = new OBJ3D [ nVertex ];
@@ -1273,24 +1282,35 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		    }
 		}
 
-		Geometry buildOBJ3D() {
+		/**
+		 * 生成网格数据。
+		 * @param ske
+		 * @return
+		 */
+		Mesh buildMesh(int mat_id, Skeleton ske) {
+			Mesh mesh = new Mesh();
+			
+			// 统计使用这个材质的面数
+			int count = 0;
+			for(int i=0; i<nFace; i++) {
+				if(Face[i].v[3] == mat_id) {
+					count++;
+				}
+			}
+			
 			// 计算网格
-			Mesh mesh = buildOBJ3DMesh();
-			Geometry geom = new Geometry(NodeName, mesh);
-			
-			return geom;
-		}
-
-		Mesh buildOBJ3DMesh() {
-			
-			Vector3f[] position = new Vector3f[nFace * 3];
-			int[] f = new int[nFace * 3];
-			Vector2f[] uv1 = new Vector2f[nFace * 3];
-
+			Vector3f[] position = new Vector3f[count * 3];
+			int[] f = new int[count * 3];
+			Vector2f[] uv = new Vector2f[count * 3];
 			int index = 0;
+			
 			// Prepare MeshData
 			for (int i = 0; i < nFace; i++) {
-
+				// 忽略掉这个面
+				if (Face[i].v[3] != mat_id) {
+					continue;
+				}
+				
 				// 顶点 VERTEX
 				position[index * 3 + 0] = Vertex[Face[i].v[0]].v;
 				position[index * 3 + 1] = Vertex[Face[i].v[1]].v;
@@ -1307,29 +1327,119 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				TEXLINK tl = Face[i].TexLink;
 				if(tl != null) {
 					// 第1组uv坐标
-					uv1[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
-					uv1[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
-					uv1[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
+					uv[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
+					uv[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
+					uv[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
 				} else {
-					uv1[index * 3 + 0] = new Vector2f();
-					uv1[index * 3 + 1] = new Vector2f();
-					uv1[index * 3 + 2] = new Vector2f();
+					uv[index * 3 + 0] = new Vector2f();
+					uv[index * 3 + 1] = new Vector2f();
+					uv[index * 3 + 2] = new Vector2f();
 				}
 				
 				index++;
 			}
 
-			Mesh mesh = new Mesh();
 			mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(position));
 			mesh.setBuffer(Type.Index, 3, f);
-			// DiffuseMap UV
-			mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv1));
+			mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv));
+			
+			// 骨骼蒙皮
+			if (Physique != null && ske != null) {
+				float[] boneIndex = new float[count * 12];
+				float[] boneWeight = new float[count * 12];
+				
+				index = 0;
+				for (int i = 0; i < nFace; i++) {
+					// 忽略这个面
+					if (Face[i].v[3] != mat_id) {
+						continue;
+					}
 
+					for(int j=0; j<3; j++) {
+						int v = Face[i].v[j];// 顶点序号
+						int bi = index*3 + j;// 对应骨骼的序号
+						
+						OBJ3D obj3d = Physique[v];
+						byte targetBoneIndex = (byte)ske.getBoneIndex(obj3d.NodeName);
+						
+						boneIndex[bi*4] = targetBoneIndex;
+						boneIndex[bi*4+1] = 0;
+						boneIndex[bi*4+2] = 0;
+						boneIndex[bi*4+3] = 0;
+						
+						boneWeight[bi*4] = 1;
+						boneWeight[bi*4+1] = 0;
+						boneWeight[bi*4+2] = 0;
+						boneWeight[bi*4+3] = 0;
+					}
+					
+					index++;
+				}
+				
+				mesh.setMaxNumWeights(1);
+				// apply software skinning
+				mesh.setBuffer(Type.BoneIndex, 4, boneIndex);
+				mesh.setBuffer(Type.BoneWeight, 4, boneWeight);
+				// apply hardware skinning
+				mesh.setBuffer(Type.HWBoneIndex, 4, boneIndex);
+				mesh.setBuffer(Type.HWBoneWeight, 4, boneWeight);
+				
+				mesh.generateBindPose(true);
+			}
+			
 			mesh.setStatic();
 			mesh.updateBound();
 			mesh.updateCounts();
 			
 			return mesh;
+		}
+
+		/**
+		 * 将顺序读取的3个int，用TmInvert进行转置，获得一个GL坐标系的顶点。
+		 * @param res1
+		 * @param res2
+		 * @param res3
+		 * @param tm
+		 */
+		Vector3f mult(long res1, long res2, long res3, MATRIX tm ) {
+			// reverting..
+			long v1 = -(
+					(res2 * tm._33 * tm._21 - res2 * tm._23 * tm._31 - res1 * tm._33 * tm._22
+					+ res1 * tm._23 * tm._32 - res3 * tm._21 * tm._32 + res3 * tm._31 * tm._22
+					+ tm._43 * tm._21 * tm._32 - tm._43 * tm._31 * tm._22 - tm._33 * tm._21 * tm._42
+					+ tm._33 * tm._41 * tm._22 + tm._23 * tm._31 * tm._42 - tm._23 * tm._41 * tm._32) << 8)
+					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
+					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
+			long v2 = (
+					(res2 * tm._11 * tm._33 - res1 * tm._33 * tm._12 - res3 * tm._11 * tm._32
+					+ res3 * tm._31 * tm._12 - res2 * tm._31 * tm._13 + res1 * tm._32 * tm._13
+					+ tm._11 * tm._43 * tm._32 - tm._43 * tm._31 * tm._12 - tm._11 * tm._33 * tm._42
+					+ tm._33 * tm._41 * tm._12 + tm._31 * tm._42 * tm._13 - tm._41 * tm._32 * tm._13) << 8)
+					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
+					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
+			long v3 = -(
+					(res2 * tm._11 * tm._23 - res1 * tm._23 * tm._12 - res3 * tm._11 * tm._22
+					+ res3 * tm._21 * tm._12 - res2 * tm._21 * tm._13 + res1 * tm._22 * tm._13
+					+ tm._11 * tm._43 * tm._22 - tm._43 * tm._21 * tm._12 - tm._11 * tm._23 * tm._42
+					+ tm._23 * tm._41 * tm._12 + tm._21 * tm._42 * tm._13 - tm._41 * tm._22 * tm._13) << 8)
+					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
+					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
+
+			float x = (float) v1 / 256.0f;
+			float y = (float) v2 / 256.0f;
+			float z = (float) v3 / 256.0f;
+			return new Vector3f(-y, z, -x);
+		}
+
+		void invertPoint() {
+			
+			for(int i=0; i<nVertex; i++) {
+				if (Physique != null) {
+					Vertex[i].v = mult(Vertex[i].x, Vertex[i].y, Vertex[i].z, Physique[i].TmInvert);
+				} else {
+					Vertex[i].v = mult(Vertex[i].x, Vertex[i].y, Vertex[i].z, TmInvert);
+				}
+			}
 		}
 	}
 	
@@ -1586,31 +1696,25 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		/**
 		 * 生成骨骼
 		 */
-		void buildSkeleton() {
-			/*
-			for(int i=0; i<nObj3d; i++) {
-				MATRIX TmInvert = obj3d[i].TmInvert;
-				log.debug(obj3d[i].NodeName + " Invert:");
-				log.debug(TmInvert._11 + ", " + TmInvert._12 + ", " + TmInvert._13 + ", " + TmInvert._14);
-				log.debug(TmInvert._21 + ", " + TmInvert._22 + ", " + TmInvert._23 + ", " + TmInvert._24);
-				log.debug(TmInvert._31 + ", " + TmInvert._32 + ", " + TmInvert._33 + ", " + TmInvert._34);
-				log.debug(TmInvert._41 + ", " + TmInvert._42 + ", " + TmInvert._43 + ", " + TmInvert._44);
-		
-			}
-			*/
+		Skeleton buildSkeleton() {
 			
 			HashMap<String, Bone> boneMap = new HashMap<String, Bone>();
 			Bone[] bones = new Bone[nObj3d];
 			for (int i = 0; i < nObj3d; i++) {
-				byte n = TmSort[i];
-				OBJ3D obj = obj3d[n];
+				OBJ3D obj = obj3d[i];
 
+				// 创建一个骨头
 				Bone bone = new Bone(obj.NodeName);
-				boneMap.put(obj.NodeName, bone);
-				bone.setBindTransforms(obj.TmPos[0].vec3, obj.TmRot[0].quad, obj.TmScale[0].scale);
 				bones[i] = bone;
-
-				// I AM YOUR FATHER!!!
+				
+				// 设置初始POSE
+				Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
+				Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
+				Vector3f scale = new Vector3f(obj.sy, obj.sz, obj.sx);
+				bone.setBindTransforms(translation, rotation, scale);
+				
+				// 建立父子关系
+				boneMap.put(obj.NodeName, bone);
 				if (obj.NodeParent != null) {
 					Bone parent = boneMap.get(obj.NodeParent);
 					if (parent != null)
@@ -1619,68 +1723,162 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 			}
 
-			Skeleton ske = new Skeleton(bones);
-
-			AnimControl ac = new AnimControl(ske);
-
-			SkeletonControl sc = new SkeletonControl(ske);
+			// 生成骨架
+			return new Skeleton(bones);
 		}
 		
 		/**
-		 * 将顺序读取的3个int，用TmInvert进行转置，获得一个GL坐标系的顶点。
-		 * @param res1
-		 * @param res2
-		 * @param res3
-		 * @param tm
+		 * 生成骨骼
+		 * @param ske 
 		 */
-		Vector3f mult(long res1, long res2, long res3, MATRIX tm ) {
-			// reverting..
-			long v1 = -(
-					(res2 * tm._33 * tm._21 - res2 * tm._23 * tm._31 - res1 * tm._33 * tm._22
-					+ res1 * tm._23 * tm._32 - res3 * tm._21 * tm._32 + res3 * tm._31 * tm._22
-					+ tm._43 * tm._21 * tm._32 - tm._43 * tm._31 * tm._22 - tm._33 * tm._21 * tm._42
-					+ tm._33 * tm._41 * tm._22 + tm._23 * tm._31 * tm._42 - tm._23 * tm._41 * tm._32) << 8)
-					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
-					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
-			long v2 = (
-					(res2 * tm._11 * tm._33 - res1 * tm._33 * tm._12 - res3 * tm._11 * tm._32
-					+ res3 * tm._31 * tm._12 - res2 * tm._31 * tm._13 + res1 * tm._32 * tm._13
-					+ tm._11 * tm._43 * tm._32 - tm._43 * tm._31 * tm._12 - tm._11 * tm._33 * tm._42
-					+ tm._33 * tm._41 * tm._12 + tm._31 * tm._42 * tm._13 - tm._41 * tm._32 * tm._13) << 8)
-					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
-					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
-			long v3 = -(
-					(res2 * tm._11 * tm._23 - res1 * tm._23 * tm._12 - res3 * tm._11 * tm._22
-					+ res3 * tm._21 * tm._12 - res2 * tm._21 * tm._13 + res1 * tm._22 * tm._13
-					+ tm._11 * tm._43 * tm._22 - tm._43 * tm._21 * tm._12 - tm._11 * tm._23 * tm._42
-					+ tm._23 * tm._41 * tm._12 + tm._21 * tm._42 * tm._13 - tm._41 * tm._22 * tm._13) << 8)
-					/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12 + tm._21 * tm._32 * tm._13
-					- tm._33 * tm._21 * tm._12 - tm._11 * tm._23 * tm._32 - tm._31 * tm._22 * tm._13);
-
-			float x = (float) v1 / 256.0f;
-			float y = (float) v2 / 256.0f;
-			float z = (float) v3 / 256.0f;
-			return new Vector3f(x, y, z);
-		}
-		Node buildPAT3D() {
-			Node rootNode = new Node("STAGEOBJ:" + key.getName());
+		Animation buildAnimation(Skeleton ske) {
 			
-			for(int i=0; i<nObj3d; i++) {
-				if (obj3d[i].nFace > 0) {
-					Geometry geom = obj3d[i].buildOBJ3D();
-					// 创建材质
-					int mat_id = obj3d[i].Face[0].v[3];
-					MATERIAL m = smMaterialGroup.materials[mat_id];
-					Material mat = createLightMaterial(m);
-					geom.setMaterial(mat);
-					rootNode.attachChild(geom);
+			// 统计帧数
+			int maxFrame = 0;
+			for (int i = 0; i < nObj3d; i++) {
+				OBJ3D obj = obj3d[i];
+				if (obj.TmRotCnt > 0) {
+					if (obj.TmRot[obj.TmRotCnt-1].frame > maxFrame) {
+						maxFrame = obj.TmRot[obj.TmRotCnt-1].frame;
+					}
+				}
+				if (obj.TmPosCnt > 0) {
+					if (obj.TmPos[obj.TmPosCnt-1].frame > maxFrame) {
+						maxFrame = obj.TmPos[obj.TmPosCnt-1].frame;
+					}
+				}
+				if (obj.TmScaleCnt > 0) {
+					if (obj.TmScale[obj.TmScaleCnt-1].frame > maxFrame) {
+						maxFrame = obj.TmScale[obj.TmScaleCnt-1].frame;
+					}
 				}
 			}
 			
+			// 计算动画时常
+			float length = (maxFrame) / 30f / 160f;
+			log.info("anim maxFrame=" + maxFrame + " length=" + length);
 			
+			Animation anim = new Animation("Anim", length);
+			
+			for (int i = 0; i < nObj3d; i++) {
+				OBJ3D obj = obj3d[i];
+				log.info("TmPos:" + obj.TmPosCnt + " TmRot:" + obj.TmRotCnt + " TmScl:" + obj.TmScaleCnt);
+
+				TreeMap<Integer, Keyframe> keyframes = new TreeMap<Integer, Keyframe>();
+				for(int j=0; j<obj.TmPosCnt; j++) {
+					TM_POS pos = obj.TmPos[j];
+					Keyframe k = getOrMakeKeyframe(keyframes, pos.frame);
+					k.translation.set(-pos.y, pos.z, -pos.x);
+				}
+				
+				for(int j=0; j<obj.TmRotCnt; j++) {
+					TM_ROT rot = obj.TmRot[j];
+					Keyframe k = getOrMakeKeyframe(keyframes, rot.frame);
+					k.rotation.set(-rot.y, rot.z, -rot.x, -rot.w);
+				}
+				
+				Quaternion ori = new Quaternion(0, 0, 0, 1);
+				for (Keyframe k : keyframes.values()) {
+					if (k.rotation != null) {
+						ori = k.rotation.mult(ori);
+						k.rotation.set(ori);
+					}
+				}
+				
+				for(int j=0; j<obj.TmScaleCnt; j++) {
+					TM_SCALE scale = obj.TmScale[j];
+					Keyframe k = getOrMakeKeyframe(keyframes, scale.frame);
+					k.scale.set(scale.y, scale.z, scale.x);
+				}
+				
+				// 计算动画数据
+				int size = keyframes.size();
+				float[] times = new float[size];
+				Vector3f[] translations = new Vector3f[size];
+				Quaternion[] rotations = new Quaternion[size];
+				Vector3f[] scales = new Vector3f[size];
+				for(Integer frame : keyframes.keySet()) {
+					times[i] = frame / 30f / 160f;
+					Keyframe key = keyframes.get(frame);
+					translations[i] = key.translation;
+					rotations[i] = key.rotation.normalizeLocal();
+					scales[i] = key.scale;
+					
+					assert translations[i] != null;
+					assert rotations[i] != null;
+					assert scales[i] != null;
+					
+					i++;
+				}
+				
+				BoneTrack track = new BoneTrack(ske.getBoneIndex(obj.NodeName));
+				track.setKeyframes(times, translations, rotations, scales);
+				anim.addTrack(track);
+			}
+			
+			return anim;
+		}
+		
+		private Keyframe getOrMakeKeyframe(SortedMap<Integer, Keyframe> keyframes, Integer time) {
+			Keyframe k = keyframes.get(time);
+			if (k == null) {
+				k = new Keyframe();
+				keyframes.put(time, k);
+			}
+			return k;
+		}
+		
+		Node buildPAT3D() {
+			Node rootNode = new Node("STAGEOBJ:" + key.getName());
+			
+			Skeleton ske = null;
 			// 生成骨骼
 			if (BipPattern != null) {
-				BipPattern.buildSkeleton();
+				ske = BipPattern.buildSkeleton();
+				
+			}
+						
+			for(int i=0; i<nObj3d; i++) {
+				OBJ3D obj = obj3d[i];
+				if (obj.nFace > 0) {
+					
+					obj.invertPoint();
+					
+					// 根据模型的材质不同，将创建多个网格，分别渲染。
+					for(int mat_id=0; mat_id<smMaterialGroup.materialCount; mat_id++) {
+						// 生成网格
+						Mesh mesh = obj.buildMesh(mat_id, ske);
+						
+						// 创建材质
+						MATERIAL m = smMaterialGroup.materials[mat_id];
+						Material mat = createLightMaterial(m);
+						
+						// 创建几何体并应用材质。
+						Geometry geom = new Geometry(obj3d[i].NodeName + "#" + mat_id, mesh);
+						geom.setMaterial(mat);
+						
+						// 设置位置
+						
+						// TODO 这个位置设置后并不准确，需要进一步研究。
+						Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
+						Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
+						Vector3f scale = new Vector3f(obj.sy, obj.sz, obj.sx);
+						geom.setLocalTranslation(translation);
+						geom.setLocalRotation(rotation);
+						geom.setLocalScale(scale);
+						
+						rootNode.attachChild(geom);
+					}
+				}
+			}
+			
+			// 绑定动画控制器
+			if (ske != null) {
+				Animation anim = BipPattern.buildAnimation(ske);
+				AnimControl ac = new AnimControl(ske);
+				ac.addAnim(anim);
+				rootNode.addControl(ac);
+				rootNode.addControl(new SkeletonControl(ske));
 			}
 			
 			return rootNode;
