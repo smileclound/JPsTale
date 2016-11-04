@@ -1,5 +1,6 @@
 package org.pstale.app;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +17,15 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.texture.Texture;
 
 /**
@@ -67,6 +71,7 @@ public class LoaderAppState extends SubAppState {
 	}
 	
 	List<Field> fields = new ArrayList<Field>();
+	Vector3f center;
 	/**
 	 * 加载场景模型
 	 * @param field
@@ -104,8 +109,10 @@ public class LoaderAppState extends SubAppState {
 			playBGM(field);
 			
 			// 移动摄像机
-			moveCamera(field);
+			moveCamera(field, ModelFactory.loadStage3DMesh(field.getName()));
 			
+			// 设置物理坐标
+			setPhysicLocation(center);
 			return;
 		} else {
 			fields.add(field);
@@ -118,8 +125,10 @@ public class LoaderAppState extends SubAppState {
 		 * 地图主模型
 		 */
 		Spatial mainModel = null;
+		Mesh mesh = null;
 		try {
-			mainModel = loadModel(field.getName());
+			mainModel = ModelFactory.loadStage3D(field.getName());
+			mesh = ModelFactory.loadStage3DMesh(field.getName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -128,14 +137,20 @@ public class LoaderAppState extends SubAppState {
 			mainModel.scale(scale);
 			rootNode.attachChild(mainModel);
 			
+			// 将网格缩小
+			FloatBuffer fb = (FloatBuffer)mesh.getBuffer(Type.Position).getData();
+			for(int i=0; i<fb.limit(); i++) {
+				fb.put(i, fb.get(i) * scale);
+			}
+			mesh.updateBound();
+			
 			// 移动摄像机
-	
 			if (field.getCenter().length() == 0) {
-				Vector3f center = calcBoundingCenter(mainModel);
-				field.getCenter().set(center.x / scale, center.z / scale);
+				center = mesh.getBound().getCenter();
+				field.getCenter().set(center.x, center.z);
 			} else {
 				// 移动摄像机
-				moveCamera(field);
+				moveCamera(field, mesh);
 			}
 			
 		} else {
@@ -151,7 +166,7 @@ public class LoaderAppState extends SubAppState {
 			for(int i=0; i<objs.size(); i++) {
 				Spatial model = null;
 				try {
-					model = loadModel("Field/" + objs.get(i).getName());
+					model = ModelFactory.loadStageObj("Field/" + objs.get(i).getName(), objs.get(i).isBipAnimation());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -207,7 +222,7 @@ public class LoaderAppState extends SubAppState {
 						Vector3f pos = new Vector3f(point.x, 0, point.z);
 						pos.multLocal(scale);
 						pos.y = 1000;
-						pos = getLocationOnField(pos);
+						pos = getLocationOnField(pos, mesh);
 						pos.y += 1;
 						monsters.add(pos);
 					}
@@ -224,9 +239,28 @@ public class LoaderAppState extends SubAppState {
 		if (npcAppState != null) {
 			npcAppState.load(field.getNpcs());
 		}
+		
+		/**
+		 * 地图的碰撞网格
+		 */
+		CollisionState collisionState = getStateManager().getState(CollisionState.class);
+		if (collisionState != null) {
+			
+			collisionState.addMesh(mesh);
+			
+			setPhysicLocation(center);
+		}
 
 	}
 	
+	private void setPhysicLocation(Vector3f center) {
+		CollisionState collisionState = getStateManager().getState(CollisionState.class);
+		if (collisionState != null) {
+			collisionState.setPlayerLocation(center);
+		}
+		
+	}
+
 	/**
 	 * 播放背景音乐
 	 * @param field
@@ -243,13 +277,13 @@ public class LoaderAppState extends SubAppState {
 	 * 移动摄像机到地图的中心
 	 * @param field
 	 */
-	private void moveCamera(Field field) {
+	private void moveCamera(Field field, Mesh mesh) {
 		// 移动摄像机
 		Vector2f center2f = field.getCenter();
-		Vector3f center = new Vector3f(center2f.x, 0, center2f.y).multLocal(scale);
+		center = new Vector3f(center2f.x, 0, center2f.y).multLocal(scale);
 		center.y = 1000;
-		center = getLocationOnField(center);
-		center.y += 2;
+		center = getLocationOnField(center, mesh);
+		center.y += 5/scale;
 		app.getCamera().setLocation(center);
 	}
 	
@@ -258,15 +292,13 @@ public class LoaderAppState extends SubAppState {
 	 * @param model
 	 * @return
 	 */
-	private Vector3f calcBoundingCenter(Spatial model) {
+	private Vector3f calcBoundingCenter(Mesh mesh) {
+		
 		Vector3f center = new Vector3f();
-		BoundingVolume bounding = model.getWorldBound();
-		if (bounding != null) {
-			center = bounding.getCenter();
-			center.y = 1000;
-			center = getLocationOnField(center);
-			center.y += 2;
-		}
+		center = mesh.getBound().getCenter();
+		center.y = 1000;
+		center = getLocationOnField(center, mesh);
+		center.y += 2;
 		
 		app.getCamera().setLocation(center);
 		return center;
@@ -289,11 +321,10 @@ public class LoaderAppState extends SubAppState {
 	 * @return
 	 */
 	Vector3f down = new Vector3f(0, -1, 0);
-	private Vector3f getLocationOnField(Vector3f pos) {
+	private Vector3f getLocationOnField(Vector3f pos, Mesh mesh) {
 		Ray ray = new Ray(pos, down);
 		CollisionResults results = new CollisionResults();
-		rootNode.collideWith(ray, results);
-		
+        mesh.collideWith(ray, new Matrix4f(), mesh.getBound(), results);
 		if (results.size() > 0) {
 			Vector3f realPos = results.getClosestCollision().getContactPoint();
 			return pos.set(realPos);

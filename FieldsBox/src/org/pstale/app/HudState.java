@@ -44,6 +44,8 @@ public class HudState extends BaseAppState {
 
     private VersionedReference<Boolean> showAxisRef;
     private VersionedReference<Boolean> showMeshRef;
+    private VersionedReference<Boolean> collisionRef;
+    private VersionedReference<Boolean> bulletDebugRef;
     private VersionedReference<Double> speedRef;
     
 	private float width;// 屏幕宽度
@@ -100,6 +102,18 @@ public class HudState extends BaseAppState {
         	LoaderAppState loader = getStateManager().getState(LoaderAppState.class);
         	if (loader != null) {
         		loader.wireframe( showMeshRef.get() );
+        	}
+        }
+        if( collisionRef.update() ) {
+        	CollisionState collision = getStateManager().getState(CollisionState.class);
+        	if (collision != null) {
+        		collision.toggle( collisionRef.get() );
+        	}
+        }
+        if( bulletDebugRef.update() ) {
+        	CollisionState collision = getStateManager().getState(CollisionState.class);
+        	if (collision != null) {
+        		collision.debug( bulletDebugRef.get() );
         	}
         }
         if( speedRef.update() ) {
@@ -233,7 +247,7 @@ public class HudState extends BaseAppState {
 		buttons.addChild(new ActionButton(edit, "glass"));
 
 		// 限制窗口的最小宽度
-        Vector3f hudSize = new Vector3f(140,0,0);
+        Vector3f hudSize = new Vector3f(160,0,0);
         hudSize.maxLocal(window.getPreferredSize());
         window.setPreferredSize( hudSize );
         
@@ -270,6 +284,14 @@ public class HudState extends BaseAppState {
         temp = window.addChild( new Checkbox( "显示网格线" ) );
         temp.setChecked(false);
         showMeshRef = temp.getModel().createReference();
+        
+        temp = window.addChild( new Checkbox( "Collision" ) );
+        temp.setChecked(true);
+        collisionRef = temp.getModel().createReference();
+        
+        temp = window.addChild( new Checkbox( "Bullet Debug" ) );
+        temp.setChecked(true);
+        bulletDebugRef = temp.getModel().createReference();
         
         window.addChild( new Label( "摄像机速度:" ) );
         final Slider redSlider = new Slider("glass");

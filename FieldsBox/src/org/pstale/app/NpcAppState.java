@@ -49,7 +49,7 @@ public class NpcAppState extends SubAppState {
 			 */
 			try {
 				// 首先尝试直接读取NPC模型
-				Node model = (Node)this.loadModel(npc.getModel());
+				Node model = (Node)ModelFactory.loadNPC(npc.getModel());
 				
 				// Debug skeleton
 				final AnimControl ac = model.getControl(AnimControl.class);
@@ -65,11 +65,6 @@ public class NpcAppState extends SubAppState {
 				
 				model.scale(scale);
 				model.setLocalTranslation(pos);
-				model.setLocalRotation(
-					new Matrix3f(1, 0, 0,
-								0, 0, 1,
-								0, -1, 0));
-				
 				rootNode.attachChild(model);
 			} catch (Exception e) {
 				// 加载失败，改为加载一个绿色方块代替NPC。
@@ -92,42 +87,5 @@ public class NpcAppState extends SubAppState {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * 加载NPC模型
-	 * @param name
-	 * @return
-	 */
-	protected Spatial loadModel(final String name) throws Exception {
-		Node model = null;
-		
-		AssetManager assetManager = getApplication().getAssetManager();
-		
-		String path = name;
-		if (path != null) {
-			path = path.replaceAll("\\\\", "/");
-		}
-		
-		// NPC的模型文件名为ini，将其改为inx
-		int index = path.lastIndexOf(".");
-		path = path.substring(0, index) + ".inx";
-		
-		AseKey key = new AseKey(path);
-		model = (Node) assetManager.loadAsset(key);
-		
-		// Debug skeleton
-		final AnimControl ac = model.getControl(AnimControl.class);
-		if (ac != null) {
-			final Skeleton skel = ac.getSkeleton();
-			SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", skel);
-			final Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-			mat.setColor("Color", ColorRGBA.Green);
-			mat.getAdditionalRenderState().setDepthTest(false);
-			skeletonDebug.setMaterial(mat);
-			model.attachChild(skeletonDebug);
-		}
-		
-		return model;
 	}
 }

@@ -10,9 +10,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guava"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lemur"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AseLoader"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/InxLoader"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j"/>
-	<classpathentry kind="lib" path="libs/jyaml-1.3.jar"/>
 	<classpathentry kind="src" path="/Assets"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/NewSmdLoader"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-bullet"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

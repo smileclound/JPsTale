@@ -144,12 +144,14 @@ public class LoadingAppState extends SubAppState {
 				//new CursorState(),
 				new HudState(),
 				new LoaderAppState(),
+				new CollisionState(data.fields.length),
 				new MusicAppState(),
 				new AmbientAppState(),
 				new FieldgateAppState(),
 				new WarpgateAppState(),
 				new MonsterAppState(),
-				new NpcAppState() };
+				new NpcAppState(),
+				new LightState()};
 
 		AppStateManager stateManager = getStateManager();
 		stateManager.attachAll(states);// 添加所需的AppStates
@@ -257,6 +259,8 @@ public class LoadingAppState extends SubAppState {
 				imageDecode(CLIENT_ROOT + "/field/map");
 				// 解码标题
 				imageDecode(CLIENT_ROOT + "/field/title");
+				// 解码旗帜
+				imageDecode(CLIENT_ROOT + "/char/Flag");
 				// 解码鼠标图片
 				imageDecode(CLIENT_ROOT + "/image/Sinimage/Cursor");
 			}
