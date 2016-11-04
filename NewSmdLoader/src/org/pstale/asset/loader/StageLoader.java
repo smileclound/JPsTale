@@ -44,6 +44,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.TempVars;
 
 /**
  * 精灵场景加载器
@@ -647,7 +648,6 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	    TEXLINK TexLink;// 若lpTexLink != 0，则TexLink指向一个实际的对象象
 
 	    float nx, ny, nz, y;// Cross氦磐( Normal )  ( nx , ny , nz , [0,1,0]氦磐 Y ); 
-	    
 	    STAGE_FACE() {
 	    	sum = getInt();
 			CalcSum = getInt();
@@ -885,6 +885,89 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		}
 		
 		/**
+		 * 生成碰撞网格
+		 * 将透明的、不参与碰撞检测的面统统裁剪掉，只保留参于碰撞检测的面。
+		 * @return
+		 */
+		Mesh buildSolidMesh() {
+			Mesh mesh = new Mesh();
+			
+			int materialCount = materialGroup.materialCount;
+			/**
+			 * 根据材质的特诊来筛选参加碰撞检测的物体，
+			 * 将被忽略的材质设置成null，作为一种标记。
+			 */
+			MATERIAL m;// 临时变量
+			for(int mat_id=0; mat_id<materialCount; mat_id++) {
+				m = materials[mat_id];
+				if (m.MeshState == 0 || m.MapOpacity != 0 || m.Transparency != 0) {
+					materials[mat_id] = null;
+				}
+			}
+			
+			/**
+			 * 统计有多少个要参加碰撞检测的面。
+			 */
+			int loc[] = new int[nVertex];
+			for(int i=0; i<nVertex; i++) {
+				loc[i]=-1;
+			}
+			
+			int fSize = 0;
+			for (int i = 0; i < nFace; i++) {
+				STAGE_FACE face = Face[i];
+				if (materials[face.v[3]] != null) {
+					loc[face.v[0]] = face.v[0];
+					loc[face.v[1]] = face.v[1];
+					loc[face.v[2]] = face.v[2];
+					
+					fSize++;
+				}
+			}
+			
+			int vSize = 0;
+			for(int i=0; i<nVertex; i++) {
+				if (loc[i] > -1) {
+					vSize++;
+				}
+			}
+			
+			// 记录新的顶点编号
+			Vector3f[] v = new Vector3f[vSize];
+			vSize = 0;
+			for(int i=0; i<nVertex; i++) {
+				if (loc[i] > -1) {
+					v[vSize] = Vertex[i].v;
+					loc[i] = vSize;
+					vSize++;
+				}
+			}
+			
+			// 记录新的顶点索引号
+			int[] f = new int[fSize * 3];
+			fSize = 0;
+			for (int i = 0; i < nFace; i++) {
+				STAGE_FACE face = Face[i];
+				if (materials[face.v[3]] != null) {
+					f[fSize * 3] = loc[face.v[0]];
+					f[fSize * 3 + 1] = loc[face.v[1]];
+					f[fSize * 3 + 2] = loc[face.v[2]];
+					fSize++;
+				}
+			}
+			
+			mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(v));
+			mesh.setBuffer(Type.Index, 3, BufferUtils.createIntBuffer(f));
+			
+			mesh.updateBound();
+			mesh.setStatic();
+			
+			log.debug("总面数:" + nFace + " 碰撞面数:" + fSize);
+			log.debug("总点数:" + nVertex + " 碰撞点数:" + vSize);
+			return mesh;
+		}
+	
+		/**
 		 * 生成STAGE3D对象
 		 * @return
 		 */
@@ -919,7 +1002,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					continue;
 				
 				// 计算网格
-				Mesh mesh = buildStage3DMesh(size, mat_id);
+				Mesh mesh = buildMesh(size, mat_id);
 				Geometry geom = new Geometry(key.getName() + "#" + mat_id, mesh);
 				
 				// 创建材质
@@ -970,8 +1053,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					}
 					// 隐形
 					if ((m.UseState & sMATS_SCRIPT_NOTVIEW) != 0) {
-						mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.FrontAndBack);
+						geom.removeFromParent();
 						log.debug("[" + geom.getName() + "]隐形!");
+						continue;
 					}
 					if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0) {
 						if (geom.getParent() != solidNode) {
@@ -1062,14 +1146,18 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			
 			return lightNode;
 		}
+		
 
-		Mesh buildStage3DMesh(int size, int mat_id) {
+		Mesh buildMesh(int size, int mat_id) {
+			
+			TempVars tv = TempVars.get();
 			
 			Vector3f[] position = new Vector3f[size * 3];
 			int[] f = new int[size * 3];
+			Vector3f[] normal = new Vector3f[size * 3];
 			Vector2f[] uv1 = new Vector2f[size * 3];
 			Vector2f[] uv2 = new Vector2f[size * 3];
-
+			
 			int index = 0;
 			// Prepare MeshData
 			for (int i = 0; i < nFace; i++) {
@@ -1102,8 +1190,24 @@ public class StageLoader extends ByteReader implements AssetLoader {
 						uv2[index * 3 + vIndex] = new Vector2f();
 					}
 				}
+				
+				// 计算法向量
+				Vector3f n    = tv.vect1;;
+	            Vector3f v1   = tv.vect2;;
+	            Vector3f v2   = tv.vect3;;
+	            v1 = position[index * 3+1].subtract(position[index * 3], v1);
+	            v2 = position[index * 3+2].subtract(position[index * 3], v2);
+	            v1.cross(v2, n);
+	            n.normalizeLocal();
+	            normal[index*3] = new Vector3f(n);
+	            normal[index*3+1] = new Vector3f(n);;
+	            normal[index*3+2] = new Vector3f(n);;
+	            
 				index++;
 			}
+			
+			tv.release();
+			tv = null;
 
 			Mesh mesh = new Mesh();
 			mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(position));
@@ -1112,6 +1216,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv1));
 			// LightMap UV
 			mesh.setBuffer(Type.TexCoord2, 2, BufferUtils.createFloatBuffer(uv2));
+			
+			mesh.setBuffer(Type.Normal, 3, BufferUtils.createFloatBuffer(normal));
 
 			mesh.setStatic();
 			mesh.updateBound();
@@ -2128,6 +2234,13 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			stage3D.loadFile();
 			return stage3D.buildStage3D();
 		}
+		case STAGE3D_SOLID: {// 地图网格
+			getByteBuffer(assetInfo.openStream());
+			smd_file_header = new FILE_HEADER();
+			STAGE3D stage3D = new STAGE3D();
+			stage3D.loadFile();
+			return stage3D.buildSolidMesh();
+		}
 		case BONE: {
 			getByteBuffer(assetInfo.openStream());
 			smd_file_header = new FILE_HEADER();
@@ -2665,7 +2778,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.r, m.Diffuse.g, m.Diffuse.b, 1));
 		mat.setColor("Ambient", new ColorRGBA(1f, 1f, 1f, 1f));
 		mat.setColor("Specular", new ColorRGBA(0, 0, 0, 1));
-		mat.setBoolean("UseMaterialColors", true);
+		//mat.setBoolean("UseMaterialColors", true);
 		
 		RenderState rs = mat.getAdditionalRenderState();
 		// 没有材质的物体不需要显示。

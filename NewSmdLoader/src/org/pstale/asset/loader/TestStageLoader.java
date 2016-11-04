@@ -9,10 +9,14 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.PointLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.light.SpotLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
 
@@ -24,6 +28,8 @@ public class TestStageLoader extends SimpleApplication {
 		new TestStageLoader().start();
 	}
 
+	SpotLight spot;
+	
 	@Override
 	public void simpleInitApp() {
 		stateManager.attach(new AxisAppState());
@@ -42,14 +48,16 @@ public class TestStageLoader extends SimpleApplication {
 
 		assetManager.registerLoader(StageLoader.class, "inx", "smd", "smb");
 		
+		//solid("Field/forest/fore-3.smd");
+		
 		//stage("Field/dungeon/dun-1.smd");
 		//stage("Field/dungeon/dun-5.smd");
-		stage("Field/forest/fore-3.smd");
-		stage("Field/forest/fore-2.smd");
-		stage("Field/forest/fore-1.smd");
+		//stage("Field/forest/fore-3.smd");
+		//stage("Field/forest/fore-2.smd");
+		//stage("Field/forest/fore-1.smd");
 		//stage("Field/Ruin/ruin-4.smd");
 		//stage("Field/Ruin/ruin-3.smd");
-		//ruin2();
+		ruin2();
 		//stage("Field/Ruin/ruin-1.smd");
 		//stage("Field/Ice/ice1.smd");
 		//iron2();
@@ -58,15 +66,46 @@ public class TestStageLoader extends SimpleApplication {
 		//dk();
 		//d_ar();
 		
-		viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 0.9f, 1));
+		//viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 0.9f, 1));
 		
 		AmbientLight ambient = new AmbientLight();
-		//ambient.setColor(new ColorRGBA(0.625f, 0.625f, 0.625f, 1f));
-		rootNode.addLight(ambient);
+		ambient.setColor(new ColorRGBA(0.225f, 0.225f, 0.225f, 1f));
+		//rootNode.addLight(ambient);
+		
+		DirectionalLight sun = new DirectionalLight();
+		sun.setColor(new ColorRGBA(0.1f, 0.1f, 0.1f, 1));
+		sun.setDirection(new Vector3f(1, -1, -0.5f).normalizeLocal());
+		rootNode.addLight(sun);
 		
 		flyCam.setMoveSpeed(50f);
+		
+		spot = new SpotLight();
+		spot.setColor(new ColorRGBA(1, 1, 1, 1));
+		spot.setSpotRange(1000f);
+		spot.setSpotInnerAngle(FastMath.DEG_TO_RAD * 5);
+		spot.setSpotOuterAngle(FastMath.DEG_TO_RAD * 30);
+		rootNode.addLight(spot);
 	}
 
+	public void simpleUpdate(float tpf) {
+		spot.setPosition(cam.getLocation());
+		spot.setDirection(cam.getDirection());
+	}
+	void solid(String path) {
+		Mesh mesh = (Mesh)assetManager.loadAsset(new SmdKey(path, SmdKey.SMDTYPE.STAGE3D_SOLID));
+		Geometry geom = new Geometry("Solid", mesh);
+		
+		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		mat.setColor("Color", ColorRGBA.Red);
+		mat.getAdditionalRenderState().setWireframe(true);
+		geom.setMaterial(mat);
+		
+		rootNode.attachChild(geom);
+		geom.scale(scale);
+		
+		cam.setLocation(geom.getWorldBound().getCenter());
+	}
+	
 	void stage(String path) {
 		// 主体
 		Node model = (Node)assetManager.loadAsset(new SmdKey(path, SmdKey.SMDTYPE.STAGE3D));
@@ -92,6 +131,7 @@ public class TestStageLoader extends SimpleApplication {
 		// 主体
 		stage("Field/Ricarten/village-2.smd");
 		
+		/**
 		for(int i=1; i<14; i++) {
 			String file = String.format("Field/Ricarten/v-ani%02d.smd", i);
 			Node ani = (Node)assetManager.loadAsset(new SmdKey(file, SmdKey.SMDTYPE.PAT3D));
@@ -99,12 +139,8 @@ public class TestStageLoader extends SimpleApplication {
 			rootNode.attachChild(ani);
 			ani.scale(scale);
 		}
+		*/
 		
-		PointLight light = new PointLight();
-	
-		light.setPosition(new Vector3f(3572.9019f, 65.83081f, -376.2894f));
-		light.setRadius(60f);
-		rootNode.addLight(light);
 	}
 	
 	void ruin2() {
