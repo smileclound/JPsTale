@@ -1,6 +1,6 @@
 package org.pstale.asset.loader;
 
-import org.pstale.asset.loader.StageLoader.PAT3D;
+import org.pstale.asset.loader.SmdLoader.PAT3D;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetProcessor;

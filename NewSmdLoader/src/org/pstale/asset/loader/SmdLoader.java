@@ -51,9 +51,9 @@ import com.jme3.util.TempVars;
  * @author yanmaoyuan
  *
  */
-public class StageLoader extends ByteReader implements AssetLoader {
+public class SmdLoader extends ByteReader implements AssetLoader {
 
-	static Logger log = Logger.getLogger(StageLoader.class);
+	static Logger log = Logger.getLogger(SmdLoader.class);
 	
 	// 是否使用OPENGL坐标系
 	boolean OPEN_GL_AXIS = true;
@@ -902,6 +902,12 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				m = materials[mat_id];
 				if (m.MeshState == 0 || m.MapOpacity != 0 || m.Transparency != 0) {
 					materials[mat_id] = null;
+					continue;
+				}
+				
+				if ((m.UseState & sMATS_SCRIPT_PASS) != 0) {
+					log.debug("[" + mat_id + "]穿墙而过");
+					materials[mat_id] = null;
 				}
 			}
 			
@@ -971,13 +977,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		 * 生成STAGE3D对象
 		 * @return
 		 */
-		Node buildStage3D() {
+		Node buildNode() {
 			Node rootNode = new Node("STAGE3D:" + key.getName());
-			
-			Node solidNode = new Node("SMMAT_STAT_CHECK_FACE");// 用来存放需要进行碰撞检测的部分
-			Node otherNode = new Node("SMMAT_STAT_NOT_CHECK_FACE");// 用来存放不需要进行碰撞检测的部分
-			rootNode.attachChild(solidNode);
-			rootNode.attachChild(otherNode);
 			
 			int materialCount = materialGroup.materialCount;
 			
@@ -985,7 +986,17 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			for(int mat_id=0; mat_id<materialCount; mat_id++) {
 				MATERIAL m = materials[mat_id];
 				
+				// 该材质没有使用，不需要显示。
 				if (m.InUse == 0) {
+					continue;
+				}
+				// 没有纹理，不需要显示。
+				if (m.TextureCounter == 0 && m.AnimTexCounter == 0) {
+					continue;
+				}
+				// 不可见的材质，不需要显示。
+				if ((m.UseState & sMATS_SCRIPT_NOTVIEW) != 0) {
+					log.debug("[" + mat_id + "]隐形!");
 					continue;
 				}
 				
@@ -998,8 +1009,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 						continue;
 					size++;
 				}
-				if (size < 1)
+				if (size < 1) {
 					continue;
+				}
 				
 				// 计算网格
 				Mesh mesh = buildMesh(size, mat_id);
@@ -1009,21 +1021,12 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				Material mat = createLightMaterial(materials[mat_id]);
 				geom.setMaterial(mat);
 				
+				rootNode.attachChild(geom);
+				
 				// 透明度
 				// 只有不透明物体才需要检测碰撞网格。
 				if (m.MapOpacity != 0 || m.Transparency != 0) {
 					geom.setQueueBucket(Bucket.Translucent);
-					
-					if (geom.getParent() != otherNode) {
-						otherNode.attachChild(geom);
-						log.debug("[" + geom.getName() + "]由于透明的原因被取消碰撞网格。");
-					}
-				}
-				
-				if (m.MeshState == 0) {
-					otherNode.attachChild(geom);
-				} else {
-					solidNode.attachChild(geom);
 				}
 				
 				if (m.ReformTexture > 0) {
@@ -1032,7 +1035,6 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				if (m.SelfIllum > 0.0f) {
 					log.debug("SelfIllum=" + m.SelfIllum);// 自发光
 				}
-				
 				
 				if (m.UseState != 0) {//ScriptState
 					// TODO 根据材质的状态，应用不同的脚本。
@@ -1051,27 +1053,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					if ((m.UseState & sMATS_SCRIPT_WATER) != 0) {
 						
 					}
-					// 隐形
-					if ((m.UseState & sMATS_SCRIPT_NOTVIEW) != 0) {
-						geom.removeFromParent();
-						log.debug("[" + geom.getName() + "]隐形!");
-						continue;
-					}
-					if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0) {
-						if (geom.getParent() != solidNode) {
-							solidNode.attachChild(geom);
-							log.debug("[" + geom.getName() + "]禁止通行");
-						}
-					}
-					if ((m.UseState & sMATS_SCRIPT_PASS) != 0) {
-						if (geom.getParent() == otherNode) {
-							otherNode.attachChild(geom);
-							log.debug("[" + geom.getName() + "]穿墙而过");
-						}
-					}
 					if ((m.UseState & sMATS_SCRIPT_RENDLATTER) != 0) {
 						// MeshState |= sMATS_SCRIPT_RENDLATTER;
-						
 					}
 					if ((m.UseState & sMATS_SCRIPT_CHECK_ICE) != 0) {
 						// MeshState |= sMATS_SCRIPT_CHECK_ICE;
@@ -2147,7 +2130,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			return k;
 		}
 		
-		Node buildPAT3D() {
+		Node buildNode() {
 			Node rootNode = new Node("PAT3D:" + key.getName());
 			
 			Skeleton ske = null;
@@ -2232,7 +2215,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			smd_file_header = new FILE_HEADER();
 			STAGE3D stage3D = new STAGE3D();
 			stage3D.loadFile();
-			return stage3D.buildStage3D();
+			return stage3D.buildNode();
 		}
 		case STAGE3D_SOLID: {// 地图网格
 			getByteBuffer(assetInfo.openStream());
@@ -2262,14 +2245,14 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			smd_file_header = new FILE_HEADER();
 			PAT3D pat = new PAT3D();
 			pat.loadFile(null, bone);
-			return pat.buildPAT3D();
+			return pat.buildNode();
 		}
 		case PAT3D:{// 舞台物体，无动画
 			getByteBuffer(assetInfo.openStream());
 			smd_file_header = new FILE_HEADER();
 			PAT3D pat = new PAT3D();
 			pat.loadFile(null, smdkey.getBone());
-			return pat.buildPAT3D();
+			return pat.buildNode();
 		}
 		case INX: {
 			String inx = key.getName().toLowerCase();
