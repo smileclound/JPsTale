@@ -1,5 +1,10 @@
 package org.pstale.util;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 public class ImageDecoder {
 
 	/**
@@ -47,5 +52,84 @@ public class ImageDecoder {
         	}
 		}
 		
+	}
+	
+	/**
+	 * 将指定文件夹下所有bmp和tga图片解码。
+	 * 
+	 * @param folder
+	 */
+	public static void imageDecode(String folder) {
+		File dir = new File(folder);
+
+		// 判断文件夹是否存在
+		if (dir.exists() && dir.isDirectory()) {
+
+			// 遍历bmp文件
+			File[] files = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String str = name.toLowerCase();
+					return str.endsWith(".bmp");
+				}
+			});// 读取文件列表
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				if (file.isFile()) {
+
+					try {
+						byte[] buffer = new byte[16];
+						RandomAccessFile raf = new RandomAccessFile(file, "rw");
+						raf.seek(0);
+						raf.readFully(buffer);
+
+						// 解码
+						if (buffer[0] == 0x41 && buffer[1] == 0x38) {
+							convertBMP(buffer, true);
+							raf.seek(0);
+							raf.write(buffer);
+						}
+
+						raf.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			// 遍历tga文件
+			files = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String str = name.toLowerCase();
+					return str.endsWith(".tga");
+				}
+			});// 读取文件列表
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				if (file.isFile()) {
+					try {
+						byte[] buffer = new byte[18];
+						RandomAccessFile raf = new RandomAccessFile(file, "rw");
+						raf.seek(0);
+						raf.readFully(buffer);
+
+						// 解码
+						if (buffer[0] == 0x47 && buffer[1] == 0x38) {
+							convertTGA(buffer, true);
+							raf.seek(0);
+							raf.write(buffer);
+						}
+
+						raf.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		String root = "D:/Priston Tale/PTCN3550/PTCN3550/char/monster/d_ar";
+		imageDecode(root);
 	}
 }
