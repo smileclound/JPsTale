@@ -25,7 +25,7 @@
    	<param name="File" value="debug.log" />
       <param name="Append" value="true" />
       <param name="Threshold" value="TRACE"/>
-      <param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+      <param name="DatePattern" value="yyyy-MM-dd" />
 
       <layout class="org.apache.log4j.PatternLayout">
          <!-- The default pattern: Date Priority [Category] Message\n -->

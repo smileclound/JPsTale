@@ -1,8 +1,13 @@
 package org.pstale.asset.loader;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -49,13 +54,39 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 	static Logger log = Logger.getLogger(StageLoader.class);
 	
+	// 是否使用OPENGL坐标系
+	boolean OPEN_GL_AXIS = true;
+	// 是否打印动画日志
+	boolean LOG_ANIMATION = false;
+	
+	/**
+	 * 精灵的动画使用3DS MAX的默认速率，每秒30Tick，每Tick共160帧。
+	 * 也就是每秒4800帧。
+	 * 
+	 * 但是smd文件中也另外存储了2个参数：
+	 * (1) 每秒Tick数 (默认30)
+	 * (2) 每Tick帧数 (默认160)
+	 * 这两个变量的值控制了动画播放的速率。
+	 */
+	private float framePerSecond = 4800f;
+	
 	private final static int OBJ_FRAME_SEARCH_MAX = 32;
 
 	private FILE_HEADER smd_file_header;
-	/**
-	 * 骨骼
-	 */
-	private PAT3D BipPattern = null;
+
+	static int sMATS_SCRIPT_WIND	= 1;
+	static int sMATS_SCRIPT_WINDZ1		= 0x0020;
+	static int sMATS_SCRIPT_WINDZ2		= 0x0040;
+	static int sMATS_SCRIPT_WINDX1		= 0x0080;
+	static int sMATS_SCRIPT_WINDX2		= 0x0100;
+	static int sMATS_SCRIPT_WATER		= 0x0200;
+	static int sMATS_SCRIPT_NOTVIEW		= 0x0400;
+	static int sMATS_SCRIPT_PASS		= 0x0800;
+	static int sMATS_SCRIPT_NOTPASS		= 0x1000;
+	static int sMATS_SCRIPT_RENDLATTER	= 0x2000;
+	static int sMATS_SCRIPT_BLINK_COLOR	= 0x4000;
+	static int sMATS_SCRIPT_CHECK_ICE	= 0x8000;
+	static int sMATS_SCRIPT_ORG_WATER	= 0x10000;
 	
 	/**
 	 * size = 64
@@ -153,10 +184,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	}
 	
 	class Keyframe {
-		int frame;
-		Vector3f translation = new Vector3f(0, 0, 0);
-		Quaternion rotation = new Quaternion(0, 0, 0, 1);
-		Vector3f scale = new Vector3f(1, 1, 1);
+		Vector3f translation;
+		Quaternion rotation;
+		Vector3f scale;
 	}
 	
 	/**
@@ -250,7 +280,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		
 		////////////////
 		// 计算读取结束后整个MaterialGroup占用了多少内存，没有实际意义。
-		int size = 0;
+		// int size = 0;
 		////////////////
 		/**
 		 * 读取smMATERIAL_GROUP数据
@@ -266,7 +296,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			lastSearchMaterial = getInt();
 			lastSearchName = getString(64);
 			
-			size += 88;
+			//size += 88;
 			
 			assert buffer.position() - start == 88;
 		}
@@ -279,12 +309,12 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			
 			for(int i=0; i<materialCount; i++) {
 				materials[i] = new MATERIAL();
-				size += 320;
+				//size += 320;
 				
 				if (materials[i].InUse != 0) {
-					int strLen = getInt();
-					size += 4;
-					size += strLen;
+					getInt();// int strLen; 这个整数记录了后续所有材质名称所占的字节数。
+					// size += 4;
+					// size += strLen;
 					
 					materials[i].smTexture = new TEXTURE[materials[i].TextureCounter];
 					for(int j=0; j<materials[i].TextureCounter; j++) {
@@ -293,8 +323,8 @@ public class StageLoader extends ByteReader implements AssetLoader {
 						texture.Name = getString();
 						texture.NameA = getString();
 						
-						if (texture.NameA.length() > 0) {
-							log.debug("TEX MIPMAP:" + texture.NameA);
+						if (texture.NameA.length() > 1) {
+							// TODO 还不知道NameA所代表的Tex有何用
 						}
 					}
 					
@@ -307,8 +337,6 @@ public class StageLoader extends ByteReader implements AssetLoader {
 					}
 				}
 			}
-			
-			log.debug("Material Size=" + size);
 		}
 	}
 	
@@ -393,6 +421,18 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 		/**
 		 * 等于ASE模型中的ScriptState
+		 * sMATS_SCRIPT_WIND
+		 * sMATS_SCRIPT_WINDX1
+		 * sMATS_SCRIPT_WINDX2
+		 * sMATS_SCRIPT_WINDZ1
+		 * sMATS_SCRIPT_WINDZ2
+		 * sMATS_SCRIPT_WATER
+		 * sMATS_SCRIPT_NOTPASS // 碰撞，但是不可见
+		 * sMATS_SCRIPT_PASS // 可以穿过
+		 * 
+		 * sMATS_SCRIPT_RENDLATTER -> MeshState |= sMATS_SCRIPT_RENDLATTER;
+		 * sMATS_SCRIPT_CHECK_ICE  -> MeshState |= sMATS_SCRIPT_CHECK_ICE;
+		 * sMATS_SCRIPT_ORG_WATER  -> MeshState = sMATS_SCRIPT_ORG_WATER;
 		 */
 		int UseState;
 		/**
@@ -401,22 +441,23 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		 */
 		int MeshState;
 
-		// Mesh 函屈 包访 汲沥
-		int WindMeshBottom; // 官恩阂扁 皋浆 函屈 矫累 蔼
+		int WindMeshBottom;
 
-		// 俊聪皋捞记 咆胶媚 加己
-		TEXTURE[] smAnimTexture = new TEXTURE[32]; // 局聪皋捞记 咆胶媚 勤甸 府胶飘
+		/**
+		 * 逐帧动画的纹理文件名
+		 */
+		TEXTURE[] smAnimTexture = new TEXTURE[32];
 		/**
 		 * 动画有几张图NumTex
 		 */
 		int AnimTexCounter;
-		int FrameMask; // 局聪皋捞记侩 橇饭烙 付胶农
+		int FrameMask;// == AnimTexCounter - 1
 		/**
 		 * 动画切换速度。
 		 */
 		int Shift_FrameSpeed;
 		/**
-		 * SMTEX_AUTOANIMATION
+		 * SMTEX_AUTOANIMATION = 0x0100
 		 */
 		int AnimationFrame;
 		
@@ -461,8 +502,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			UseState = getInt(); // ScriptState
 			MeshState = getInt();
 
-			// Mesh 函屈 包访 汲沥
-			WindMeshBottom = getInt(); // TODO @see smTexture.cpp 脚本的编号
+			WindMeshBottom = getInt();
 
 			// 俊聪皋捞记 咆胶媚 加己
 			for(int i=0; i<32; i++) {
@@ -654,6 +694,13 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 * size = 22
 	 */
 	class LIGHT3D {
+		/**<pre>
+#define	smLIGHT_TYPE_NIGHT		0x00001
+#define	smLIGHT_TYPE_LENS		0x00002
+#define	smLIGHT_TYPE_PULSE2	0x00004
+#define	SMLIGHT_TYPE_OBJ		0x00008
+#define	smLIGHT_TYPE_DYNAMIC	0x80000</pre>
+		 */
 	    int type;
 	    
 	    Vector3f location;
@@ -880,21 +927,20 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				geom.setMaterial(mat);
 				
 				// 透明度
-				if (m.MapOpacity != 0) {
+				// 只有不透明物体才需要检测碰撞网格。
+				if (m.MapOpacity != 0 || m.Transparency != 0) {
 					geom.setQueueBucket(Bucket.Translucent);
+					
+					if (geom.getParent() != otherNode) {
+						otherNode.attachChild(geom);
+						log.debug("[" + geom.getName() + "]由于透明的原因被取消碰撞网格。");
+					}
 				}
 				
 				if (m.MeshState == 0) {
 					otherNode.attachChild(geom);
-					log.debug("ID:" + mat_id + " MeshState=" + m.MeshState);// 透明度
 				} else {
 					solidNode.attachChild(geom);
-				}
-				
-				// 从smTexture.cpp中可知，只有Transparency==0的物体才需要检测碰撞网格。
-				if (m.Transparency != 0) {
-					otherNode.attachChild(geom);
-					log.debug("Transparency=" + m.Transparency);// 透明度
 				}
 				
 				if (m.ReformTexture > 0) {
@@ -903,8 +949,55 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				if (m.SelfIllum > 0.0f) {
 					log.debug("SelfIllum=" + m.SelfIllum);// 自发光
 				}
+				
+				
 				if (m.UseState != 0) {//ScriptState
-					log.debug("UseState=" + m.UseState);// 有脚本？？
+					// TODO 根据材质的状态，应用不同的脚本。
+					if ((m.UseState & sMATS_SCRIPT_WINDX1) != 0) {
+						
+					}
+					if ((m.UseState & sMATS_SCRIPT_WINDX2) != 0) {
+						
+					}
+					if ((m.UseState & sMATS_SCRIPT_WINDZ1) != 0) {
+						
+					}
+					if ((m.UseState & sMATS_SCRIPT_WINDZ2) != 0) {
+						
+					}
+					if ((m.UseState & sMATS_SCRIPT_WATER) != 0) {
+						
+					}
+					// 隐形
+					if ((m.UseState & sMATS_SCRIPT_NOTVIEW) != 0) {
+						mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.FrontAndBack);
+						log.debug("[" + geom.getName() + "]隐形!");
+					}
+					if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0) {
+						if (geom.getParent() != solidNode) {
+							solidNode.attachChild(geom);
+							log.debug("[" + geom.getName() + "]禁止通行");
+						}
+					}
+					if ((m.UseState & sMATS_SCRIPT_PASS) != 0) {
+						if (geom.getParent() == otherNode) {
+							otherNode.attachChild(geom);
+							log.debug("[" + geom.getName() + "]穿墙而过");
+						}
+					}
+					if ((m.UseState & sMATS_SCRIPT_RENDLATTER) != 0) {
+						// MeshState |= sMATS_SCRIPT_RENDLATTER;
+						
+					}
+					if ((m.UseState & sMATS_SCRIPT_CHECK_ICE) != 0) {
+						// MeshState |= sMATS_SCRIPT_CHECK_ICE;
+					}
+					if ((m.UseState & sMATS_SCRIPT_ORG_WATER) != 0) {
+						// MeshState = sMATS_SCRIPT_ORG_WATER;
+					}
+					if ((m.UseState & sMATS_SCRIPT_BLINK_COLOR) != 0) {
+						 // m.WindMeshBottom == dwBlinkCode[]{ 9, 10, 11, 12, 13, 14, 15, 16,} 8个数值的其中之一
+					}
 				}
 				
 				if (m.TextureType == 0) {
@@ -1037,9 +1130,9 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	 */
 	class OBJ3D {
 		//DWORD		Head;
-		VERTEX[] Vertex;				// 滚咆胶
-		FACE[] Face;					// 其捞胶
-		TEXLINK[] TexLink;				//咆胶媚 谅钎 府胶飘
+		VERTEX[] Vertex;// 顶点
+		FACE[] Face;// 面
+		TEXLINK[] TexLink;// 纹理坐标
 
 		OBJ3D[] Physique; // 各顶点的骨骼
 
@@ -1081,7 +1174,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		MATRIX	mWorld;			// 岿靛谅钎 函券 青纺
 		MATRIX	mLocal;			// 肺漠谅钎 函券 青纺
 
-		int		lFrame;				// 弥饶 橇饭烙
+		int		lFrame;// 没有实际作用
 
 		float	qx,qy,qz,qw;		// 雀傈 孽磐聪攫
 		float	sx,sy,sz;			// 胶纳老 谅钎
@@ -1101,7 +1194,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		FRAME_POS[] TmRotFrame = new FRAME_POS[OBJ_FRAME_SEARCH_MAX];
 		FRAME_POS[] TmPosFrame = new FRAME_POS[OBJ_FRAME_SEARCH_MAX];
 		FRAME_POS[] TmScaleFrame = new FRAME_POS[OBJ_FRAME_SEARCH_MAX];
-		int TmFrameCnt;									//TM橇饭烙 墨款磐 (傈眉肮荐)
+		int TmFrameCnt;// 是否有动画 TRUE or FALSE
 
 		////////////////////
 		int lpPhysuque;
@@ -1205,7 +1298,12 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			assert buffer.position() - start == 2236;
 		}
 		
+		/**
+		 * 读取OBJ3D文件数据
+		 * @param PatPhysique
+		 */
 		void loadFile(PAT3D PatPhysique) {
+			// 读取OBJ3D对象，共2236字节
 			readOBJ3D();
 			
 			Vertex = new VERTEX[ nVertex ];
@@ -1260,8 +1358,6 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				}
 
 			}
-			
-			
 		}
 		
 		void relinkFaceAndTex() {
@@ -1396,13 +1492,22 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 		/**
 		 * 将顺序读取的3个int，用TmInvert进行转置，获得一个GL坐标系的顶点。
+		 * <pre>
+		 * 若有向量x=(v1, v2, v3, 1)与矩阵TmInvert (_11, _12, _13, _14)
+		 *                                      (_21, _22, _23, _24)
+		 *                                      (_31, _32, _33, _34)
+		 *                                      (_41, _42, _43, _44)。
+		 * 使用TmInvert对向量x进行线性变换后，得到的向量为a(res1, res2, res3, 1)。
+		 *       即：TmInvert * x = a(res1, res2, res3, 1)
+		 * 其中TmInvert与a已知，求x。
+		 *       x = (1/TmInvert) * a
+		 * </pre>
 		 * @param res1
 		 * @param res2
 		 * @param res3
 		 * @param tm
 		 */
 		Vector3f mult(long res1, long res2, long res3, MATRIX tm ) {
-			// reverting..
 			long v1 = -(
 					(res2 * tm._33 * tm._21 - res2 * tm._23 * tm._31 - res1 * tm._33 * tm._22
 					+ res1 * tm._23 * tm._32 - res3 * tm._21 * tm._32 + res3 * tm._31 * tm._22
@@ -1428,7 +1533,12 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			float x = (float) v1 / 256.0f;
 			float y = (float) v2 / 256.0f;
 			float z = (float) v3 / 256.0f;
-			return new Vector3f(-y, z, -x);
+			
+			if (OPEN_GL_AXIS) {
+				return new Vector3f(-y, z, -x);
+			} else {
+				return new Vector3f(x, y, z);
+			}
 		}
 
 		void invertPoint() {
@@ -1453,7 +1563,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 		PAT3D TmParent;
 
-		MATERIAL_GROUP smMaterialGroup;		//皋飘府倔 弊缝
+		MATERIAL_GROUP smMaterialGroup;// 材质组
 
 		int MaxFrame;
 		int Frame;
@@ -1548,16 +1658,14 @@ public class StageLoader extends ByteReader implements AssetLoader {
 
 			smMaterialGroup = null;
 		}
-		void loadFile(String NodeName) {
+		void loadFile(String NodeName, PAT3D BipPat) {
 			log.debug("模型文件:" + key.getName());
 			
 			OBJ3D obj;
-			PAT3D BipPat;
 			FILE_HEADER	FileHeader = smd_file_header;
 
 			init();
 			
-			BipPat = BipPattern;
 			
 			// 读取Obj3D物体信息
 			FILE_OBJINFO[] FileObjInfo = new FILE_OBJINFO [ FileHeader.objCounter ];
@@ -1708,10 +1816,20 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				bones[i] = bone;
 				
 				// 设置初始POSE
-				Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
-				Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
-				Vector3f scale = new Vector3f(obj.sy, obj.sz, obj.sx);
-				bone.setBindTransforms(translation, rotation, scale);
+				if (OPEN_GL_AXIS) {
+					Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
+					Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
+					Vector3f scale = new Vector3f(obj.sy, obj.sz, obj.sx);
+					
+					bone.setBindTransforms(translation, rotation, scale);
+				} else {
+					Vector3f translation = new Vector3f(obj.px, obj.py, obj.pz);
+					Quaternion rotation = new Quaternion(-obj.qx, -obj.qy, -obj.qz, obj.qw);
+					Vector3f scale = new Vector3f(obj.sx, obj.sy, obj.sz);
+					
+					bone.setBindTransforms(translation, rotation, scale);
+				}
+				
 				
 				// 建立父子关系
 				boneMap.put(obj.NodeName, bone);
@@ -1752,34 +1870,60 @@ public class StageLoader extends ByteReader implements AssetLoader {
 						maxFrame = obj.TmScale[obj.TmScaleCnt-1].frame;
 					}
 				}
+				
+				if (LOG_ANIMATION) {
+					log.debug(obj.NodeName + " 最大帧=" + maxFrame);
+					log.debug("TmPos:" + obj.TmPosCnt + " TmRot:" + obj.TmRotCnt + " TmScl:" + obj.TmScaleCnt);
+				}
 			}
 			
 			// 计算动画时常
-			float length = (maxFrame) / 30f / 160f;
-			log.info("anim maxFrame=" + maxFrame + " length=" + length);
+			float length = (maxFrame) / framePerSecond;
+			
+			if (LOG_ANIMATION) {
+				log.debug("动画总时长=" + length);
+			}
 			
 			Animation anim = new Animation("Anim", length);
 			
+			/**
+			 * 统计每个骨骼的关键帧
+			 */
 			for (int i = 0; i < nObj3d; i++) {
 				OBJ3D obj = obj3d[i];
-				log.info("TmPos:" + obj.TmPosCnt + " TmRot:" + obj.TmRotCnt + " TmScl:" + obj.TmScaleCnt);
+				
+				if (LOG_ANIMATION) {
+					log.debug("TmPos:" + obj.TmPosCnt + " TmRot:" + obj.TmRotCnt + " TmScl:" + obj.TmScaleCnt);
+				}
 
+				/**
+				 * 统计关键帧。
+				 */
 				TreeMap<Integer, Keyframe> keyframes = new TreeMap<Integer, Keyframe>();
 				for(int j=0; j<obj.TmPosCnt; j++) {
 					TM_POS pos = obj.TmPos[j];
 					Keyframe k = getOrMakeKeyframe(keyframes, pos.frame);
-					k.translation.set(-pos.y, pos.z, -pos.x);
+					if (OPEN_GL_AXIS) {
+						k.translation = new Vector3f(-pos.y, pos.z, -pos.x);
+					} else {
+						k.translation = new Vector3f(pos.x, pos.y, pos.z);
+					}
 				}
 				
 				for(int j=0; j<obj.TmRotCnt; j++) {
 					TM_ROT rot = obj.TmRot[j];
 					Keyframe k = getOrMakeKeyframe(keyframes, rot.frame);
-					k.rotation.set(-rot.y, rot.z, -rot.x, -rot.w);
+					if (OPEN_GL_AXIS) {
+						k.rotation = new Quaternion(-rot.y, rot.z, -rot.x, -rot.w);
+					} else {
+						k.rotation = new Quaternion(-rot.x, -rot.y, -rot.z, rot.w);
+					}
 				}
 				
 				Quaternion ori = new Quaternion(0, 0, 0, 1);
 				for (Keyframe k : keyframes.values()) {
 					if (k.rotation != null) {
+						//ori.multLocal(k.rotation);
 						ori = k.rotation.mult(ori);
 						k.rotation.set(ori);
 					}
@@ -1788,27 +1932,90 @@ public class StageLoader extends ByteReader implements AssetLoader {
 				for(int j=0; j<obj.TmScaleCnt; j++) {
 					TM_SCALE scale = obj.TmScale[j];
 					Keyframe k = getOrMakeKeyframe(keyframes, scale.frame);
-					k.scale.set(scale.y, scale.z, scale.x);
+					if (OPEN_GL_AXIS) {
+						k.scale = new Vector3f(scale.y, scale.z, scale.x);
+					} else {
+						k.scale = new Vector3f(scale.x, scale.y, scale.z);
+					}
 				}
 				
-				// 计算动画数据
+				if (LOG_ANIMATION) {
+					log.debug("Track[" + obj.NodeName + "]:");
+				}
+				
+				/**
+				 * 计算动画数据。
+				 * 为BoneTrack准备数据。
+				 */
 				int size = keyframes.size();
+				if (size == 0) {
+					if (LOG_ANIMATION) {
+						log.debug("  没有关键帧");
+					}
+					continue;// 继续检查下一个骨骼
+				}
+			
 				float[] times = new float[size];
 				Vector3f[] translations = new Vector3f[size];
 				Quaternion[] rotations = new Quaternion[size];
 				Vector3f[] scales = new Vector3f[size];
+
+				/**
+				 * 由于精灵中的pose动画、rotate动画、scale动画的数量不一定相同，因此keyframe中有些属性的值可能是null。
+				 * 如果某一帧缺少其他的数据，那么复用上一帧的数据。
+				 */
+				Keyframe last = null;
+				/**
+				 * 这个变量用来记录已经解析到了第几个Keyframe。
+				 * 当n=0时，初始化last变量的值。
+				 * 在循环的末尾，总是将last的引用指向当前Keyframe对象。
+				 */
+				int n = 0;
 				for(Integer frame : keyframes.keySet()) {
-					times[i] = frame / 30f / 160f;
-					Keyframe key = keyframes.get(frame);
-					translations[i] = key.translation;
-					rotations[i] = key.rotation.normalizeLocal();
-					scales[i] = key.scale;
+					// 获取当前帧
+					Keyframe current = keyframes.get(frame);
 					
-					assert translations[i] != null;
-					assert rotations[i] != null;
-					assert scales[i] != null;
+					// 检查pose动画
+					if ( current.translation == null) {
+						if (n == 0) {
+							current.translation = new Vector3f(0, 0, 0);
+						} else {// 复用上一帧的数据
+							current.translation= new Vector3f(last.translation);
+						}
+					}
 					
-					i++;
+					// 检查rotate动画
+					if ( current.rotation == null) {
+						if (n == 0) {
+							current.rotation = new Quaternion(0, 0, 0, 1);
+						} else {
+							current.rotation = new Quaternion(last.rotation);
+						}
+					}
+					
+					// 检查scale动画
+					if (current.scale == null) {
+						if (n == 0) {
+							current.scale = new Vector3f(1, 1, 1);
+						} else {
+							current.scale = new Vector3f(last.scale);
+						}
+					}
+					
+					times[n] = frame / framePerSecond;
+					translations[n] = current.translation;
+					rotations[n] = current.rotation.normalizeLocal();
+					scales[n] = current.scale;
+					
+					if (LOG_ANIMATION) {
+						String str = String.format("  Frame=%05d time=%.5f pos=%s rot=%s scale=%s", frame, times[n], translations[n], rotations[n], scales[n]);
+						log.debug(str);
+					}
+					
+					// 记录当前帧
+					last = current;
+					
+					n++;
 				}
 				
 				BoneTrack track = new BoneTrack(ske.getBoneIndex(obj.NodeName));
@@ -1819,29 +2026,35 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			return anim;
 		}
 		
-		private Keyframe getOrMakeKeyframe(SortedMap<Integer, Keyframe> keyframes, Integer time) {
-			Keyframe k = keyframes.get(time);
+		/**
+		 * 根据帧的编号来查询Keyframe数据，如果某个frame还没有对应的Keyframe数据，就创建一个新的。
+		 * @param keyframes
+		 * @param frame
+		 * @return
+		 */
+		private Keyframe getOrMakeKeyframe(SortedMap<Integer, Keyframe> keyframes, Integer frame) {
+			Keyframe k = keyframes.get(frame);
 			if (k == null) {
 				k = new Keyframe();
-				keyframes.put(time, k);
+				keyframes.put(frame, k);
 			}
 			return k;
 		}
 		
 		Node buildPAT3D() {
-			Node rootNode = new Node("STAGEOBJ:" + key.getName());
+			Node rootNode = new Node("PAT3D:" + key.getName());
 			
 			Skeleton ske = null;
 			// 生成骨骼
-			if (BipPattern != null) {
-				ske = BipPattern.buildSkeleton();
-				
+			if (TmParent != null) {
+				ske = TmParent.buildSkeleton();
 			}
-						
+			
 			for(int i=0; i<nObj3d; i++) {
 				OBJ3D obj = obj3d[i];
 				if (obj.nFace > 0) {
 					
+					// 对所有顶点进行线性变换，否则顶点的坐标都在原点附近。
 					obj.invertPoint();
 					
 					// 根据模型的材质不同，将创建多个网格，分别渲染。
@@ -1858,7 +2071,6 @@ public class StageLoader extends ByteReader implements AssetLoader {
 						geom.setMaterial(mat);
 						
 						// 设置位置
-						
 						// TODO 这个位置设置后并不准确，需要进一步研究。
 						Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
 						Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
@@ -1874,7 +2086,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			
 			// 绑定动画控制器
 			if (ske != null) {
-				Animation anim = BipPattern.buildAnimation(ske);
+				Animation anim = TmParent.buildAnimation(ske);
 				AnimControl ac = new AnimControl(ske);
 				ac.addAnim(anim);
 				rootNode.addControl(ac);
@@ -1904,11 +2116,6 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		}
 		
 		/**
-		 * 将物理对象初始化为null
-		 */
-		BipPattern = null;
-		
-		/**
 		 * 若用户使用了SmdKey，就根据type来决定采用哪种方式来加载模型。
 		 */
 		SmdKey smdkey = (SmdKey) key;
@@ -1921,39 +2128,497 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			stage3D.loadFile();
 			return stage3D.buildStage3D();
 		}
-		case STAGE_OBJ_BIP: {// 舞台物体，有动画
-			// 将文件名后缀改为smb
-			String smb = key.getName();
-			smb = smb.replaceAll("smd", "smb");
-			BipPattern = (PAT3D)manager.loadAsset(new SmdKey(smb, SMDTYPE.BONE));
-		}
-		case STAGE_OBJ:{// 舞台物体，无动画
-			getByteBuffer(assetInfo.openStream());
-			smd_file_header = new FILE_HEADER();
-			PAT3D pat = new PAT3D();
-			pat.loadFile(null);
-			return pat.buildPAT3D();
-		}
-		case PAT3D:
-			return null;
-		case MODEL:
-			return null;
 		case BONE: {
 			getByteBuffer(assetInfo.openStream());
 			smd_file_header = new FILE_HEADER();
 			PAT3D bone = new PAT3D();
-			bone.loadFile(null);
+			bone.loadFile(null, null);
 			return bone;
 		}
+		case PAT3D_BIP:{// 有动画的舞台物体
+			// 后缀名改为smb
+			String smbFile = key.getName();
+			int n = smbFile.lastIndexOf(".");
+			String str = smbFile.substring(0, n);
+			smbFile = str + ".smb";
+			PAT3D bone = (PAT3D)manager.loadAsset(new SmdKey(smbFile, SMDTYPE.BONE));
+			
+			// 再加载smd文件
+			key = assetInfo.getKey();
+			getByteBuffer(assetInfo.openStream());
+			smd_file_header = new FILE_HEADER();
+			PAT3D pat = new PAT3D();
+			pat.loadFile(null, bone);
+			return pat.buildPAT3D();
+		}
+		case PAT3D:{// 舞台物体，无动画
+			getByteBuffer(assetInfo.openStream());
+			smd_file_header = new FILE_HEADER();
+			PAT3D pat = new PAT3D();
+			pat.loadFile(null, smdkey.getBone());
+			return pat.buildPAT3D();
+		}
+		case INX: {
+			String inx = key.getName().toLowerCase();
+			// inx文件
+			if (inx.endsWith("inx")) {
+				// 文件长度不对
+				if (assetInfo.openStream().available() <= 67083) {
+					log.warn("Error: can't read inx-file (invalid file content)");
+					return null;
+				}
+				
+				getByteBuffer(assetInfo.openStream());
+				
+				return parseInx();
+			}
+			
+			return null;
+		}
+	
 		default:
 			return null;
 		}
 	}
 	
+	/**************************************************
+	 * 解析INX文件
+	 * @return
+	 */
+	private Object parseInx() {
+		
+		String smdFile = getString(64);
+		String smbFile = getString(64);
+		
+		if (smdFile.length() > 0) {
+			smdFile = changeName(smdFile);
+		}
+
+		if (smbFile.length() > 0) {
+			smbFile = changeName(smbFile);
+		}
+
+		DrzAnimation anim;
+		String sharedInxFile;
+		if (buffer.limit() <= 67084) { // old inx file
+			buffer.position(61848);
+			sharedInxFile = getString();
+			handleShared(sharedInxFile);
+			anim = readAnimFromOld();
+		} else { // new inx file (KPT)
+			buffer.position(88472);
+			sharedInxFile = getString();
+			handleShared(sharedInxFile);
+			anim = readAnimFromNew();
+		}
+		
+		PAT3D BipPattern = null;
+		// Read Animation from smb
+		if (smbFile.length() > 0) {
+			// 后缀名改为smb
+			int n = smbFile.lastIndexOf(".");
+			String str = smbFile.substring(0, n);
+			smbFile = str + ".smb";
+			
+			BipPattern = (PAT3D)manager.loadAsset(new SmdKey(key.getFolder() + smbFile, SMDTYPE.BONE));
+		}
+		
+		// Read Mesh from smd
+		// 后缀名改为smd
+		int n = smdFile.lastIndexOf(".");
+		String str = smdFile.substring(0, n);
+		smdFile = str + ".smd";
+		
+		SmdKey smdKey = new SmdKey(key.getFolder() + smdFile, SMDTYPE.PAT3D);
+		smdKey.setBone(BipPattern);
+		
+		return manager.loadAsset(smdKey);
+	}
+	
+	/**
+	 * 共享动画数据
+	 */
+	private void handleShared(String sharedInxFile) {
+		if (sharedInxFile == null || sharedInxFile.length() == 0)
+			return;
+		
+		// 后缀名改为inx
+		int n = sharedInxFile.lastIndexOf(".");
+		String str = sharedInxFile.substring(0, n);
+		sharedInxFile = str + ".inx";
+
+		sharedInxFile = changeName(sharedInxFile);
+
+		// 读取共享的动画
+		File file = new File(sharedInxFile);
+		if (file.exists()) {
+			try {
+				InputStream inputStream = new FileInputStream(file);
+				int length = inputStream.available();
+
+				if (length <= 67083) {
+					System.err.println("Error: can't read inx-file (invalid file content):" + length);
+				} else {
+					getByteBuffer(inputStream);
+
+					buffer.position(64);
+					String smbFile = getString();
+					if (smbFile.length() > 0) {
+						smbFile = changeName(smbFile);
+					}
+					
+					// TODO 没有正确使用
+					log.debug("使用了共享的骨骼动画:" + smbFile);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			log.warn("Error: " + sharedInxFile + " not exists.");
+		}
+	}
+	
+	
+	class DrzAnimationSet {
+		public int AnimationIndex;
+
+		public int AnimationTypeId;
+
+		public double SetStartTime;// 开始时间 * 160
+		public double SetEndTime1;// 结束时间 * 160
+		public double AnimationDurationTime;// 总时长 * 160
+
+		public int AnimationStartKey;
+		public int AnimationEndKey1;
+		public int AnimationEndKey2;
+		public int AnimationDurationKeys;
+
+		public boolean Repeat;// 是否重复
+		public char UnkChar;
+		public int SubAnimationIndex;// 对应动画的索引
+
+		public DrzAnimationSet() {
+
+		}
+
+		public DrzAnimationSet(int _ani_type_id, int _start_key, int _end_key,
+				boolean _repeat, char _unk_letter, int _sub_ani_index) {
+			AnimationStartKey = _start_key;
+			AnimationEndKey1 = _end_key;
+			Repeat = _repeat;
+			UnkChar = _unk_letter;
+			SubAnimationIndex = _sub_ani_index;
+			AnimationTypeId = _ani_type_id;
+		}
+
+		public String toString() {
+			String name = getAnimationSetNameById(AnimationTypeId);
+			float length = (float)AnimationDurationTime * 160;
+			return String.format("[%d %s]SubAnimInx=%d Type=%d 开始帧=%d 结束帧=%d 重复=%b 时间=%.2f",
+							AnimationIndex, name, SubAnimationIndex, AnimationTypeId, AnimationStartKey,
+							AnimationEndKey1, Repeat, length);
+		}
+		
+		public String getName() {
+			return AnimationIndex + " " + getAnimationSetNameById(AnimationTypeId);
+		}
+
+		public float getLength() {
+			return (float)AnimationDurationTime * 160;
+		}
+		
+		public Animation newJmeAnimation() {
+			return new Animation(getName(), getLength());
+		}
+	}
+	
+	class DrzAnimation {
+		String mAnimationName;
+
+		HashMap<Integer, DrzAnimationSet> mAnimationSetMap = new HashMap<Integer, DrzAnimationSet>();
+
+		List<DrzInxMeshInfo> meshDefInfo = new ArrayList<DrzInxMeshInfo>();
+		
+		int mSubAnimationNum;
+	}
+	/**
+	 * 解析动画索引
+	 * @return
+	 */
+	private DrzAnimation readAnimFromOld() {
+		DrzAnimation animation = new DrzAnimation();
+		
+		// Read The Mesh Def
+		readMeshDef();
+
+		buffer.position(61836);
+		int AnimationCount = getShort() - 10;
+
+		int AnimationOffset = 1596;
+
+		int SubAnimationNum = 0;
+		for (int i = 0; i < AnimationCount; i++) {
+			buffer.position(AnimationOffset + (i * 120) + 116);
+			int temp_max_sub_ani = getUnsignedInt();
+			if (temp_max_sub_ani > SubAnimationNum) {
+				SubAnimationNum = temp_max_sub_ani;
+			}
+		}
+
+		// 解析动画索引
+		if (SubAnimationNum > 0) {
+
+			animation.mSubAnimationNum = SubAnimationNum;
+			
+			// 临时变量
+			int[] tmpInt = new int[2];
+			for (int id = 0; id < AnimationCount; id++) {
+				
+				/**
+				 * 动画的类型，看getAminationSetNameById就知道什么意思了
+				 */
+				buffer.position(AnimationOffset + (id * 120));
+				
+				int AnimationId = getInt();
+
+				if (AnimationId < 1) // no more Animations
+					break;
+				
+				DrzAnimationSet animSet = new DrzAnimationSet();
+
+				// Set AnimationSetID
+				animSet.AnimationTypeId = AnimationId;
+
+				// 开始帧
+				buffer.position(AnimationOffset + (id * 120) + 4);// current animation starts at this frame
+				tmpInt[0] = buffer.get()&0xFF;
+				buffer.position(AnimationOffset + (id * 120) + 6);
+				tmpInt[1] = buffer.get()&0xFF;
+				
+				animSet.AnimationStartKey = (tmpInt[1] << 8) + tmpInt[0];
+
+				/**
+				 * 结束帧
+				 */
+				buffer.position(AnimationOffset + (id * 120) + 16);// current animation end at this frame
+				tmpInt[0] = buffer.get()&0xFF;
+				buffer.position(AnimationOffset + (id * 120) + 18);
+				tmpInt[1] = buffer.get()&0xFF;
+
+				animSet.AnimationEndKey1 = (tmpInt[1] << 8) + tmpInt[0];
+
+				/**
+				 * 动画是否重复播放
+				 */
+				buffer.position(AnimationOffset + (id * 120) + 108);
+				
+				animSet.Repeat = (getInt() == 1);
+
+				// TODO 未知字符
+				buffer.position(AnimationOffset + (id * 120) + 112);
+				
+				animSet.UnkChar = buffer.getChar();
+
+				/**
+				 * 对应动画的索引号
+				 */
+				buffer.position(AnimationOffset + (id * 120) + 116);
+				
+				int animIndex = getInt();
+				if (animIndex > 0) {
+					animIndex--;
+				}
+				animSet.SubAnimationIndex = animIndex;
+
+				animation.mAnimationSetMap.put(id, animSet);
+			}
+		}
+		
+		return animation;
+	}
+
+	/**
+	 * 解析动画索引
+	 * @return
+	 */
+	private DrzAnimation readAnimFromNew() {
+		DrzAnimation animation = new DrzAnimation();
+		
+		// Read The Mesh Def
+		readMeshDef();
+
+		buffer.position(88460);
+		int AnimationCount = getShort() - 10;
+
+		int AnimationOffset = 2116;
+
+		int SubAnimationNum = 0;
+		for (int i = 0; i < AnimationCount; i++) {
+			buffer.position(AnimationOffset + (i * 172) + 168);
+			int temp_max_sub_ani = getUnsignedInt();
+			if (temp_max_sub_ani > SubAnimationNum) {
+				SubAnimationNum = temp_max_sub_ani;
+			}
+		}
+
+		// 解析动画索引
+		if (SubAnimationNum > 0) {
+			animation.mSubAnimationNum = SubAnimationNum;
+
+			for (int i = 0; i < AnimationCount; i++) {
+				buffer.position(AnimationOffset + (i * 172));
+				int AnimationId = getInt();
+
+				if (AnimationId < 1) // no more Animations
+					break;
+
+				DrzAnimationSet CurrentAnimationSet = new DrzAnimationSet();
+
+				// Set AnimationSetID
+				CurrentAnimationSet.AnimationTypeId = AnimationId;
+
+				int[] val = new int[2];
+				
+				buffer.position(AnimationOffset + (i * 172) + 4);// current animation starts at this frame
+				val[0] = buffer.get()&0xFF;
+				buffer.position(AnimationOffset + (i * 172) + 6);
+				val[1] = buffer.get()&0xFF;
+				
+				CurrentAnimationSet.AnimationStartKey = 160 * ((val[1] << 8) + val[0]);
+
+				buffer.position(AnimationOffset + (i * 172) + 16);// current animation end at this frame
+				val[0] = buffer.get()&0xFF;
+				buffer.position(AnimationOffset + (i * 172) + 18);
+				val[1] = buffer.get()&0xFF;
+				CurrentAnimationSet.AnimationEndKey1 = 160 * ((val[1] << 8) + val[0]);
+				
+				buffer.position(AnimationOffset + (i * 172) + 24);// secound end key, downt know why
+				val[0] = buffer.get()&0xFF;
+				buffer.position(AnimationOffset + (i * 172) + 26);
+				val[1] = buffer.get()&0xFF;
+				CurrentAnimationSet.AnimationEndKey2 = 160 * ((val[1] << 8) + val[0]);
+
+				CurrentAnimationSet.Repeat = false;
+				buffer.position(AnimationOffset + (i * 172) + 160);
+				int iRepeat = getInt();
+				if (iRepeat == 1) {
+					CurrentAnimationSet.Repeat = true;
+				}
+
+				buffer.position(AnimationOffset + (i * 172) + 164);
+				CurrentAnimationSet.UnkChar = buffer.getChar();
+
+				buffer.position(AnimationOffset + (i * 172) + 168);
+				CurrentAnimationSet.SubAnimationIndex = getInt();
+				if (CurrentAnimationSet.SubAnimationIndex > 0) {
+					CurrentAnimationSet.SubAnimationIndex--;
+				}
+
+				// Add AnimationSet
+				CurrentAnimationSet.AnimationIndex = i;
+				animation.mAnimationSetMap.put(i, CurrentAnimationSet);
+			}
+		}
+		
+		return animation;
+	}
+
+	class DrzInxMeshInfo
+	{
+	    int type = -1;
+	    String meshName1;
+	    String meshName2;
+	    String meshName3;
+	    String meshName4;
+	}
+	
+	/**
+	 * 读取网格定义
+	 */
+	private void readMeshDef() {
+		int MeshDefOffset = 192;
+
+		for (int i = 0; i < 28; i++) {
+			buffer.position(MeshDefOffset + i * 68);
+			int MeshDefNum = getInt();
+
+			if (MeshDefNum > 0) {
+				DrzInxMeshInfo subMesh = new DrzInxMeshInfo();
+				subMesh.type = 1;
+				buffer.position(MeshDefOffset + i * 68 + 4);
+				subMesh.meshName1 = getString();
+				buffer.position(MeshDefOffset + i * 68 + 20);
+				subMesh.meshName2 = getString();
+				buffer.position(MeshDefOffset + i * 68 + 36);
+				subMesh.meshName3 = getString();
+				buffer.position(MeshDefOffset + i * 68 + 52);
+				subMesh.meshName4 = getString();
+				
+			}
+		}
+	}
+	
+	private String getAnimationSetNameById(int id) {
+		String ret = "unknown";
+
+		switch (id) {
+		case 64:
+			ret = "Idle";
+			break;
+		case 80:
+			ret = "Walk";
+			break;
+		case 96:
+			ret = "Run";
+			break;
+		case 128:
+			ret = "Fall";
+			break;
+		case 256:
+			ret = "Attack";
+			break;
+		case 272:
+			ret = "Damage";
+			break;
+		case 288:
+			ret = "Die";
+			break;
+		case 304:
+			ret = "Sometimes";
+			break;
+		case 320:
+			ret = "Potion";
+			break;
+		case 336:
+			ret = "Technique";
+			break;
+		case 368:
+			ret = "Landing (small)";
+			break;
+		case 384:
+			ret = "Landing (large)";
+			break;
+		case 512:
+			ret = "Standup";
+			break;
+		case 528:
+			ret = "Cry";
+			break;
+		case 544:
+			ret = "Hurray";
+			break;
+		case 576:
+			ret = "Jump";
+			break;
+		}
+
+		return ret;
+	}
+	
 	/*******************************************************
 	 * 下面的代码用于根据精灵的数据结构创建JME3的纹理、材质、网格等对象
 	 *******************************************************/
-	
+
 	/**
 	 * 改变文件的后缀名
 	 * @param line
@@ -1983,7 +2648,7 @@ public class StageLoader extends ByteReader implements AssetLoader {
 			texture = manager.loadTexture(key.getFolder() + name);
 			texture.setWrap(WrapMode.Repeat);
 		} catch (Exception ex) {
-			log.warn("Cannot load texture image " + name, ex);
+			log.warn("材质加载失败:" + ex.getMessage());
 			texture = manager.loadTexture("Common/Textures/MissingTexture.png");
 			texture.setWrap(WrapMode.EdgeClamp);
 		}
@@ -1998,31 +2663,17 @@ public class StageLoader extends ByteReader implements AssetLoader {
 	private Material createLightMaterial(MATERIAL m) {
 		Material mat = new Material(manager, "Common/MatDefs/Light/Lighting.j3md");
 		mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.r, m.Diffuse.g, m.Diffuse.b, 1));
-		//mat.setBoolean("UseMaterialColors", true);
+		mat.setColor("Ambient", new ColorRGBA(1f, 1f, 1f, 1f));
+		mat.setColor("Specular", new ColorRGBA(0, 0, 0, 1));
+		mat.setBoolean("UseMaterialColors", true);
 		
 		RenderState rs = mat.getAdditionalRenderState();
-		
+		// 没有材质的物体不需要显示。
 		if(m.TextureCounter == 0) {
 			rs.setFaceCullMode(FaceCullMode.FrontAndBack);
+			return mat;
 		}
 		
-		if (m.TwoSide == 1) {
-			rs.setFaceCullMode(FaceCullMode.Off);
-		}
-		
-		if (m.MapOpacity != 0) {
-			mat.setFloat("AlphaDiscardThreshold", 0.01f);
-		}
-
-		// 设置贴图
-		if (m.TextureCounter > 0) {
-			mat.setTexture("DiffuseMap", createTexture(m.smTexture[0].Name));
-		}
-		if (m.TextureCounter > 1) {
-			mat.setBoolean("SeparateTexCoord", true);
-			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
-		}
-
 		/**
 			#define SMMAT_BLEND_NONE		0x00
 			#define SMMAT_BLEND_ALPHA		0x01
@@ -2054,11 +2705,35 @@ public class StageLoader extends ByteReader implements AssetLoader {
 		default:
 			log.info("Unknown BlendType=" + m.BlendType);
 		};
-		
-		// TODO 继续读smRender3d.cpp
-		if (m.Transparency <= 0.2f) {
-			rs.setDepthWrite(true);
+	
+		if (m.TwoSide == 1) {
+			rs.setFaceCullMode(FaceCullMode.Off);
 		}
+		
+		// 透明物体
+		if (m.MapOpacity != 0 || m.Transparency != 0) {
+			// 这个值设置得稍微大一些，这样草、花等图片的边缘就会因为透明度不够而过滤掉像素。
+			mat.setFloat("AlphaDiscardThreshold", 0.6f);
+			// 虽然已经过时，但是还是写上以防不测。
+			rs.setAlphaTest(true);
+			rs.setAlphaFallOff(0.6f);
+			rs.setDepthWrite(true);
+			rs.setDepthTest(true);
+			rs.setColorWrite(true);
+			
+			// 透明物体不裁剪面
+			rs.setFaceCullMode(FaceCullMode.Off);
+		}
+
+		// 设置贴图
+		if (m.TextureCounter > 0) {
+			mat.setTexture("DiffuseMap", createTexture(m.smTexture[0].Name));
+		}
+		if (m.TextureCounter > 1) {
+			mat.setBoolean("SeparateTexCoord", true);
+			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
+		}
+
 		return mat;
 	}
 	
