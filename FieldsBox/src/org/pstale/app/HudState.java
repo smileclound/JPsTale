@@ -18,6 +18,7 @@ import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Checkbox;
 import com.simsilica.lemur.Container;
+import com.simsilica.lemur.DefaultRangedValueModel;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.LayerComparator;
@@ -45,7 +46,6 @@ public class HudState extends BaseAppState {
     private VersionedReference<Boolean> showAxisRef;
     private VersionedReference<Boolean> showMeshRef;
     private VersionedReference<Boolean> collisionRef;
-    private VersionedReference<Boolean> bulletDebugRef;
     private VersionedReference<Double> speedRef;
     
 	private float width;// 屏幕宽度
@@ -99,21 +99,15 @@ public class HudState extends BaseAppState {
 			}
         }
         if( showMeshRef.update() ) {
-        	LoaderAppState loader = getStateManager().getState(LoaderAppState.class);
-        	if (loader != null) {
-        		loader.wireframe( showMeshRef.get() );
+        	CollisionState collision = getStateManager().getState(CollisionState.class);
+        	if (collision != null) {
+        		collision.debug( showMeshRef.get() );
         	}
         }
         if( collisionRef.update() ) {
         	CollisionState collision = getStateManager().getState(CollisionState.class);
         	if (collision != null) {
         		collision.toggle( collisionRef.get() );
-        	}
-        }
-        if( bulletDebugRef.update() ) {
-        	CollisionState collision = getStateManager().getState(CollisionState.class);
-        	if (collision != null) {
-        		collision.debug( bulletDebugRef.get() );
         	}
         }
         if( speedRef.update() ) {
@@ -282,21 +276,17 @@ public class HudState extends BaseAppState {
         showAxisRef = temp.getModel().createReference();
         
         temp = window.addChild( new Checkbox( "显示网格线" ) );
-        temp.setChecked(false);
+        temp.setChecked(true);
         showMeshRef = temp.getModel().createReference();
         
         temp = window.addChild( new Checkbox( "Collision" ) );
         temp.setChecked(true);
         collisionRef = temp.getModel().createReference();
         
-        temp = window.addChild( new Checkbox( "Bullet Debug" ) );
-        temp.setChecked(true);
-        bulletDebugRef = temp.getModel().createReference();
-        
         window.addChild( new Label( "摄像机速度:" ) );
-        final Slider redSlider = new Slider("glass");
+        DefaultRangedValueModel model = new DefaultRangedValueModel(0, 1000, 50);
+        final Slider redSlider = new Slider(model, "glass");
         redSlider.setBackground(new QuadBackgroundComponent(new ColorRGBA(0.5f,0.1f,0.1f,0.5f),5,5, 0.02f, false));
-        redSlider.getModel().setPercent(0.5f);
         speedRef = window.addChild( redSlider ).getModel().createReference();
         
         // 限制窗口的最小宽度

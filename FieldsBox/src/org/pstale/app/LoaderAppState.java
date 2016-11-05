@@ -13,7 +13,6 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.maxase.FileLocator;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -285,23 +284,6 @@ public class LoaderAppState extends SubAppState {
 		center = getLocationOnField(center, mesh);
 		center.y += 5/scale;
 		app.getCamera().setLocation(center);
-	}
-	
-	/**
-	 * 当地图没有自定义中心点的时候，就计算一个出来。
-	 * @param model
-	 * @return
-	 */
-	private Vector3f calcBoundingCenter(Mesh mesh) {
-		
-		Vector3f center = new Vector3f();
-		center = mesh.getBound().getCenter();
-		center.y = 1000;
-		center = getLocationOnField(center, mesh);
-		center.y += 2;
-		
-		app.getCamera().setLocation(center);
-		return center;
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import com.jme3.app.Application;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 
@@ -36,7 +35,6 @@ public class MonsterAppState extends SubAppState {
 				Box box = new Box(1, 1, 1);
 				Geometry geom = new Geometry("MonsterFlag", box);
 				geom.setMaterial(getMaterial(ColorRGBA.Red));
-				
 				model = geom;
 			}
 			model.setLocalTranslation(pos);

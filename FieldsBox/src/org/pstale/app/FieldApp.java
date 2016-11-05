@@ -15,7 +15,6 @@ import com.jme3.audio.plugins.WAVLoader;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.math.ColorRGBA;
 import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
@@ -71,8 +70,6 @@ public class FieldApp extends SimpleApplication {
 		if (clientRoot != null && new File(clientRoot).isDirectory()) {
 			assetManager.registerLocator(clientRoot, FileLocator.class);
 		}
-
-		viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 0.9f, 1f));
 	}
 
 	public static void main(String[] args) {

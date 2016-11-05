@@ -7,15 +7,12 @@ import org.pstale.fields.NPC;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.app.Application;
-import com.jme3.asset.AssetManager;
-import com.jme3.asset.maxase.AseKey;
+import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.shape.Box;
 
@@ -29,6 +26,7 @@ public class NpcAppState extends SubAppState {
 	@Override
 	protected void initialize(Application app) {
 
+		rootNode.addLight(new AmbientLight(new ColorRGBA(0.5f, 0.5f, 0.5f, 1)));
 	}
 	
 	/**
@@ -61,6 +59,8 @@ public class NpcAppState extends SubAppState {
 					mat.getAdditionalRenderState().setDepthTest(false);
 					skeletonDebug.setMaterial(mat);
 					model.attachChild(skeletonDebug);
+					
+					ac.createChannel().setAnim("Anim");
 				}
 				
 				model.scale(scale);

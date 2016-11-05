@@ -24,6 +24,7 @@ import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
 import com.jme3.asset.AssetManager;
+import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
@@ -52,7 +53,7 @@ import com.jme3.util.TempVars;
  *
  */
 public class SmdLoader extends ByteReader implements AssetLoader {
-
+	
 	static Logger log = Logger.getLogger(SmdLoader.class);
 	
 	// 是否使用OPENGL坐标系
@@ -60,6 +61,15 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 	// 是否打印动画日志
 	boolean LOG_ANIMATION = false;
 	
+	/**
+	 * 动画的颜色要比别的模型亮一点点。
+	 */
+	AmbientLight ambientLightForAnimation;
+	
+	public SmdLoader() {
+		ambientLightForAnimation = new AmbientLight();
+		ambientLightForAnimation.setColor(new ColorRGBA(0.8f, 0.8f, 0.8f, 1f));
+	}
 	/**
 	 * 精灵的动画使用3DS MAX的默认速率，每秒30Tick，每Tick共160帧。
 	 * 也就是每秒4800帧。
@@ -901,22 +911,33 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			for(int mat_id=0; mat_id<materialCount; mat_id++) {
 				m = materials[mat_id];
 				
+				if (m.MeshState == 1) {
+					continue;
+				}
+				
+				if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0) {
+					// 这些面要参加碰撞检测
+					continue;
+				}
+				
 				if ((m.UseState & sMATS_SCRIPT_PASS) != 0) {
 					// 这些面被设置为可以直接穿透
 					materials[mat_id] = null;
 					continue;
 				}
 				
-				if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0 || m.MeshState != 0) {
-					// 这些面要参加碰撞检测
-					continue;
-				}
-				
-				if (m.MapOpacity != 0 || m.Transparency != 0) {
+				if (m.MapOpacity != 0 || m.Transparency >= 0.01f) {
 					// 透明的面不参加碰撞检测
 					materials[mat_id] = null;
 					continue;
 				}
+				
+				if (m.TextureType == 1) {
+					// 帧动画也不纳入碰撞检测。比如火焰、飞舞的光点。
+					materials[mat_id] = null;
+					continue;
+				}
+				
 			}
 			
 			/**
@@ -1004,7 +1025,6 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 				}
 				// 不可见的材质，不需要显示。
 				if ((m.UseState & sMATS_SCRIPT_NOTVIEW) != 0) {
-					log.debug("[" + mat_id + "]隐形!");
 					continue;
 				}
 				
@@ -1017,6 +1037,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 						continue;
 					size++;
 				}
+				// 没有面使用这个材质，跳过。
 				if (size < 1) {
 					continue;
 				}
@@ -1026,8 +1047,24 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 				Geometry geom = new Geometry(key.getName() + "#" + mat_id, mesh);
 				
 				// 创建材质
-				Material mat = createLightMaterial(materials[mat_id]);
+				Material mat;
+				if (m.TextureType == 0) {
+					// SMTEX_TYPE_MULTIMIX
+					mat = createLightMaterial(materials[mat_id]);
+				} else {
+					//SMTEX_TYPE_ANIMATION
+					mat = createMiscMaterial(materials[mat_id]);
+				}
+				setRenderState(m, mat);
+				
+				// 应用材质
 				geom.setMaterial(mat);
+				
+				// 有多个动画
+				if (m.AnimTexCounter > 0) {
+					FrameAnimControl control = createFrameAnimControl(materials[mat_id]);
+					geom.addControl(control);
+				}
 				
 				rootNode.attachChild(geom);
 				
@@ -1075,21 +1112,6 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 					}
 				}
 				
-				if (m.TextureType == 0) {
-					// SMTEX_TYPE_MULTIMIX		0x0000
-				} else {
-					// SMTEX_TYPE_ANIMATION		0x0001
-					
-					// 动画也是默认显示2面
-					mat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
-					
-					// 有多个动画
-					if (m.AnimTexCounter > 0) {
-						FrameAnimControl control = createFrameAnimControl(materials[mat_id]);
-						geom.addControl(control);
-					}
-				}
-
 			}
 			
 			if (nLight > 0) {
@@ -2013,7 +2035,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 					if (OPEN_GL_AXIS) {
 						k.rotation = new Quaternion(-rot.y, rot.z, -rot.x, -rot.w);
 					} else {
-						k.rotation = new Quaternion(-rot.x, -rot.y, -rot.z, rot.w);
+						k.rotation = new Quaternion(rot.x, rot.y, rot.z, rot.w);
 					}
 				}
 				
@@ -2030,7 +2052,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 					TM_SCALE scale = obj.TmScale[j];
 					Keyframe k = getOrMakeKeyframe(keyframes, scale.frame);
 					if (OPEN_GL_AXIS) {
-						k.scale = new Vector3f(scale.y, scale.z, scale.x);
+						k.scale = new Vector3f(scale.z, scale.y, scale.x);
 					} else {
 						k.scale = new Vector3f(scale.x, scale.y, scale.z);
 					}
@@ -2771,12 +2793,47 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 		mat.setColor("Specular", new ColorRGBA(0, 0, 0, 1));
 		//mat.setBoolean("UseMaterialColors", true);
 		
-		RenderState rs = mat.getAdditionalRenderState();
-		// 没有材质的物体不需要显示。
-		if(m.TextureCounter == 0) {
-			rs.setFaceCullMode(FaceCullMode.FrontAndBack);
-			return mat;
+		// 设置贴图
+		if (m.TextureCounter > 0) {
+			mat.setTexture("DiffuseMap", createTexture(m.smTexture[0].Name));
 		}
+		if (m.TextureCounter > 1) {
+			mat.setBoolean("SeparateTexCoord", true);
+			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
+		}
+
+		return mat;
+	}
+	
+	/**
+	 * 创建一个忽略光源的材质。
+	 * 动画专用
+	 * @param m
+	 * @return
+	 */
+	private Material createMiscMaterial(MATERIAL m) {
+		Material mat = new Material(manager, "Common/MatDefs/Misc/Unshaded.j3md");
+		//mat.setColor("Color", new ColorRGBA(m.Diffuse.r, m.Diffuse.g, m.Diffuse.b, 1));
+		mat.setColor("Color", ColorRGBA.White);
+		
+		// 设置贴图
+		if (m.TextureCounter > 0) {
+			mat.setTexture("ColorMap", createTexture(m.smTexture[0].Name));
+		}
+		if (m.TextureCounter > 1) {
+			mat.setBoolean("SeparateTexCoord", true);
+			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
+		}
+
+		return mat;
+	}
+	/**
+	 * 设置材质的RenderState
+	 * @param m
+	 * @param mat
+	 */
+	private void setRenderState(MATERIAL m, Material mat) {
+		RenderState rs = mat.getAdditionalRenderState();
 		
 		/**
 			#define SMMAT_BLEND_NONE		0x00
@@ -2814,13 +2871,18 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			rs.setFaceCullMode(FaceCullMode.Off);
 		}
 		
+		if (m.TextureType == 0x0001) {
+			// 动画默认显示2面
+			rs.setFaceCullMode(FaceCullMode.Off);
+		}
+		
 		// 透明物体
 		if (m.MapOpacity != 0 || m.Transparency != 0) {
 			// 这个值设置得稍微大一些，这样草、花等图片的边缘就会因为透明度不够而过滤掉像素。
-			mat.setFloat("AlphaDiscardThreshold", 0.6f);
+			mat.setFloat("AlphaDiscardThreshold", 0.75f);
 			// 虽然已经过时，但是还是写上以防不测。
-			rs.setAlphaTest(true);
-			rs.setAlphaFallOff(0.6f);
+			// rs.setAlphaTest(true);
+			// rs.setAlphaFallOff(0.6f);
 			rs.setDepthWrite(true);
 			rs.setDepthTest(true);
 			rs.setColorWrite(true);
@@ -2828,17 +2890,6 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			// 透明物体不裁剪面
 			rs.setFaceCullMode(FaceCullMode.Off);
 		}
-
-		// 设置贴图
-		if (m.TextureCounter > 0) {
-			mat.setTexture("DiffuseMap", createTexture(m.smTexture[0].Name));
-		}
-		if (m.TextureCounter > 1) {
-			mat.setBoolean("SeparateTexCoord", true);
-			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
-		}
-
-		return mat;
 	}
 	
 	/**
@@ -2902,7 +2953,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 				}
 				
 				Material mat = ((Geometry) spatial).getMaterial();
-				mat.setTexture("DiffuseMap", textures[index]);
+				mat.setTexture("ColorMap", textures[index]);
 			}
 		}
 		

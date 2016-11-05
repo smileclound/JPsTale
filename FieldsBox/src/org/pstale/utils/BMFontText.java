@@ -15,7 +15,7 @@ public class BMFontText {
 		"所有", "列表", "区域", "音乐", "音量", "音效",
 		"背景", "传送门", "门户", "刷怪点", "进度", "百分比",
 		"坐标系", "打开关闭", "环境", "摄像机", "移动", "速度",
-		"跳转", "正在", "完毕", "成功", "失败"
+		"跳转", "正在", "完毕", "成功", "失败", "碰撞检测",
 	};
 	public static void main(String[] args) {
 		StringBuffer buffer = new StringBuffer();
