@@ -900,14 +900,22 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			MATERIAL m;// 临时变量
 			for(int mat_id=0; mat_id<materialCount; mat_id++) {
 				m = materials[mat_id];
-				if (m.MeshState == 0 || m.MapOpacity != 0 || m.Transparency != 0) {
+				
+				if ((m.UseState & sMATS_SCRIPT_PASS) != 0) {
+					// 这些面被设置为可以直接穿透
 					materials[mat_id] = null;
 					continue;
 				}
 				
-				if ((m.UseState & sMATS_SCRIPT_PASS) != 0) {
-					log.debug("[" + mat_id + "]穿墙而过");
+				if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0 || m.MeshState != 0) {
+					// 这些面要参加碰撞检测
+					continue;
+				}
+				
+				if (m.MapOpacity != 0 || m.Transparency != 0) {
+					// 透明的面不参加碰撞检测
 					materials[mat_id] = null;
+					continue;
 				}
 			}
 			

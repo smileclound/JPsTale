@@ -1,3 +1,4 @@
 /bin
 *.dll
 config.properties
+/debug.log
