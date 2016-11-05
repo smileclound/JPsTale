@@ -1140,7 +1140,8 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 						break;
 					}
 					case sMATS_SCRIPT_WATER:{
-						geom.addControl(new WaterAnimationControl());
+						// 水面不能动，一动地图就裂了。。
+						//geom.addControl(new WaterAnimationControl());
 						break;
 					}
 					}
