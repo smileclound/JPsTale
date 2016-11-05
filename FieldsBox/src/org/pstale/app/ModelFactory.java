@@ -22,7 +22,7 @@ public class ModelFactory {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static Node loadStage3D(final String name) throws Exception {
+	public static Node loadStage3D(final String name) {
 		Node model = null;
 		
 		// 文件路径

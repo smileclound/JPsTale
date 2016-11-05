@@ -123,14 +123,9 @@ public class LoaderAppState extends SubAppState {
 		/**
 		 * 地图主模型
 		 */
-		Spatial mainModel = null;
-		Mesh mesh = null;
-		try {
-			mainModel = ModelFactory.loadStage3D(field.getName());
-			mesh = ModelFactory.loadStage3DMesh(field.getName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Spatial mainModel = ModelFactory.loadStage3D(field.getName());
+		Mesh mesh = ModelFactory.loadStage3DMesh(field.getName());
+		
 		if (mainModel != null) {
 			// 加载成功
 			mainModel.scale(scale);
@@ -151,7 +146,6 @@ public class LoaderAppState extends SubAppState {
 				// 移动摄像机
 				moveCamera(field, mesh);
 			}
-			
 		} else {
 			System.out.println("加载地图模型失败");
 			return;
