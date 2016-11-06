@@ -52,18 +52,18 @@ public class CursorState extends BaseAppState {
 		AssetManager assetManager = app.getAssetManager();
 		// 初始化鼠标
 		// 把鼠标的图片搞成透平的，这样玩家就只能看见我们的图片了！
-		JmeCursor jmeCursor = (JmeCursor)assetManager.loadAsset("Interface/Cursor/invisiable.cur");
+		JmeCursor jmeCursor = (JmeCursor)assetManager.loadAsset("Cursor/invisiable.cur");
 		inputManager.setMouseCursor(jmeCursor);
 		
 		// 从精灵客户端文件夹中读取光标文件
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/DefaultCursor.tga"));
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/Attack_Cursor.tga"));
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/GetItem_Cursor1.tga"));
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/GetItem_Cursor2.tga"));
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/Talk_Cursor.tga"));
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/BuyCursor.tga"));
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/SellCursor.tga"));
-		cursorsTex.add(assetManager.loadTexture("image/Sinimage/Cursor/RepairCursor.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/DefaultCursor.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/Attack_Cursor.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/GetItem_Cursor1.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/GetItem_Cursor2.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/Talk_Cursor.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/BuyCursor.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/SellCursor.tga"));
+		cursorsTex.add(assetManager.loadTexture("Cursor/RepairCursor.tga"));
 
 		
 		cursor = new Geometry("cursor", new Quad(32, 32));
@@ -119,10 +119,12 @@ public class CursorState extends BaseAppState {
 	/**
 	 * 光标移动监听器
 	 */
+	boolean isPressed = false;
 	private RawInputListener inputListener = new RawInputListener() {
 		private float x;
 		private float y;
 		public void onMouseMotionEvent(MouseMotionEvent evt) {
+			if (isPressed) return;
 			// 获得当前鼠标的坐标
 			x = evt.getX();
 			y = evt.getY();
@@ -141,7 +143,9 @@ public class CursorState extends BaseAppState {
 		public void endInput() {}
 		public void onJoyAxisEvent(JoyAxisEvent evt) {}
 		public void onJoyButtonEvent(JoyButtonEvent evt) {}
-		public void onMouseButtonEvent(MouseButtonEvent evt) {}
+		public void onMouseButtonEvent(MouseButtonEvent evt) {
+			isPressed = evt.isPressed();
+		}
 		public void onKeyEvent(KeyInputEvent evt) {}
 		public void onTouchEvent(TouchEvent evt) {}
 	};

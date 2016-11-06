@@ -28,6 +28,7 @@ public class FieldApp extends SimpleApplication {
 	
 	public FieldApp() {
 		super(new LoadingAppState(),
+				new CursorState(),
 				new DebugKeysAppState(),
 				new StatsAppState(),
 				new FlyCamAppState(),
@@ -41,6 +42,16 @@ public class FieldApp extends SimpleApplication {
 
 	@Override
 	public void simpleInitApp() {
+		assetManager.registerLoader(AseLoader.class, "ase");
+		assetManager.registerLoader(SmdLoader.class, "inx", "smd", "smb");
+		assetManager.registerLoader(WAVLoader.class, "bgm");
+		assetManager.registerLocator("/", FileLocator.class);
+		assetManager.registerLocator("assets", FileLocator.class);
+		
+		if (clientRoot != null && new File(clientRoot).isDirectory()) {
+			assetManager.registerLocator(clientRoot, FileLocator.class);
+		}
+		
 		// 设置模型工厂
 		ModelFactory.setAssetManager(assetManager);
 		
@@ -54,22 +65,13 @@ public class FieldApp extends SimpleApplication {
 		GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
 		
 		// 设置字体
-		BitmapFont font = assetManager.loadFont("Interface/Font/field.fnt");
+		BitmapFont font = assetManager.loadFont("Font/field.fnt");
 		GuiGlobals.getInstance().getStyles().setDefault(font);
 
 		flyCam.setMoveSpeed(50);
 		flyCam.setDragToRotate(true);
 		inputManager.addMapping("FLYCAM_RotateDrag", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
-		assetManager.registerLoader(AseLoader.class, "ase");
-		assetManager.registerLoader(SmdLoader.class, "inx", "smd", "smb");
-		assetManager.registerLoader(WAVLoader.class, "bgm");
-		assetManager.registerLocator("/", FileLocator.class);
-		assetManager.registerLocator("assets", FileLocator.class);
-		
-		if (clientRoot != null && new File(clientRoot).isDirectory()) {
-			assetManager.registerLocator(clientRoot, FileLocator.class);
-		}
 	}
 
 	public static void main(String[] args) {

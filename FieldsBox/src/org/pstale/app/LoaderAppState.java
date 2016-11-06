@@ -3,7 +3,11 @@ package org.pstale.app;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+import org.apache.log4j.Logger;
 import org.pstale.fields.Field;
 import org.pstale.fields.Music;
 import org.pstale.fields.StageObject;
@@ -12,7 +16,6 @@ import org.pstale.fields.StartPoint;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.maxase.FileLocator;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -22,9 +25,9 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 
 /**
@@ -35,235 +38,354 @@ import com.jme3.texture.Texture;
  */
 public class LoaderAppState extends SubAppState {
 
+	static Logger log = Logger.getLogger(LoaderAppState.class);
+	
 	private SimpleApplication app;
 
 	private AssetManager assetManager;
 
-	private boolean wireframe = false;
+	private Future<Void> future;
+	private ScheduledThreadPoolExecutor excutor;
+	private Callable<Void> task;
+	
+	// 刷怪点标记
+	private Spatial flag;
 	
 	@Override
 	public void initialize(Application app) {
 		this.assetManager = app.getAssetManager();
 		this.app = (SimpleApplication) app;
-	}
-	
-	public void setRootpath(String path) {
-		assetManager.registerLocator(path, FileLocator.class);
-	}
-	
-	public void wireframe(boolean wire) {
 		
-		if (wireframe == wire)
-			return;
-					
-		this.wireframe = wire;
+		excutor = new ScheduledThreadPoolExecutor(1);
+		future = null;
+		task = null;
 		
-		rootNode.depthFirstTraversal(new SceneGraphVisitor() {
-			@Override
-			public void visit(Spatial spatial) {
-				if (spatial instanceof Geometry) {
-					Geometry geom = (Geometry) spatial;
-					geom.getMaterial().getAdditionalRenderState().setWireframe(wireframe);
-				}
-			}
-		});
+		try {
+			flag = ModelFactory.loadStageObj("char/flag/wow.smd", false);
+		} catch (Exception e) {
+			log.debug("无法加载旗帜", e);
+			flag = new Geometry("flag", new Box(1/scale, 1/scale, 1/scale));	
+			Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+			mat.setColor("Color", ColorRGBA.Red);
+			flag.setMaterial(mat);
+		}
 	}
 	
+	
+	@Override
+	protected void cleanup(Application app) {
+		excutor.shutdown();
+		future = null;
+		task = null;
+	}
+
+
 	List<Field> fields = new ArrayList<Field>();
 	Vector3f center;
+	
+	Texture mapRes = null;
+	Texture titleRes = null;
+	Spatial mainModel = null;
+	
+	public void update(float tpf) {
+		if (task != null && future == null) {
+			future = excutor.submit(task);
+		}
+		
+		if (task != null && future != null && future.isDone()) {
+			future = null;
+			task = null;
+			field = null;
+		}
+	}
 	/**
 	 * 加载场景模型
 	 * @param field
 	 */
 	public void loadModel(Field field) {
-		if (field == null)
+		if (task != null) {
 			return;
-		
-		// 移除旧的模型
-		//rootNode.detachAllChildren();
-		
-		/**
-		 * 加载小地图
-		 */
-		Texture mapRes = null;
-		Texture titleRes = null;
-		try {
-			mapRes = assetManager.loadTexture(field.getNameMap());
-			titleRes = assetManager.loadTexture(field.getNameTitle());
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
-		HudState hud = getStateManager().getState(HudState.class);
-		if (hud != null) {
-			hud.setMiniMap(titleRes, mapRes);
+		if (field == null) {
+			return;
 		}
+		this.field = field;
+		task = loadTask;
 		
-		/**
-		 * 判断缓存中是否已经有这个地图了。
-		 */
-		if (fields.contains(field)) {
+	}
+	
+	Field field = null;
+	Callable<Void> loadTask = new Callable<Void>() {
+
+		@Override
+		public Void call() throws Exception {
+			log.debug("正在载入地图");
+			if (field == null)
+				return null;
 			
-			// 播放背景音乐
+			/**
+			 * 判断缓存中是否已经有这个地图了。
+			 */
+			if (fields.contains(field)) {
+				
+				// 播放背景音乐
+				playBGM(field);
+				
+				// 移动摄像机
+				moveCamera(field, ModelFactory.loadStage3DMesh(field.getName()));
+				
+				// 设置物理坐标
+				setPhysicLocation(center);
+				
+				// 加载小地图
+				setMiniMap(field);
+				
+				return null;
+			}
+
+		
+			/**
+			 * 地图主模型
+			 */
+			final Spatial mainModel = ModelFactory.loadStage3D(field.getName());
+			final Mesh mesh = ModelFactory.loadStage3DMesh(field.getName());
+			
+			if (mainModel != null) {
+				log.debug("mainModel");
+				// 加载成功
+				mainModel.scale(scale);
+				app.enqueue(new Runnable() {
+					public void run() {
+						rootNode.attachChild(mainModel);
+					}
+				});
+				
+				// 将网格缩小
+				FloatBuffer fb = (FloatBuffer)mesh.getBuffer(Type.Position).getData();
+				for(int i=0; i<fb.limit(); i++) {
+					fb.put(i, fb.get(i) * scale);
+				}
+				mesh.updateBound();
+				
+				// 移动摄像机
+				if (field.getCenter().length() == 0) {
+					center = mesh.getBound().getCenter();
+					field.getCenter().set(center.x, center.z);
+				} else {
+					// 移动摄像机
+					moveCamera(field, mesh);
+				}
+			} else {
+				log.debug("加载地图模型失败");
+				return null;
+			}
+			
+			/**
+			 * 地图的其他舞台物体
+			 */
+			//setStageObject(field);
+			
+			/**
+			 * 小地图
+			 */
+			setMiniMap(field);
+			
+			/**
+			 * 背景音乐
+			 */
 			playBGM(field);
 			
-			// 移动摄像机
-			moveCamera(field, ModelFactory.loadStage3DMesh(field.getName()));
+			/**
+			 * 环境音效
+			 */
+			setupAmbient(field);
 			
-			// 设置物理坐标
-			setPhysicLocation(center);
-			return;
-		} else {
+			/**
+			 * 门户
+			 */
+			final FieldgateAppState fieldgateAppState = getStateManager().getState(FieldgateAppState.class);
+			if (fieldgateAppState != null) {
+				app.enqueue(new Runnable() {
+					public void run() {
+						fieldgateAppState.load(field.getFieldGate());
+					}
+				});
+			}
+			
+			/**
+			 * 传送门
+			 */
+			final WarpgateAppState warpgateAppState = getStateManager().getState(WarpgateAppState.class);
+			if (warpgateAppState != null) {
+				app.enqueue(new Runnable() {
+					public void run() {
+						warpgateAppState.load(field.getWarpGate());
+					}
+				});
+			}
+			
+			/**
+			 * 刷怪点
+			 */
+			final MonsterAppState monsterAppState = getStateManager().getState(MonsterAppState.class);
+			if (monsterAppState != null) {
+				StartPoint[] spawns = field.getSpawnPoints();
+				if (spawns != null) {
+					// 刷怪点的坐标只有X/Z坐标，而且有些刷怪点是无效的，需要重新计算。
+					for(int i=0; i<spawns.length; i++) {
+						StartPoint point = spawns[i];
+						if (point != null && point.state != 0) {
+							Vector3f pos = new Vector3f(point.x, 0, point.z);
+							pos.multLocal(scale);
+							pos.y = 1000;
+							pos = getLocationOnField(pos, mesh);
+							
+							try {
+								final Spatial model = flag.clone();
+								model.scale(scale);
+								model.setLocalTranslation(pos);
+								app.enqueue(new Runnable() {
+									public void run() {
+										rootNode.attachChild(model);
+									}
+								});
+							} catch (Exception e) {
+								log.error("加载模型失败", e);
+							}
+						}
+					}
+				}
+			}
+			
+			/**
+			 * NPC
+			 */
+			setupNpc(field);
+			
+			/**
+			 * 地图的碰撞网格
+			 */
+			final CollisionState collisionState = getStateManager().getState(CollisionState.class);
+			if (collisionState != null) {
+				app.enqueue(new Runnable() {
+					public void run() {
+						collisionState.addMesh(mesh);
+						setPhysicLocation(center);
+						collisionState.setPlayerLocation(center);
+					}
+				});
+			}
+			
+			// 设置为空
 			fields.add(field);
+			return null;
 		}
-
+		
+	};
 	
-		wireframe = false;
-		
-		/**
-		 * 地图主模型
-		 */
-		Spatial mainModel = ModelFactory.loadStage3D(field.getName());
-		Mesh mesh = ModelFactory.loadStage3DMesh(field.getName());
-		
-		if (mainModel != null) {
-			// 加载成功
-			mainModel.scale(scale);
-			rootNode.attachChild(mainModel);
-			
-			// 将网格缩小
-			FloatBuffer fb = (FloatBuffer)mesh.getBuffer(Type.Position).getData();
-			for(int i=0; i<fb.limit(); i++) {
-				fb.put(i, fb.get(i) * scale);
-			}
-			mesh.updateBound();
-			
-			// 移动摄像机
-			if (field.getCenter().length() == 0) {
-				center = mesh.getBound().getCenter();
-				field.getCenter().set(center.x, center.z);
-			} else {
-				// 移动摄像机
-				moveCamera(field, mesh);
-			}
-		} else {
-			System.out.println("加载地图模型失败");
-			return;
+	private void setPhysicLocation(final Vector3f center) {
+		final CollisionState collisionState = getStateManager().getState(CollisionState.class);
+		if (collisionState != null) {
+			app.enqueue(new Runnable() {
+				public void run() {
+				}
+			});
 		}
 		
-		/**
-		 * 地图的其他舞台物体
-		 */
+	}
+	
+	/**
+	 * 加载舞台物体
+	 * @param field
+	 */
+	protected void setStageObject(final Field field) {
 		List<StageObject> objs = field.getStageObject();
 		if (objs.size() > 0) {
 			for(int i=0; i<objs.size(); i++) {
-				Spatial model = null;
+				final Spatial model;
 				try {
 					model = ModelFactory.loadStageObj("Field/" + objs.get(i).getName(), objs.get(i).isBipAnimation());
+					// 加载成功
+					model.scale(scale);
+					app.enqueue(new Runnable() {
+						public void run() {
+							rootNode.attachChild(model);
+						}
+					});
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if (model != null) {
-					// 加载成功
-					model.scale(scale);
-					rootNode.attachChild(mainModel);
-				}
 			}
 		}
-		
-		/**
-		 * 背景音乐
-		 */
-		playBGM(field);
-		
+	}
+
+	private void setupAmbient(final Field field) {
 		/**
 		 * 环境音效
 		 */
-		AmbientAppState ambientAppState = getStateManager().getState(AmbientAppState.class);
+		final AmbientAppState ambientAppState = getStateManager().getState(AmbientAppState.class);
 		if (ambientAppState != null) {
-			ambientAppState.load(field.getAmbientPos());
-		}
-		
-		/**
-		 * 门户
-		 */
-		FieldgateAppState fieldgateAppState = getStateManager().getState(FieldgateAppState.class);
-		if (fieldgateAppState != null) {
-			fieldgateAppState.load(field.getFieldGate());
-		}
-		
-		/**
-		 * 传送门
-		 */
-		WarpgateAppState warpgateAppState = getStateManager().getState(WarpgateAppState.class);
-		if (warpgateAppState != null) {
-			warpgateAppState.load(field.getWarpGate());
-		}
-		
-		/**
-		 * 刷怪点
-		 */
-		MonsterAppState monsterAppState = getStateManager().getState(MonsterAppState.class);
-		if (monsterAppState != null) {
-			StartPoint[] spawns = field.getSpawnPoints();
-			if (spawns != null) {
-				// 刷怪点的坐标只有X/Z坐标，而且有些刷怪点是无效的，需要重新计算。
-				List<Vector3f> monsters = new ArrayList<Vector3f>();
-				for(int i=0; i<spawns.length; i++) {
-					StartPoint point = spawns[i];
-					if (point != null && point.state != 0) {
-						Vector3f pos = new Vector3f(point.x, 0, point.z);
-						pos.multLocal(scale);
-						pos.y = 1000;
-						pos = getLocationOnField(pos, mesh);
-						pos.y += 1;
-						monsters.add(pos);
-					}
+			app.enqueue(new Runnable() {
+				public void run() {
+					ambientAppState.load(field.getAmbientPos());
 				}
-				
-				monsterAppState.load(monsters.toArray(new Vector3f[]{}));
-			}
+			});
 		}
-		
-		/**
-		 * NPC
-		 */
-		NpcAppState npcAppState = getStateManager().getState(NpcAppState.class);
+	}
+
+	private void setupNpc(final Field field) {
+		final NpcAppState npcAppState = getStateManager().getState(NpcAppState.class);
 		if (npcAppState != null) {
-			npcAppState.load(field.getNpcs());
+			app.enqueue(new Runnable() {
+				public void run() {
+					npcAppState.load(field.getNpcs());
+				}
+			});
 		}
-		
-		/**
-		 * 地图的碰撞网格
-		 */
-		CollisionState collisionState = getStateManager().getState(CollisionState.class);
-		if (collisionState != null) {
-			
-			collisionState.addMesh(mesh);
-			
-			setPhysicLocation(center);
-		}
-
-	}
-	
-	private void setPhysicLocation(Vector3f center) {
-		CollisionState collisionState = getStateManager().getState(CollisionState.class);
-		if (collisionState != null) {
-			collisionState.setPlayerLocation(center);
-		}
-		
 	}
 
+	/**
+	 * 设置小地图
+	 * @param mapRes
+	 * @param titleRes
+	 */
+	private void setMiniMap(final Field field) {
+		final HudState hud = getStateManager().getState(HudState.class);
+		if (hud != null) {
+			final Texture mapRes;
+			final Texture titleRes;
+			try {
+				mapRes = assetManager.loadTexture(field.getNameMap());
+				titleRes = assetManager.loadTexture(field.getNameTitle());
+				
+				app.enqueue(new Runnable() {
+					public void run() {
+						hud.setMiniMap(titleRes, mapRes);
+					}
+				});
+				log.debug("已经读取小地图");
+			} catch (Exception e) {
+				log.error("读取小地图失败", e);
+			}
+			
+			
+		}
+	}
 	/**
 	 * 播放背景音乐
 	 * @param field
 	 */
-	private void playBGM(Field field) {
-		MusicAppState musicAppState = getStateManager().getState(MusicAppState.class);
+	private void playBGM(final Field field) {
+		final MusicAppState musicAppState = getStateManager().getState(MusicAppState.class);
 		if (musicAppState != null) {
 			int bgm = field.getBackMusicCode();
-			Music BGM = Music.get(bgm);
-			musicAppState.setSong(BGM.getFilename());
+			final Music BGM = Music.get(bgm);
+			app.enqueue(new Runnable() {
+				public void run() {
+					musicAppState.setSong(BGM.getFilename());
+				}
+			});
 		}
 	}
 	/**
@@ -278,17 +400,6 @@ public class LoaderAppState extends SubAppState {
 		center = getLocationOnField(center, mesh);
 		center.y += 5/scale;
 		app.getCamera().setLocation(center);
-	}
-	
-	/**
-	 * 创建一个简单的材质
-	 * @param color
-	 * @return
-	 */
-	protected Material getMaterial(ColorRGBA color) {
-		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mat.setColor("Color", color);
-		return mat;
 	}
 	
 	/**
@@ -309,10 +420,4 @@ public class LoaderAppState extends SubAppState {
 		}
 	}
 	
-	boolean isVisiavle = true;
-
-	public void play(String name) {
-		
-	}
-
 }
