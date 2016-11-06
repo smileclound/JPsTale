@@ -11,8 +11,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.control.FrameAnimControl;
-import org.pstale.asset.control.WaterAnimationControl;
 import org.pstale.asset.control.WindAnimationControl;
 import org.pstale.asset.loader.SmdKey.SMDTYPE;
 
@@ -480,14 +478,19 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 		int TextureClip; // 胶客俏侩 咆胶媚 努赋蜡公 ( TRUE 搁 咆胶媚 努府俏 倾啊 )
 
 		/**
-		 * 等于ASE模型中的ScriptState sMATS_SCRIPT_WIND sMATS_SCRIPT_WINDX1
-		 * sMATS_SCRIPT_WINDX2 sMATS_SCRIPT_WINDZ1 sMATS_SCRIPT_WINDZ2
-		 * sMATS_SCRIPT_WATER sMATS_SCRIPT_NOTPASS // 碰撞，但是不可见 sMATS_SCRIPT_PASS
-		 * // 可以穿过
-		 * 
+		 * 等于ASE模型中的ScriptState<pre>
+		 * sMATS_SCRIPT_WIND
+		 * sMATS_SCRIPT_WINDX1 // 物体在x轴方向上周期性摆动
+		 * sMATS_SCRIPT_WINDX2 // 4倍距离
+		 * sMATS_SCRIPT_WINDZ1 // 物体在Z轴方向上周期性摆动
+		 * sMATS_SCRIPT_WINDZ2 // 4倍距离
+		 * sMATS_SCRIPT_WATER // 表面的uv坐标转圈圈
+		 * sMATS_SCRIPT_NOTPASS // 碰撞，但是不可见
+		 * sMATS_SCRIPT_PASS // 可以穿过
 		 * sMATS_SCRIPT_RENDLATTER -> MeshState |= sMATS_SCRIPT_RENDLATTER;
 		 * sMATS_SCRIPT_CHECK_ICE -> MeshState |= sMATS_SCRIPT_CHECK_ICE;
 		 * sMATS_SCRIPT_ORG_WATER -> MeshState = sMATS_SCRIPT_ORG_WATER;
+		 * </pre>
 		 */
 		int UseState;
 		/**
@@ -1111,22 +1114,23 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 
 				// 创建材质
 				Material mat;
+				
+				// 有多个动画
 				if (m.TextureType == 0) {
 					// SMTEX_TYPE_MULTIMIX
-					mat = createLightMaterial(materials[mat_id]);
-				} else {
-					// SMTEX_TYPE_ANIMATION
-					mat = createMiscMaterial(materials[mat_id]);
-				}
-				setRenderState(m, mat);
-
-				// 应用材质
-				geom.setMaterial(mat);
-
-				// 有多个动画
-				if (m.AnimTexCounter > 0) {
-					FrameAnimControl control = createFrameAnimControl(materials[mat_id]);
-					geom.addControl(control);
+					int n = m.TextureFormState[0];
+					if(n >= 4) {// 4 SCROLL 滚轴 5 REFLEX 反光 6 SCROLL2 2倍速滚轴
+						mat = createScrollMaterial(materials[mat_id]);
+					} else {
+						mat = createLightMaterial(materials[mat_id]);
+					}
+				} else {// SMTEX_TYPE_ANIMATION
+					if (m.AnimTexCounter > 0) {
+						// AminTexCounter大于0说明有轮播动画，创建一个Control，定时更新画面。
+						mat = createShiftMaterial(materials[mat_id]);
+					} else {
+						mat = createMiscMaterial(materials[mat_id]);
+					}
 				}
 				
 				// 应用动画
@@ -1140,12 +1144,16 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 						break;
 					}
 					case sMATS_SCRIPT_WATER:{
-						// 水面不能动，一动地图就裂了。。
-						//geom.addControl(new WaterAnimationControl());
+						mat = createRoundMaterial(materials[mat_id]);
 						break;
 					}
 					}
 				}
+				
+				setRenderState(m, mat);
+
+				// 应用材质
+				geom.setMaterial(mat);
 
 				rootNode.attachChild(geom);
 
@@ -2936,10 +2944,8 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 	 * @return
 	 */
 	private Material createLightMaterial(MATERIAL m) {
-		Material mat = new Material(manager,
-				"Common/MatDefs/Light/Lighting.j3md");
-		mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.r, m.Diffuse.g,
-				m.Diffuse.b, 1));
+		Material mat = new Material(manager, "Common/MatDefs/Light/Lighting.j3md");
+		mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.r, m.Diffuse.g, m.Diffuse.b, 1));
 		mat.setColor("Ambient", new ColorRGBA(1f, 1f, 1f, 1f));
 		mat.setColor("Specular", new ColorRGBA(0, 0, 0, 1));
 		// mat.setBoolean("UseMaterialColors", true);
@@ -2978,6 +2984,86 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
 		}
 
+		return mat;
+	}
+	
+	/**
+	 * 创建一个匀速切换帧的材质。 动画专用
+	 * 
+	 * @param m
+	 * @return
+	 */
+	private Material createShiftMaterial(MATERIAL m) {
+		Material mat = new Material(manager, "Shader/Misc/Shift.j3md");
+		
+		// 画面的切换时间间隔
+		float ShiftSpeed = (1 << m.Shift_FrameSpeed) / 1000f;
+		mat.setFloat("ShiftSpeed", ShiftSpeed);
+		
+		// 设置贴图
+		Texture tex;
+		for (int i = 0; i < m.AnimTexCounter; i++) {
+			tex = createTexture(m.smAnimTexture[i].Name);
+			mat.setTexture("Tex"+(i+1), tex);
+		}
+		
+		return mat;
+	}
+	
+	/**
+	 * 创建一个卷轴动画材质。 动画专用
+	 * 
+	 * @param m
+	 * @return
+	 */
+	private Material createScrollMaterial(MATERIAL m) {
+		Material mat = new Material(manager, "Shader/Misc/Scroll.j3md");
+		
+		// 画面的卷动速度
+		float speed = 1f;
+		
+		int n = m.TextureFormState[0];
+		if (n >= 6 && n <= 14) {
+			speed = 15 - n;
+		}
+		
+		if (n >= 15 && n <= 18) {
+			int factor = 18 - n + 4;
+			speed = (128 >> factor) / 256f;
+		}
+		
+		mat.setFloat("Speed", speed);
+		
+		// 设置贴图
+		Texture tex = createTexture(m.smTexture[0].Name);
+		mat.setTexture("ColorMap", tex);
+		
+		if (m.TextureCounter > 1) {
+			mat.setBoolean("SeparateTexCoord", true);
+			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
+		}
+		
+		return mat;
+	}
+	
+	/**
+	 * 创建一个原地转圈的动画材质。 Water动画专用
+	 * 
+	 * @param m
+	 * @return
+	 */
+	private Material createRoundMaterial(MATERIAL m) {
+		Material mat = new Material(manager, "Shader/Misc/Round.j3md");
+		
+		// 设置贴图
+		Texture tex = createTexture(m.smTexture[0].Name);
+		mat.setTexture("ColorMap", tex);
+		
+		if (m.TextureCounter > 1) {
+			mat.setBoolean("SeparateTexCoord", true);
+			mat.setTexture("LightMap", createTexture(m.smTexture[1].Name));
+		}
+		
 		return mat;
 	}
 
@@ -3044,21 +3130,5 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			rs.setFaceCullMode(FaceCullMode.Off);
 		}
 	}
-
-	/**
-	 * AminTexCounter大于0说明有轮播动画，创建一个Control，定时更新画面。
-	 * 
-	 * @param m
-	 * @return
-	 */
-	private FrameAnimControl createFrameAnimControl(MATERIAL m) {
-		Texture[] tex = new Texture[m.AnimTexCounter];
-		for (int i = 0; i < m.AnimTexCounter; i++) {
-			tex[i] = createTexture(m.smAnimTexture[i].Name);
-		}
-		FrameAnimControl control = new FrameAnimControl(tex, m.AnimTexCounter, m.Shift_FrameSpeed);
-		return control;
-	}
-
 
 }

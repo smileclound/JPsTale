@@ -276,7 +276,7 @@ public class HudState extends BaseAppState {
         showAxisRef = temp.getModel().createReference();
         
         temp = window.addChild( new Checkbox( "显示网格线" ) );
-        temp.setChecked(true);
+        temp.setChecked(false);
         showMeshRef = temp.getModel().createReference();
         
         temp = window.addChild( new Checkbox( "Collision" ) );

@@ -83,7 +83,7 @@ public class CollisionState extends BaseAppState {
 		meshes = new ArrayList<Mesh>(fieldCnt);
 		rigids = new ArrayList<PhysicsRigidBody>(fieldCnt);
 		bullet = new BulletAppState();
-		bullet.setDebugEnabled(true);
+		bullet.setDebugEnabled(false);
 	}
 
 	@Override
