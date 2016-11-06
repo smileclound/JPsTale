@@ -156,6 +156,7 @@ public class CollisionState extends BaseAppState {
 				// 玩家碰撞形状是一个胶囊体，坐标在胶囊体的中心。为了让胶囊体出现在地表，需要将坐标上移一半个高度。
 				orgin.y += halfH;
 				player.setPhysicsLocation(orgin);
+				lastOnGroundLoc.set(orgin);
 			}
 			
 		} else {
@@ -252,10 +253,20 @@ public class CollisionState extends BaseAppState {
 	}
 
 	public void setPlayerLocation(Vector3f center) {
-		if (player != null) {
-			player.setPhysicsLocation(center);
+		orgin.set(center);
+		orgin.y = 1000 / scale;
+		
+		CollisionResult result = getCollisionResult(orgin);
+		if (result != null) {
+			orgin.set(result.getContactPoint());
+			// 玩家碰撞形状是一个胶囊体，坐标在胶囊体的中心。为了让胶囊体出现在地表，需要将坐标上移一半个高度。
+			orgin.y += halfH;
+			if (player != null) {
+				player.setPhysicsLocation(orgin);
+				lastOnGroundLoc.set(orgin);
+			}
 		}
-
+		cam.setLocation(orgin);
 	}
 
 	public void toggle(Boolean enable) {

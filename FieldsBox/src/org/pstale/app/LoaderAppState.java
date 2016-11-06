@@ -17,17 +17,13 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResults;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
-import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 
 /**
@@ -50,6 +46,7 @@ public class LoaderAppState extends SubAppState {
 	
 	// 刷怪点标记
 	private Spatial flag;
+	private Spatial loadFlag;
 	
 	@Override
 	public void initialize(Application app) {
@@ -60,15 +57,13 @@ public class LoaderAppState extends SubAppState {
 		future = null;
 		task = null;
 		
-		try {
-			flag = ModelFactory.loadStageObj("char/flag/wow.smd", false);
-		} catch (Exception e) {
-			log.debug("无法加载旗帜", e);
-			flag = new Geometry("flag", new Box(1/scale, 1/scale, 1/scale));	
-			Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-			mat.setColor("Color", ColorRGBA.Red);
-			flag.setMaterial(mat);
-		}
+		flag = ModelFactory.loadFlag();
+		loadFlag = ModelFactory.getLoadingFlag();
+		
+		float width = app.getCamera().getWidth();
+		float height = app.getCamera().getHeight();
+		
+		loadFlag.setLocalTranslation(width/2 - 40, height/2 - 10, 0);
 	}
 	
 	
@@ -90,12 +85,16 @@ public class LoaderAppState extends SubAppState {
 	public void update(float tpf) {
 		if (task != null && future == null) {
 			future = excutor.submit(task);
+			
+			guiNode.attachChild(loadFlag);
 		}
 		
 		if (task != null && future != null && future.isDone()) {
 			future = null;
 			task = null;
 			field = null;
+			
+			loadFlag.removeFromParent();
 		}
 	}
 	/**
@@ -110,8 +109,28 @@ public class LoaderAppState extends SubAppState {
 		if (field == null) {
 			return;
 		}
-		this.field = field;
-		task = loadTask;
+		
+		/**
+		 * 判断缓存中是否已经有这个地图了。
+		 */
+		if (fields.contains(field)) {
+			
+			// 播放背景音乐
+			playBGM(field);
+			
+			// 根据地图的出生点，设置当前的摄像机坐标
+			Vector2f center2f = field.getCenter();
+			center = new Vector3f(center2f.x, 0, center2f.y).multLocal(scale);
+			center.y = 1000;
+			setPhysicLocation(center);
+			
+			// 加载小地图
+			setMiniMap(field);
+			
+		} else {
+			this.field = field;
+			task = loadTask;
+		}
 		
 	}
 	
@@ -120,65 +139,56 @@ public class LoaderAppState extends SubAppState {
 
 		@Override
 		public Void call() throws Exception {
-			log.debug("正在载入地图");
 			if (field == null)
 				return null;
 			
-			/**
-			 * 判断缓存中是否已经有这个地图了。
-			 */
-			if (fields.contains(field)) {
-				
-				// 播放背景音乐
-				playBGM(field);
-				
-				// 移动摄像机
-				moveCamera(field, ModelFactory.loadStage3DMesh(field.getName()));
-				
-				// 设置物理坐标
-				setPhysicLocation(center);
-				
-				// 加载小地图
-				setMiniMap(field);
-				
-				return null;
-			}
-
-		
 			/**
 			 * 地图主模型
 			 */
 			final Spatial mainModel = ModelFactory.loadStage3D(field.getName());
 			final Mesh mesh = ModelFactory.loadStage3DMesh(field.getName());
 			
-			if (mainModel != null) {
-				log.debug("mainModel");
-				// 加载成功
-				mainModel.scale(scale);
-				app.enqueue(new Runnable() {
-					public void run() {
-						rootNode.attachChild(mainModel);
-					}
-				});
-				
-				// 将网格缩小
-				FloatBuffer fb = (FloatBuffer)mesh.getBuffer(Type.Position).getData();
-				for(int i=0; i<fb.limit(); i++) {
-					fb.put(i, fb.get(i) * scale);
-				}
-				mesh.updateBound();
-				
-				// 移动摄像机
-				if (field.getCenter().length() == 0) {
-					center = mesh.getBound().getCenter();
-					field.getCenter().set(center.x, center.z);
-				} else {
-					// 移动摄像机
-					moveCamera(field, mesh);
-				}
-			} else {
+			if (mainModel == null) {
 				log.debug("加载地图模型失败");
 				return null;
+			}
+			
+			// 加载成功
+			mainModel.scale(scale);
+			app.enqueue(new Runnable() {
+				public void run() {
+					rootNode.attachChild(mainModel);
+				}
+			});
+			
+			// 将网格缩小
+			FloatBuffer fb = (FloatBuffer)mesh.getBuffer(Type.Position).getData();
+			for(int i=0; i<fb.limit(); i++) {
+				fb.put(i, fb.get(i) * scale);
+			}
+			mesh.updateBound();
+			
+			// 计算地图的中心点
+			if (field.getCenter().length() == 0) {
+				center = mesh.getBound().getCenter();
+				field.getCenter().set(center.x, center.z);
+			} else {
+				Vector2f center2f = field.getCenter();
+				center = new Vector3f(center2f.x, 0, center2f.y).multLocal(scale);
+				center.y = 1000;
+			}
+			
+			/**
+			 * 地图的碰撞网格
+			 */
+			final CollisionState collisionState = getStateManager().getState(CollisionState.class);
+			if (collisionState != null) {
+				app.enqueue(new Runnable() {
+					public void run() {
+						collisionState.addMesh(mesh);
+						collisionState.setPlayerLocation(center);
+					}
+				});
 			}
 			
 			/**
@@ -263,19 +273,6 @@ public class LoaderAppState extends SubAppState {
 			 */
 			setupNpc(field);
 			
-			/**
-			 * 地图的碰撞网格
-			 */
-			final CollisionState collisionState = getStateManager().getState(CollisionState.class);
-			if (collisionState != null) {
-				app.enqueue(new Runnable() {
-					public void run() {
-						collisionState.addMesh(mesh);
-						setPhysicLocation(center);
-						collisionState.setPlayerLocation(center);
-					}
-				});
-			}
 			
 			// 设置为空
 			fields.add(field);
@@ -289,10 +286,10 @@ public class LoaderAppState extends SubAppState {
 		if (collisionState != null) {
 			app.enqueue(new Runnable() {
 				public void run() {
+					collisionState.setPlayerLocation(center);
 				}
 			});
 		}
-		
 	}
 	
 	/**
@@ -368,8 +365,6 @@ public class LoaderAppState extends SubAppState {
 			} catch (Exception e) {
 				log.error("读取小地图失败", e);
 			}
-			
-			
 		}
 	}
 	/**
@@ -387,19 +382,6 @@ public class LoaderAppState extends SubAppState {
 				}
 			});
 		}
-	}
-	/**
-	 * 移动摄像机到地图的中心
-	 * @param field
-	 */
-	private void moveCamera(Field field, Mesh mesh) {
-		// 移动摄像机
-		Vector2f center2f = field.getCenter();
-		center = new Vector3f(center2f.x, 0, center2f.y).multLocal(scale);
-		center.y = 1000;
-		center = getLocationOnField(center, mesh);
-		center.y += 5/scale;
-		app.getCamera().setLocation(center);
 	}
 	
 	/**

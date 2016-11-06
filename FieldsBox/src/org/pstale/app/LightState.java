@@ -37,13 +37,13 @@ public class LightState extends SubAppState {
 	BitmapText gui;// 用来显示游戏时间  
 	
 	// 点光源悬停与玩家头顶一定的高度。
-	float height = 400 * scale;
+	float height = 800 * scale;
 	Vector3f spotLoc = new Vector3f();
 	
 	@Override
 	protected void initialize(Application app) {
 		ambientLight = new AmbientLight();
-		ambientLight.setColor(new ColorRGBA(0.25f, 0.25f, 0.25f, 1));
+		ambientLight.setColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 1));
 		
 		sunLight = new DirectionalLight();
 		sunLight.setColor(sunColor);
@@ -53,7 +53,7 @@ public class LightState extends SubAppState {
 		spotLight.setDirection(new Vector3f(0, -1, 0));
 		spotLight.setColor(new ColorRGBA(0.6f, 0.6f, 0.6f, 1));
 		spotLight.setSpotRange(1000f/scale);
-		spotLight.setSpotInnerAngle(FastMath.DEG_TO_RAD * 5);
+		spotLight.setSpotInnerAngle(FastMath.DEG_TO_RAD * 15);
 		spotLight.setSpotOuterAngle(FastMath.DEG_TO_RAD * 30);
 		
 		// 在这里获得CollisionState中玩家的坐标点引用。

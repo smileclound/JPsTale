@@ -1,0 +1,70 @@
+MaterialDef Shift {
+
+    MaterialParameters {
+        Texture2D Tex1
+        Texture2D Tex2
+        Texture2D Tex3
+        Texture2D Tex4
+        Texture2D Tex5
+        Texture2D Tex6
+        Texture2D Tex7
+        Texture2D Tex8
+        
+        Float ShiftSpeed : 0.064
+
+        // For instancing
+        Boolean UseInstancing
+
+        // Alpha threshold for fragment discarding
+        Float AlphaDiscardThreshold (AlphaTestFallOff)
+    }
+
+    Technique {
+        VertexShader GLSL150:   Shader/Misc/Shift.vert
+        FragmentShader GLSL150: Shader/Misc/Shift.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            ViewProjectionMatrix
+            ViewMatrix
+            Time
+        }
+
+        Defines {
+            INSTANCING : UseInstancing
+            HAS_TEX1 : Tex1
+            HAS_TEX2 : Tex2
+            HAS_TEX3 : Tex3
+            HAS_TEX4 : Tex4
+            HAS_TEX5 : Tex5
+            HAS_TEX6 : Tex6
+            HAS_TEX7 : Tex7
+            HAS_TEX8 : Tex8
+        }
+    }
+
+    Technique {
+        VertexShader GLSL100:   Shader/Misc/Shift.vert
+        FragmentShader GLSL100: Shader/Misc/Shift.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix
+            ViewProjectionMatrix
+            ViewMatrix
+            Time
+        }
+
+        Defines {
+            INSTANCING : UseInstancing
+            HAS_TEX1 : Tex1
+            HAS_TEX2 : Tex2
+            HAS_TEX3 : Tex3
+            HAS_TEX4 : Tex4
+            HAS_TEX5 : Tex5
+            HAS_TEX6 : Tex6
+            HAS_TEX7 : Tex7
+            HAS_TEX8 : Tex8
+        }
+    }
+
+}
