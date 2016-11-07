@@ -970,7 +970,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			for (int mat_id = 0; mat_id < materialCount; mat_id++) {
 				m = materials[mat_id];
 
-				if (m.MeshState == 1 && m.Transparency < 0.2f) {
+				if (m.MeshState == 1 && m.Transparency < 0.2f && m.BlendType != 4) {
 					continue;
 				}
 
@@ -985,7 +985,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 					continue;
 				}
 				
-				if ( m.BlendType == 1) {// ALPHA混色
+				if ( m.BlendType == 1 || m.BlendType == 4) {// ALPHA混色
 					materials[mat_id] = null;
 					continue;
 				}
@@ -1076,7 +1076,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 
 			Vector3f[] orginNormal = null;
 			if (USE_LIGHT) {
-				// 为了让表面平滑，先基于原来的面和定点计算一次法向量。
+				// 为了让表面平滑光照，先基于原来的面和顶点计算一次法向量。
 				orginNormal = computeOrginNormals();
 			}
 
@@ -1168,7 +1168,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 
 				// 透明度
 				// 只有不透明物体才需要检测碰撞网格。
-				if (m.MapOpacity != 0 || m.Transparency != 0 || m.BlendType == 1) {
+				if (m.MapOpacity != 0 || m.Transparency != 0 || m.BlendType == 1 || m.BlendType == 4) {
 					geom.setQueueBucket(Bucket.Translucent);
 				}
 
@@ -2331,7 +2331,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 						geom.setMaterial(mat);
 
 						// 设置位置
-						// TODO 这个位置设置后并不准确，需要进一步研究。
+						// FIXME 这个位置设置后并不准确，需要进一步研究。
 						Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
 						Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
 						Vector3f scale = new Vector3f(obj.sy, obj.sz, obj.sx);
@@ -2538,7 +2538,7 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 						smbFile = changeName(smbFile);
 					}
 
-					// TODO 没有正确使用
+					// FIXME 没有正确使用
 					log.debug("使用了共享的骨骼动画:" + smbFile);
 				}
 			} catch (IOException e) {
@@ -2696,7 +2696,6 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 
 				animSet.Repeat = (getInt() == 1);
 
-				// TODO 未知字符
 				buffer.position(AnimationOffset + (id * 120) + 112);
 
 				animSet.UnkChar = buffer.getChar();

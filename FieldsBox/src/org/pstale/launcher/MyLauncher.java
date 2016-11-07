@@ -17,15 +17,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 
@@ -66,12 +60,6 @@ public final class MyLauncher extends JFrame {
 	 */
 	static String CLIENT_ROOT;
 	
-	/**
-	 * 读取配置
-	 */
-	String profilepath = "config.properties";
-	Properties props = new Properties();
-
 	// Resource bundle for i18n.
 	ResourceBundle resourceBundle = ResourceBundle.getBundle("org.pstale.launcher/SettingsDialog");
 
@@ -119,11 +107,6 @@ public final class MyLauncher extends JFrame {
 
 		setResizable(false);
 
-		/**
-		 * 加载配置文件
-		 */
-		loadConfig();
-		
 		/**
 		 * 读取注册表
 		 */
@@ -210,17 +193,27 @@ public final class MyLauncher extends JFrame {
 		serverBox = new JCheckBox(resourceBundle.getString("checkbox.server"));
 		serverBox.setSelected(source.getBoolean("CheckServer"));
 		
+		SERVER_ROOT = source.getString("ServerRoot");
+		if (SERVER_ROOT == null) {
+			SERVER_ROOT = "";
+		}
+		
 		serverRootTxt = new JTextField(50);
 		serverRootTxt.setEditable(false);
-		serverRootTxt.setText(props.getProperty("SERVER_ROOT"));
+		serverRootTxt.setText(SERVER_ROOT);
 		if (checkServerRoot(SERVER_ROOT)) {
 			serverRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
 		} else {
 			serverRootTxt.setBackground(new Color(1f, 0.8f, 0.8f));
 		}
+		
+		CLIENT_ROOT = source.getString("ClientRoot");
+		if (CLIENT_ROOT == null)
+			CLIENT_ROOT = "";
+		
 		clientRootTxt = new JTextField(50);
 		clientRootTxt.setEditable(false);
-		clientRootTxt.setText(props.getProperty("CLIENT_ROOT"));
+		clientRootTxt.setText(CLIENT_ROOT);
 		if (checkClientRoot(CLIENT_ROOT)) {
 			clientRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
 		} else {
@@ -566,7 +559,6 @@ public final class MyLauncher extends JFrame {
 		
 		if (checkClientRoot(CLIENT_ROOT)) {
 			source.put("ClientRoot", CLIENT_ROOT);
-			writeProperties("CLIENT_ROOT", CLIENT_ROOT);
 		} else {
 			JOptionPane.showMessageDialog(this, resourceBundle.getString("error.clientrootnull"), "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
@@ -645,7 +637,6 @@ public final class MyLauncher extends JFrame {
 			if (checkServer) {
 				if (checkServerRoot(SERVER_ROOT)) {
 					source.put("ServerRoot", SERVER_ROOT);
-					writeProperties("SERVER_ROOT", SERVER_ROOT);
 				} else {
 					int rVal = JOptionPane.showConfirmDialog(this, resourceBundle.getString("error.serverrootnull"), "Error", JOptionPane.ERROR_MESSAGE);
 					return (rVal == JOptionPane.OK_OPTION);
@@ -936,44 +927,13 @@ public final class MyLauncher extends JFrame {
 		return chooser.getSelectedFile();
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	private boolean loadConfig() {
-		// 属性文件的路径
-		try {
-			props.load(new FileInputStream(profilepath));
-			
-			SERVER_ROOT = props.getProperty("SERVER_ROOT");
-			if (SERVER_ROOT == null) {
-				// 设置默认值
-				SERVER_ROOT = "../Assets/assets/server";
-				writeProperties("SERVER_ROOT", SERVER_ROOT);
-			}
-
-			CLIENT_ROOT = props.getProperty("CLIENT_ROOT");
-			if (CLIENT_ROOT == null) {
-				CLIENT_ROOT = "/";
-				writeProperties("CLIENT_ROOT", CLIENT_ROOT);
-			}
-			
-			return true;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
-	}
-
 	private void setupServer() {
 		File file = getFile();
 		if (file != null) {
 			SERVER_ROOT = file.getAbsolutePath();
 			SERVER_ROOT = SERVER_ROOT.replaceAll("\\\\", "/");
 			
+			serverRootTxt.setText(SERVER_ROOT);
 			if (checkServerRoot(SERVER_ROOT)) {
 				serverRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
 				source.put("ServerRoot", SERVER_ROOT);
@@ -988,29 +948,13 @@ public final class MyLauncher extends JFrame {
 		if (file != null) {
 			CLIENT_ROOT = file.getAbsolutePath();
 			CLIENT_ROOT = CLIENT_ROOT.replaceAll("\\\\", "/");
-			
+			clientRootTxt.setText(CLIENT_ROOT);
 			if (checkClientRoot(CLIENT_ROOT)) {
 				clientRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
 				source.put("ClientRoot", CLIENT_ROOT);
 			} else {
 				clientRootTxt.setBackground(Color.YELLOW);
 			}
-		}
-	}
-
-	/**
-	 * 更新（或插入）一对properties信息(主键及其键值) 如果该主键已经存在，更新该主键的值； 如果该主键不存在，则插件一对键值。
-	 * 
-	 * @param keyname 键名
-	 * @param keyvalue 键值
-	 */
-	private void writeProperties(String keyname, String keyvalue) {
-		try {
-			OutputStream fos = new FileOutputStream(profilepath);
-			props.setProperty(keyname, keyvalue);
-			props.store(fos, "Update '" + keyname + "' value");
-		} catch (IOException e) {
-			logger.warn("属性文件更新错误", e);
 		}
 	}
 
