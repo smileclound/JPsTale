@@ -140,4 +140,71 @@ public class ImageDecoder {
 			}
 		}
 	}
+
+	public static void encode(File dir) {
+		// 判断文件夹是否存在
+		if (dir.exists() && dir.isDirectory()) {
+			// 遍历bmp文件
+			File[] files = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String str = name.toLowerCase();
+					return str.endsWith(".bmp");
+				}
+			});// 读取文件列表
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				if (file.isFile()) {
+					try {
+						byte[] buffer = new byte[16];
+						RandomAccessFile raf = new RandomAccessFile(file, "rw");
+						raf.seek(0);
+						raf.readFully(buffer);
+
+						// 解码
+						if (buffer[0] == 0x42 && buffer[1] == 0x4D) {
+							log.info("Decode " + file.getAbsolutePath());
+							ImageDecoder.convertBMP(buffer, false);
+							raf.seek(0);
+							raf.write(buffer);
+						}
+
+						raf.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			// 遍历tga文件
+			files = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					String str = name.toLowerCase();
+					return str.endsWith(".tga");
+				}
+			});// 读取文件列表
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				if (file.isFile()) {
+					try {
+						byte[] buffer = new byte[18];
+						RandomAccessFile raf = new RandomAccessFile(file, "rw");
+						raf.seek(0);
+						raf.readFully(buffer);
+
+						// 解码
+						if (buffer[0] == 0x00 && buffer[1] == 0x00) {
+							log.info("Encode " + file.getAbsolutePath());
+							ImageDecoder.convertTGA(buffer, false);
+							raf.seek(0);
+							raf.write(buffer);
+						}
+
+						raf.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
 }

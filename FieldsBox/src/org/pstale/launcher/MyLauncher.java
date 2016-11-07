@@ -130,7 +130,7 @@ public final class MyLauncher extends JFrame {
 		AppSettings registrySettings = new AppSettings(true);
 		try {
 			registrySettings.load(TITLE);
-			source.mergeFrom(registrySettings);
+			source.copyFrom(registrySettings);
 		} catch (BackingStoreException ex) {
 			logger.warn("Failed to load settings", ex);
 		}
@@ -1001,10 +1001,8 @@ public final class MyLauncher extends JFrame {
 	/**
 	 * 更新（或插入）一对properties信息(主键及其键值) 如果该主键已经存在，更新该主键的值； 如果该主键不存在，则插件一对键值。
 	 * 
-	 * @param keyname
-	 *            键名
-	 * @param keyvalue
-	 *            键值
+	 * @param keyname 键名
+	 * @param keyvalue 键值
 	 */
 	private void writeProperties(String keyname, String keyvalue) {
 		try {
@@ -1077,6 +1075,14 @@ public final class MyLauncher extends JFrame {
 	 * 图片加密
 	 */
 	private void encode(File file) {
+		File[] folder = file.listFiles(folderFilter);
+		if (folder != null) {
+			int len = folder.length;
+			for(int i=0; i<len; i++) {
+				decode(folder[i]);
+			}
+		}
+		ImageDecoder.encode(file);
 	}
 	
 	FileFilter folderFilter = new FileFilter() {
