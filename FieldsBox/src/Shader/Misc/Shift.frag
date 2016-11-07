@@ -80,7 +80,8 @@ void main(){
 #endif
     
     int n = int(g_Time / m_ShiftSpeed);
-	n = n % numTex + 1;
+    int s = n / numTex;
+    n = n - s * numTex + 1;
 	
     #ifdef HAS_TEX1
     	if (n == 1)

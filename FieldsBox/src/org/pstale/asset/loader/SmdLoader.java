@@ -54,6 +54,8 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 
 	static Logger log = Logger.getLogger(SmdLoader.class);
 
+	public static boolean USE_LIGHT = false;
+
 	// 是否使用OPENGL坐标系
 	boolean OPEN_GL_AXIS = true;
 	// 是否打印动画日志
@@ -1072,8 +1074,11 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 		Node buildNode() {
 			Node rootNode = new Node("STAGE3D:" + key.getName());
 
-			// 为了让表面平滑，先基于原来的面和定点计算一次法向量。
-			Vector3f[] orginNormal = computeOrginNormals();
+			Vector3f[] orginNormal = null;
+			if (USE_LIGHT) {
+				// 为了让表面平滑，先基于原来的面和定点计算一次法向量。
+				orginNormal = computeOrginNormals();
+			}
 
 			int materialCount = materialGroup.materialCount;
 
@@ -1122,7 +1127,11 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 					if(n >= 4) {// 4 SCROLL 滚轴 5 REFLEX 反光 6 SCROLL2 2倍速滚轴
 						mat = createScrollMaterial(materials[mat_id]);
 					} else {
-						mat = createLightMaterial(materials[mat_id]);
+						if (USE_LIGHT) {
+							mat = createLightMaterial(materials[mat_id]);
+						} else {
+							mat = createMiscMaterial(materials[mat_id]);
+						}
 					}
 				} else {// SMTEX_TYPE_ANIMATION
 					if (m.AnimTexCounter > 0) {
@@ -1270,8 +1279,11 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 				for (int vIndex = 0; vIndex < 3; vIndex++) {
 					// 顶点 VERTEX
 					position[index * 3 + vIndex] = Vertex[Face[i].v[vIndex]].v;
-					// 法向量 Normal
-					normal[index * 3 + vIndex] = orginNormal[Face[i].v[vIndex]];
+					
+					if (USE_LIGHT) {
+						// 法向量 Normal
+						normal[index * 3 + vIndex] = orginNormal[Face[i].v[vIndex]];
+					}
 
 					// 面 FACE
 					f[index * 3 + vIndex] = index * 3 + vIndex;
@@ -1300,17 +1312,17 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 			}
 
 			Mesh mesh = new Mesh();
-			mesh.setBuffer(Type.Position, 3,
-					BufferUtils.createFloatBuffer(position));
+			mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(position));
 			mesh.setBuffer(Type.Index, 3, f);
 			// DiffuseMap UV
 			mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv1));
 			// LightMap UV
-			mesh.setBuffer(Type.TexCoord2, 2,
-					BufferUtils.createFloatBuffer(uv2));
-			// 法向量
-			mesh.setBuffer(Type.Normal, 3,
-					BufferUtils.createFloatBuffer(normal));
+			mesh.setBuffer(Type.TexCoord2, 2, BufferUtils.createFloatBuffer(uv2));
+			
+			if (USE_LIGHT) {
+				// 法向量
+				mesh.setBuffer(Type.Normal, 3, BufferUtils.createFloatBuffer(normal));
+			}
 
 			mesh.setStatic();
 			mesh.updateBound();
@@ -2307,19 +2319,21 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 
 						// 创建材质
 						MATERIAL m = smMaterialGroup.materials[mat_id];
-						Material mat = createLightMaterial(m);
+						Material mat;
+						if (USE_LIGHT) {
+							mat = createLightMaterial(m);
+						} else {
+							mat = createMiscMaterial(m);
+						}
 
 						// 创建几何体并应用材质。
-						Geometry geom = new Geometry(obj3d[i].NodeName + "#"
-								+ mat_id, mesh);
+						Geometry geom = new Geometry(obj3d[i].NodeName + "#" + mat_id, mesh);
 						geom.setMaterial(mat);
 
 						// 设置位置
 						// TODO 这个位置设置后并不准确，需要进一步研究。
-						Vector3f translation = new Vector3f(-obj.py, obj.pz,
-								-obj.px);
-						Quaternion rotation = new Quaternion(-obj.qy, obj.qz,
-								-obj.qx, -obj.qw);
+						Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
+						Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
 						Vector3f scale = new Vector3f(obj.sy, obj.sz, obj.sx);
 						geom.setLocalTranslation(translation);
 						geom.setLocalRotation(rotation);
@@ -2963,16 +2977,14 @@ public class SmdLoader extends ByteReader implements AssetLoader {
 	}
 
 	/**
-	 * 创建一个忽略光源的材质。 动画专用
+	 * 创建一个忽略光源的材质。 
 	 * 
 	 * @param m
 	 * @return
 	 */
 	private Material createMiscMaterial(MATERIAL m) {
-		Material mat = new Material(manager,
-				"Common/MatDefs/Misc/Unshaded.j3md");
-		// mat.setColor("Color", new ColorRGBA(m.Diffuse.r, m.Diffuse.g,
-		// m.Diffuse.b, 1));
+		Material mat = new Material(manager, "Common/MatDefs/Misc/Unshaded.j3md");
+		// mat.setColor("Color", new ColorRGBA(m.Diffuse.r, m.Diffuse.g, m.Diffuse.b, 1));
 		mat.setColor("Color", ColorRGBA.White);
 
 		// 设置贴图

@@ -1,7 +1,5 @@
 package org.pstale.app;
 
-import java.io.File;
-
 import org.pstale.asset.loader.SmdLoader;
 
 import com.jme3.app.DebugKeysAppState;
@@ -15,17 +13,11 @@ import com.jme3.audio.plugins.WAVLoader;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
 
 public class FieldApp extends SimpleApplication {
 
-	/**
-	 * 客户端资源的根目录
-	 */
-	private String clientRoot;
-	
 	public FieldApp() {
 		super(new LoadingAppState(),
 				new CursorState(),
@@ -35,11 +27,6 @@ public class FieldApp extends SimpleApplication {
 				new ScreenshotAppState());
 	}
 	
-	public FieldApp(String clientRoot) {
-		this();
-		this.clientRoot = clientRoot;
-	}
-
 	@Override
 	public void simpleInitApp() {
 		assetManager.registerLoader(AseLoader.class, "ase");
@@ -48,9 +35,22 @@ public class FieldApp extends SimpleApplication {
 		assetManager.registerLocator("/", FileLocator.class);
 		assetManager.registerLocator("assets", FileLocator.class);
 		
-		if (clientRoot != null && new File(clientRoot).isDirectory()) {
+		/**
+		 * 客户端资源的根目录
+		 */
+		if (settings.getString("ClientRoot") != null) {
+			String clientRoot = settings.getString("ClientRoot");
 			assetManager.registerLocator(clientRoot, FileLocator.class);
 		}
+		
+		LoadingAppState.SERVER_ROOT = settings.getString("ServerRoot");
+		
+		/**
+		 * 是否使用灯光、法线
+		 */
+		boolean useLight = settings.getBoolean("UseLight");
+		SmdLoader.USE_LIGHT = useLight;
+		LightState.USE_LIGHT = useLight;
 		
 		// 设置模型工厂
 		ModelFactory.setAssetManager(assetManager);
@@ -71,18 +71,6 @@ public class FieldApp extends SimpleApplication {
 		flyCam.setMoveSpeed(50);
 		flyCam.setDragToRotate(true);
 		inputManager.addMapping("FLYCAM_RotateDrag", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-
 	}
 
-	public static void main(String[] args) {
-		AppSettings settings = new AppSettings(true);
-		settings.setTitle("精灵区域管理器");
-		settings.setWidth(1024);
-		settings.setHeight(768);
-
-		FieldApp app = new FieldApp();
-		app.setSettings(settings);
-		app.setPauseOnLostFocus(false);
-		app.start();
-	}
 }

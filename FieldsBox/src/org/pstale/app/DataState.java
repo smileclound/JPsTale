@@ -10,7 +10,6 @@ import org.pstale.fields.Field;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
-import com.jme3.asset.maxase.FileLocator;
 
 /**
  * 这个状态机仅用于维持地区数据
@@ -27,7 +26,6 @@ public class DataState extends BaseAppState {
 	private List<CharMonsterInfo> allNpc;
 	private List<ItemInfo> allItem;
 
-	private String clientRoot;
 	private Field[] fields;
 
 	/**
@@ -41,23 +39,16 @@ public class DataState extends BaseAppState {
 	 * @param fields
 	 */
 	public DataState(String serverRoot, List<CharMonsterInfo> allMonster,
-			List<CharMonsterInfo> allNpc, List<ItemInfo> allItem,
-			String clientRoot, Field[] fields) {
+			List<CharMonsterInfo> allNpc, List<ItemInfo> allItem, Field[] fields) {
 		this.serverRoot = serverRoot;
 		this.allMonster = allMonster;
 		this.allNpc = allNpc;
 		this.allItem = allItem;
-		this.clientRoot = clientRoot;
 		this.fields = fields;
 	}
 
 	@Override
 	protected void initialize(Application app) {
-		// 初始化客户端资源根目录
-		if (clientRoot != null) {
-			app.getAssetManager()
-					.registerLocator(clientRoot, FileLocator.class);
-		}
 	}
 
 	@Override
@@ -79,15 +70,6 @@ public class DataState extends BaseAppState {
 	 */
 	public String getServerRoot() {
 		return serverRoot;
-	}
-
-	/**
-	 * 查询客户端根目录
-	 * 
-	 * @return
-	 */
-	public String getClientRoot() {
-		return clientRoot;
 	}
 
 	/**

@@ -22,6 +22,8 @@ import com.jme3.renderer.ViewPort;
  */
 public class LightState extends SubAppState {
 
+	public static boolean USE_LIGHT = true;
+
 	Vector3f orgin;
 	
 	AmbientLight ambientLight;// 环境光
@@ -42,31 +44,11 @@ public class LightState extends SubAppState {
 	
 	@Override
 	protected void initialize(Application app) {
-		ambientLight = new AmbientLight();
-		ambientLight.setColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 1));
-		
-		sunLight = new DirectionalLight();
-		sunLight.setColor(sunColor);
-		sunLight.setDirection(new Vector3f(1, -1, -0.5f).normalizeLocal());
-		
-		spotLight = new SpotLight();
-		spotLight.setDirection(new Vector3f(0, -1, 0));
-		spotLight.setColor(new ColorRGBA(0.6f, 0.6f, 0.6f, 1));
-		spotLight.setSpotRange(1000f/scale);
-		spotLight.setSpotInnerAngle(FastMath.DEG_TO_RAD * 15);
-		spotLight.setSpotOuterAngle(FastMath.DEG_TO_RAD * 30);
-		
-		// 在这里获得CollisionState中玩家的坐标点引用。
-		CollisionState collisionState = getStateManager().getState(CollisionState.class);
-		if (collisionState != null) {
-			orgin = collisionState.getPlayerLocation();
-		}
-		
 		// 初始化游戏时间  
         gameDate = new GameDate(21600);// 6:00 AM  
         cam = app.getCamera();
         viewPort = app.getViewPort();
-
+        
         /** 
          * 创建gui，用来显示时间 
          */  
@@ -74,11 +56,34 @@ public class LightState extends SubAppState {
         gui = new BitmapText(guiFont, false);  
         gui.setText("00:00");  
         guiNode.attachChild(gui);  
-          
+
         // 把gui放在屏幕顶部居中  
         float width = (cam.getWidth() - gui.getLineWidth())/2;  
         float height = cam.getHeight();  
         gui.setLocalTranslation(width, height, 0); 
+        
+        if (USE_LIGHT) {
+			ambientLight = new AmbientLight();
+			ambientLight.setColor(new ColorRGBA(0.4f, 0.4f, 0.4f, 1));
+			
+			sunLight = new DirectionalLight();
+			sunLight.setColor(sunColor);
+			sunLight.setDirection(new Vector3f(1, -1, -0.5f).normalizeLocal());
+			
+			spotLight = new SpotLight();
+			spotLight.setDirection(new Vector3f(0, -1, 0));
+			spotLight.setColor(new ColorRGBA(0.6f, 0.6f, 0.6f, 1));
+			spotLight.setSpotRange(1000f/scale);
+			spotLight.setSpotInnerAngle(FastMath.DEG_TO_RAD * 15);
+			spotLight.setSpotOuterAngle(FastMath.DEG_TO_RAD * 30);
+			
+			// 在这里获得CollisionState中玩家的坐标点引用。
+			CollisionState collisionState = getStateManager().getState(CollisionState.class);
+			if (collisionState != null) {
+				orgin = collisionState.getPlayerLocation();
+			}
+        }
+        
 	}
 
 	@Override
@@ -90,19 +95,27 @@ public class LightState extends SubAppState {
         gameDate.update(tpf);  
         // 更新gui，显示当前时间  
         gui.setText(String.format("%02d:%02d", gameDate.getHour(), gameDate.getMinute()));  
+        
         // 更新阳光亮度  
         float power = gameDate.getLightPower();
-        sunColor.r = power;
-        sunColor.g = power;
-        sunColor.b = power;
-        sunColor.a = power;
-        sunLight.setColor(sunColor);
+        
         // 更新天空背景色
         skyColor.r = 0.7f * power;
         skyColor.g = 0.8f * power;
         skyColor.b = 0.9f * power;
         skyColor.a = power;
         viewPort.setBackgroundColor(skyColor);
+        
+        if (!USE_LIGHT) {
+        	return;
+        }
+        
+        // 更新阳光亮度  
+        sunColor.r = power;
+        sunColor.g = power;
+        sunColor.b = power;
+        sunColor.a = power;
+        sunLight.setColor(sunColor);
         
         // 更新光照角度  
         sunLight.setDirection(gameDate.getSunDirection());  
@@ -132,19 +145,25 @@ public class LightState extends SubAppState {
 	@Override
 	protected void onEnable() {
 		super.onEnable();
-		SimpleApplication simpleApp = (SimpleApplication) getApplication();
-		simpleApp.getRootNode().addLight(ambientLight);
-		simpleApp.getRootNode().addLight(sunLight);
-		simpleApp.getRootNode().addLight(spotLight);
+		
+		if (USE_LIGHT) {
+			SimpleApplication simpleApp = (SimpleApplication) getApplication();
+			simpleApp.getRootNode().addLight(ambientLight);
+			simpleApp.getRootNode().addLight(sunLight);
+			simpleApp.getRootNode().addLight(spotLight);
+		}
 	}
 
 	@Override
 	protected void onDisable() {
 		super.onDisable();
-		SimpleApplication simpleApp = (SimpleApplication) getApplication();
-		simpleApp.getRootNode().removeLight(ambientLight);
-		simpleApp.getRootNode().removeLight(sunLight);
-		simpleApp.getRootNode().removeLight(spotLight);
+		
+		if (USE_LIGHT) {
+			SimpleApplication simpleApp = (SimpleApplication) getApplication();
+			simpleApp.getRootNode().removeLight(ambientLight);
+			simpleApp.getRootNode().removeLight(sunLight);
+			simpleApp.getRootNode().removeLight(spotLight);
+		}
 	}
 
 }

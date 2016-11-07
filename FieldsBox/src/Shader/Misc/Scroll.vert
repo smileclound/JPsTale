@@ -18,13 +18,13 @@ uniform float m_Speed;
 void main(){
     #ifdef HAS_COLORMAP
     	vec2 uv = inTexCoord;
-    	uv.x += m_Speed * g_Time / 10;
+    	uv.x += m_Speed * g_Time * 0.1;
         texCoord = uv;
     #endif
 
     #ifdef SEPARATE_TEXCOORD
         vec2 uv2 = inTexCoord2;
-    	uv2.x += m_Speed * g_Time / 10;
+    	uv2.x += m_Speed * g_Time * 0.1;
         texCoord2 = uv2;
     #endif
     

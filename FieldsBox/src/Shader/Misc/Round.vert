@@ -15,8 +15,7 @@ varying vec4 vertColor;
 uniform float g_Time;
 
 void main(){
-    // 以8秒为周期旋转
-    float radius = 6.2831855 * g_Time / 8;
+    float radius = 6.2831855 * g_Time * 0.125;
     float x = sin(radius) * 0.2;
     float y = cos(radius) * 0.2;
     #ifdef HAS_COLORMAP
