@@ -137,7 +137,8 @@ public class LoadingAppState extends SubAppState {
 				new WarpgateAppState(),
 				new MonsterAppState(),
 				new NpcAppState(),
-				new LightState()};
+				new LightState(),
+				new PickingAppState()};
 
 		AppStateManager stateManager = getStateManager();
 		stateManager.attachAll(states);// 添加所需的AppStates

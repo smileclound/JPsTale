@@ -1,9 +1,9 @@
-package org.pstale.asset.struct;
+package org.pstale.asset.loader;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
-class Keyframe {
+public class Keyframe {
 	Vector3f translation;
 	Quaternion rotation;
 	Vector3f scale;

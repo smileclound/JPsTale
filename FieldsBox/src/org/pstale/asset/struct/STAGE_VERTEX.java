@@ -12,7 +12,7 @@ import com.jme3.util.LittleEndien;
 public class STAGE_VERTEX extends Flyweight {
 	int sum;
 	// smRENDVERTEX *lpRendVertex;
-	Vector3f v;
+	public Vector3f v;
 	ColorRGBA vectorColor;
 
 	public void loadData(LittleEndien in) throws IOException {

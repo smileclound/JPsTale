@@ -8,10 +8,10 @@ import com.jme3.util.LittleEndien;
  * size = 64
  */
 public class MATRIX extends Flyweight {
-	int _11, _12, _13, _14;
-	int _21, _22, _23, _24;
-	int _31, _32, _33, _34;
-	int _41, _42, _43, _44;
+	public int _11, _12, _13, _14;
+	public int _21, _22, _23, _24;
+	public int _31, _32, _33, _34;
+	public int _41, _42, _43, _44;
 
 	public MATRIX() {
 		_11 = 1;

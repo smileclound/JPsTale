@@ -8,10 +8,10 @@ import com.jme3.util.LittleEndien;
  * size = 36
  */
 public class FACE extends Flyweight{
-	int[] v = new int[4];// a,b,c,Matrial
-	FTPOINT[] t = new FTPOINT[3];
-	int lpTexLink;
-	TEXLINK TexLink;
+	public int[] v = new int[4];// a,b,c,Matrial
+	public FTPOINT[] t = new FTPOINT[3];
+	public int lpTexLink;
+	public TEXLINK TexLink;
 
 	@Override
 	public void loadData(LittleEndien in) throws IOException {

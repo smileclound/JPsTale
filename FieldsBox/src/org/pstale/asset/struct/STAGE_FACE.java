@@ -11,9 +11,9 @@ import com.jme3.util.LittleEndien;
 public class STAGE_FACE extends Flyweight {
 	int sum;
 	int CalcSum;
-	int v[] = new int[4];// a, b, c, mat_id;
+	public int v[] = new int[4];// a, b, c, mat_id;
 	int lpTexLink;// 这是一个指针，指向TEXLINK结构体
-	TEXLINK TexLink;// 若lpTexLink != 0，则TexLink指向一个实际的对象象
+	public TEXLINK TexLink;// 若lpTexLink != 0，则TexLink指向一个实际的对象象
 
 	float nx, ny, nz, y;// Cross氦磐( Normal ) ( nx , ny , nz , [0,1,0]氦磐 Y );
 

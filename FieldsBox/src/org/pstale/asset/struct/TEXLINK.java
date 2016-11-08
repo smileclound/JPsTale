@@ -9,11 +9,11 @@ import com.jme3.util.LittleEndien;
  * 
  */
 public class TEXLINK extends Flyweight {
-	float[] u = new float[3];
-	float[] v = new float[3];
+	public float[] u = new float[3];
+	public float[] v = new float[3];
 	int hTexture;
 	int lpNextTex;// 这是一个指针，指向TEXLINK结构体
-	TEXLINK NextTex;// 若lpNextTex != 0，则NextTex指向一个实际的对象
+	public TEXLINK NextTex;// 若lpNextTex != 0，则NextTex指向一个实际的对象
 
 	public void loadData(LittleEndien in) throws IOException {
 		u[0] = in.readFloat();

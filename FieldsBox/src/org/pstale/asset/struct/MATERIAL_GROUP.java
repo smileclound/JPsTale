@@ -9,8 +9,8 @@ import com.jme3.util.LittleEndien;
  */
 public class MATERIAL_GROUP extends Flyweight {
 	// DWORD Head
-	MATERIAL[] materials;
-	int materialCount;
+	public MATERIAL[] materials;
+	public int materialCount;
 	int reformTexture;
 	int maxMaterial;
 	int lastSearchMaterial;

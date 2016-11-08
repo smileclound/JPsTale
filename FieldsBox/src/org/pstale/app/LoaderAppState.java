@@ -17,6 +17,7 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResults;
+import com.jme3.input.controls.ActionListener;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -65,7 +66,6 @@ public class LoaderAppState extends SubAppState {
 		
 		loadFlag.setLocalTranslation(width/2 - 40, height/2 - 10, 0);
 	}
-	
 	
 	@Override
 	protected void cleanup(Application app) {
@@ -311,7 +311,7 @@ public class LoaderAppState extends SubAppState {
 						}
 					});
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("加载舞台物体失败", e);
 				}
 			}
 		}
@@ -353,15 +353,26 @@ public class LoaderAppState extends SubAppState {
 			final Texture mapRes;
 			final Texture titleRes;
 			try {
-				mapRes = assetManager.loadTexture(field.getNameMap());
-				titleRes = assetManager.loadTexture(field.getNameTitle());
+				
+				String map = field.getNameMap();
+				if (map != null && map.length() > 0) {
+					mapRes = assetManager.loadTexture(field.getNameMap());
+				} else {
+					mapRes = null;
+				}
+				
+				String title = field.getNameTitle();
+				if (title != null && title.length() > 0) {
+					titleRes = assetManager.loadTexture(field.getNameTitle());
+				} else {
+					titleRes = null;
+				}
 				
 				app.enqueue(new Runnable() {
 					public void run() {
 						hud.setMiniMap(titleRes, mapRes);
 					}
 				});
-				log.debug("已经读取小地图");
 			} catch (Exception e) {
 				log.error("读取小地图失败", e);
 			}
@@ -401,5 +412,12 @@ public class LoaderAppState extends SubAppState {
 			return pos;
 		}
 	}
+	
+	ActionListener listener = new ActionListener() {
+		@Override
+		public void onAction(String name, boolean isPressed, float tpf) {
+			
+		}
+	};
 	
 }

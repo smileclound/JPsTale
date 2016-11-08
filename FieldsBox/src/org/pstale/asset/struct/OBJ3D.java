@@ -2,12 +2,6 @@ package org.pstale.asset.struct;
 
 import java.io.IOException;
 
-import com.jme3.animation.Skeleton;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.VertexBuffer.Type;
-import com.jme3.util.BufferUtils;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -15,11 +9,11 @@ import com.jme3.util.LittleEndien;
  */
 public class OBJ3D extends Flyweight {
 	// DWORD Head;
-	VERTEX[] Vertex;// 顶点
-	FACE[] Face;// 面
-	TEXLINK[] TexLink;// 纹理坐标
+	public VERTEX[] Vertex;// 顶点
+	public FACE[] Face;// 面
+	public TEXLINK[] TexLink;// 纹理坐标
 
-	OBJ3D[] Physique; // 各顶点的骨骼
+	public OBJ3D[] Physique; // 各顶点的骨骼
 
 	VERTEX ZeroVertex; // 坷宏璃飘 吝居 滚咆胶 蔼
 
@@ -28,15 +22,15 @@ public class OBJ3D extends Flyweight {
 	int maxX, minX;
 
 	int dBound; // 官款爹 胶其绢 蔼 ^2
-	int Bound; // 官款爹 胶其绢 蔼
+	public int Bound; // 官款爹 胶其绢 蔼
 
-	int MaxVertex;
-	int MaxFace;
+	public int MaxVertex;
+	public int MaxFace;
 
-	int nVertex;
-	int nFace;
+	public int nVertex;
+	public int nFace;
 
-	int nTexLink;
+	public int nTexLink;
 
 	int ColorEffect; // 祸惑瓤苞 荤侩 蜡公
 	int ClipStates; // 努府俏 付胶农 ( 阿 努府俏喊 荤侩 蜡公 )
@@ -47,12 +41,12 @@ public class OBJ3D extends Flyweight {
 	int[] Trig = new int[8];
 
 	// 局聪皋捞记 包访
-	String NodeName;// [32]; // 坷宏璃飘狼 畴靛 捞抚
-	String NodeParent;// [32]; // 何葛 坷宏璃飘狼 捞抚
+	public String NodeName;// [32]; // 坷宏璃飘狼 畴靛 捞抚
+	public String NodeParent;// [32]; // 何葛 坷宏璃飘狼 捞抚
 	OBJ3D pParent; // 何葛 坷宏璃飘 器牢磐
 
 	MATRIX Tm; // 扁夯 TM 青纺
-	MATRIX TmInvert; // 逆矩阵
+	public MATRIX TmInvert; // 逆矩阵
 	FMATRIX TmResult; // 局聪皋捞记 青纺
 	MATRIX TmRotate; // 扁夯利 雀傈 青纺
 
@@ -61,19 +55,19 @@ public class OBJ3D extends Flyweight {
 
 	int lFrame;// 没有实际作用
 
-	float qx, qy, qz, qw; // 雀傈 孽磐聪攫
-	float sx, sy, sz; // 胶纳老 谅钎
-	float px, py, pz; // 器瘤记 谅钎
+	public float qx, qy, qz, qw; // 雀傈 孽磐聪攫
+	public float sx, sy, sz; // 胶纳老 谅钎
+	public float px, py, pz; // 器瘤记 谅钎
 
-	TM_ROT[] TmRot; // 橇饭烙喊 雀傈 局聪皋捞记
-	TM_POS[] TmPos; // 橇饭烙喊 器瘤记 局聪皋捞记
-	TM_SCALE[] TmScale; // 橇饭烙喊 胶纳老 局聪皋捞记
+	public TM_ROT[] TmRot; // 橇饭烙喊 雀傈 局聪皋捞记
+	public TM_POS[] TmPos; // 橇饭烙喊 器瘤记 局聪皋捞记
+	public TM_SCALE[] TmScale; // 橇饭烙喊 胶纳老 局聪皋捞记
 
 	FMATRIX[] TmPrevRot; // 帧的动画矩阵
 
-	int TmRotCnt;
-	int TmPosCnt;
-	int TmScaleCnt;
+	public int TmRotCnt;
+	public int TmPosCnt;
+	public int TmScaleCnt;
 
 	// TM 橇饭烙 辑摹 ( 橇饭烙捞 腹栏搁 茫扁啊 塞惦 )
 	FRAME_POS[] TmRotFrame = new FRAME_POS[OBJ_FRAME_SEARCH_MAX];
@@ -297,192 +291,4 @@ public class OBJ3D extends Flyweight {
 		}
 	}
 
-	/**
-	 * 生成网格数据。
-	 * 
-	 * @param ske
-	 * @return
-	 */
-	public Mesh buildMesh(int mat_id, Skeleton ske) {
-		Mesh mesh = new Mesh();
-
-		// 统计使用这个材质的面数
-		int count = 0;
-		for (int i = 0; i < nFace; i++) {
-			if (Face[i].v[3] == mat_id) {
-				count++;
-			}
-		}
-
-		// 计算网格
-		Vector3f[] position = new Vector3f[count * 3];
-		int[] f = new int[count * 3];
-		Vector2f[] uv = new Vector2f[count * 3];
-		int index = 0;
-
-		// Prepare MeshData
-		for (int i = 0; i < nFace; i++) {
-			// 忽略掉这个面
-			if (Face[i].v[3] != mat_id) {
-				continue;
-			}
-
-			// 顶点 VERTEX
-			position[index * 3 + 0] = Vertex[Face[i].v[0]].v;
-			position[index * 3 + 1] = Vertex[Face[i].v[1]].v;
-			position[index * 3 + 2] = Vertex[Face[i].v[2]].v;
-
-			// 面 FACE
-			if (i < nFace) {
-				f[index * 3 + 0] = index * 3 + 0;
-				f[index * 3 + 1] = index * 3 + 1;
-				f[index * 3 + 2] = index * 3 + 2;
-			}
-
-			// 纹理映射
-			TEXLINK tl = Face[i].TexLink;
-			if (tl != null) {
-				// 第1组uv坐标
-				uv[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
-				uv[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
-				uv[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);
-			} else {
-				uv[index * 3 + 0] = new Vector2f();
-				uv[index * 3 + 1] = new Vector2f();
-				uv[index * 3 + 2] = new Vector2f();
-			}
-
-			index++;
-		}
-
-		mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(position));
-		mesh.setBuffer(Type.Index, 3, f);
-		mesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(uv));
-
-		// 骨骼蒙皮
-		if (Physique != null && ske != null) {
-			float[] boneIndex = new float[count * 12];
-			float[] boneWeight = new float[count * 12];
-
-			index = 0;
-			for (int i = 0; i < nFace; i++) {
-				// 忽略这个面
-				if (Face[i].v[3] != mat_id) {
-					continue;
-				}
-
-				for (int j = 0; j < 3; j++) {
-					int v = Face[i].v[j];// 顶点序号
-					int bi = index * 3 + j;// 对应骨骼的序号
-
-					OBJ3D obj3d = Physique[v];
-					byte targetBoneIndex = (byte) ske
-							.getBoneIndex(obj3d.NodeName);
-
-					boneIndex[bi * 4] = targetBoneIndex;
-					boneIndex[bi * 4 + 1] = 0;
-					boneIndex[bi * 4 + 2] = 0;
-					boneIndex[bi * 4 + 3] = 0;
-
-					boneWeight[bi * 4] = 1;
-					boneWeight[bi * 4 + 1] = 0;
-					boneWeight[bi * 4 + 2] = 0;
-					boneWeight[bi * 4 + 3] = 0;
-				}
-
-				index++;
-			}
-
-			mesh.setMaxNumWeights(1);
-			// apply software skinning
-			mesh.setBuffer(Type.BoneIndex, 4, boneIndex);
-			mesh.setBuffer(Type.BoneWeight, 4, boneWeight);
-			// apply hardware skinning
-			mesh.setBuffer(Type.HWBoneIndex, 4, boneIndex);
-			mesh.setBuffer(Type.HWBoneWeight, 4, boneWeight);
-
-			mesh.generateBindPose(true);
-		}
-
-		mesh.setStatic();
-		mesh.updateBound();
-		mesh.updateCounts();
-
-		return mesh;
-	}
-
-	/**
-	 * 将顺序读取的3个int，用TmInvert进行转置，获得一个GL坐标系的顶点。
-	 * 
-	 * <pre>
-	 * 若有向量x=(v1, v2, v3, 1)与矩阵TmInvert (_11, _12, _13, _14)
-	 *                                      (_21, _22, _23, _24)
-	 *                                      (_31, _32, _33, _34)
-	 *                                      (_41, _42, _43, _44)。
-	 * 使用TmInvert对向量x进行线性变换后，得到的向量为a(res1, res2, res3, 1)。
-	 *       即：TmInvert * x = a(res1, res2, res3, 1)
-	 * 其中TmInvert与a已知，求x。
-	 *       x = (1/TmInvert) * a
-	 * </pre>
-	 * 
-	 * @param res1
-	 * @param res2
-	 * @param res3
-	 * @param tm
-	 */
-	public Vector3f mult(long res1, long res2, long res3, MATRIX tm) {
-		long v1 = -((res2 * tm._33 * tm._21 - res2 * tm._23 * tm._31 - res1
-				* tm._33 * tm._22 + res1 * tm._23 * tm._32 - res3 * tm._21
-				* tm._32 + res3 * tm._31 * tm._22 + tm._43 * tm._21
-				* tm._32 - tm._43 * tm._31 * tm._22 - tm._33 * tm._21
-				* tm._42 + tm._33 * tm._41 * tm._22 + tm._23 * tm._31
-				* tm._42 - tm._23 * tm._41 * tm._32) << 8)
-				/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12
-						+ tm._21 * tm._32 * tm._13 - tm._33 * tm._21
-						* tm._12 - tm._11 * tm._23 * tm._32 - tm._31
-						* tm._22 * tm._13);
-		long v2 = ((res2 * tm._11 * tm._33 - res1 * tm._33 * tm._12 - res3
-				* tm._11 * tm._32 + res3 * tm._31 * tm._12 - res2 * tm._31
-				* tm._13 + res1 * tm._32 * tm._13 + tm._11 * tm._43
-				* tm._32 - tm._43 * tm._31 * tm._12 - tm._11 * tm._33
-				* tm._42 + tm._33 * tm._41 * tm._12 + tm._31 * tm._42
-				* tm._13 - tm._41 * tm._32 * tm._13) << 8)
-				/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12
-						+ tm._21 * tm._32 * tm._13 - tm._33 * tm._21
-						* tm._12 - tm._11 * tm._23 * tm._32 - tm._31
-						* tm._22 * tm._13);
-		long v3 = -((res2 * tm._11 * tm._23 - res1 * tm._23 * tm._12 - res3
-				* tm._11 * tm._22 + res3 * tm._21 * tm._12 - res2 * tm._21
-				* tm._13 + res1 * tm._22 * tm._13 + tm._11 * tm._43
-				* tm._22 - tm._43 * tm._21 * tm._12 - tm._11 * tm._23
-				* tm._42 + tm._23 * tm._41 * tm._12 + tm._21 * tm._42
-				* tm._13 - tm._41 * tm._22 * tm._13) << 8)
-				/ (tm._11 * tm._33 * tm._22 + tm._23 * tm._31 * tm._12
-						+ tm._21 * tm._32 * tm._13 - tm._33 * tm._21
-						* tm._12 - tm._11 * tm._23 * tm._32 - tm._31
-						* tm._22 * tm._13);
-
-		float x = (float) v1 / 256.0f;
-		float y = (float) v2 / 256.0f;
-		float z = (float) v3 / 256.0f;
-
-		if (OPEN_GL_AXIS) {
-			return new Vector3f(-y, z, -x);
-		} else {
-			return new Vector3f(x, y, z);
-		}
-	}
-
-	public void invertPoint() {
-
-		for (int i = 0; i < nVertex; i++) {
-			if (Physique != null) {
-				Vertex[i].v = mult(Vertex[i].x, Vertex[i].y, Vertex[i].z,
-						Physique[i].TmInvert);
-			} else {
-				Vertex[i].v = mult(Vertex[i].x, Vertex[i].y, Vertex[i].z,
-						TmInvert);
-			}
-		}
-	}
 }

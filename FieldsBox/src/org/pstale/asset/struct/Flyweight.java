@@ -7,20 +7,6 @@ import org.apache.log4j.Logger;
 import com.jme3.util.LittleEndien;
 
 public abstract class Flyweight {
-	/**
-	 * 精灵的动画使用3DS MAX的默认速率，每秒30Tick，每Tick共160帧。 也就是每秒4800帧。
-	 * 
-	 * 但是smd文件中也另外存储了2个参数： (1) 每秒Tick数 (默认30) (2) 每Tick帧数 (默认160)
-	 * 这两个变量的值控制了动画播放的速率。
-	 */
-	float framePerSecond = 4800f;
-	
-	boolean USE_LIGHT = false;
-
-	// 是否使用OPENGL坐标系
-	boolean OPEN_GL_AXIS = true;
-	// 是否打印动画日志
-	boolean LOG_ANIMATION = false;
 	
 	public final static int OBJ_FRAME_SEARCH_MAX = 32;
 	

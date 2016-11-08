@@ -9,8 +9,8 @@ import com.jme3.util.LittleEndien;
  * 
  */
 public class TM_ROT extends Flyweight {
-	int frame;
-	float x, y, z, w;
+	public int frame;
+	public float x, y, z, w;
 
 	public void loadData(LittleEndien in) throws IOException {
 		frame = in.readInt();

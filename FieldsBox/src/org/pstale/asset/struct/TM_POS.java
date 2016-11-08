@@ -8,8 +8,8 @@ import com.jme3.util.LittleEndien;
  * size = 16
  */
 public class TM_POS extends Flyweight {
-	int frame;
-	float x, y, z;
+	public int frame;
+	public float x, y, z;
 
 	public void loadData(LittleEndien in) throws IOException {
 		frame = in.readInt();
