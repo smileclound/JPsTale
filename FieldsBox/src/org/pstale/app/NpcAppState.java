@@ -57,7 +57,7 @@ public class NpcAppState extends SubAppState {
 				skeletonDebug.setMaterial(mat);
 				model.attachChild(skeletonDebug);
 				
-				ac.createChannel().setAnim("Anim");
+				// ac.createChannel().setAnim("Anim");
 			}
 			
 			model.scale(scale);
@@ -72,8 +72,6 @@ public class NpcAppState extends SubAppState {
 			if (dataState != null) {
 				CharMonsterInfo cmNPC= dataState.findNPC(npc.getScript());
 				if (cmNPC != null) {
-					log.debug("找到NPC:" + cmNPC.szName);
-				} else {
 					log.debug("找不到NPC脚本:" + npc.getScript());
 				}
 			}

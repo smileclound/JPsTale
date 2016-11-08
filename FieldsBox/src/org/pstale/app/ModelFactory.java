@@ -1,16 +1,16 @@
 package org.pstale.app;
 
-import static org.pstale.asset.loader.SmdKey.SMDTYPE.INX;
-import static org.pstale.asset.loader.SmdKey.SMDTYPE.PAT3D;
-import static org.pstale.asset.loader.SmdKey.SMDTYPE.PAT3D_BIP;
-import static org.pstale.asset.loader.SmdKey.SMDTYPE.STAGE3D;
-import static org.pstale.asset.loader.SmdKey.SMDTYPE.STAGE3D_SOLID;
+import static org.pstale.asset.loader.SMDTYPE.INX;
+import static org.pstale.asset.loader.SMDTYPE.PAT3D;
+import static org.pstale.asset.loader.SMDTYPE.PAT3D_BIP;
+import static org.pstale.asset.loader.SMDTYPE.STAGE3D;
+import static org.pstale.asset.loader.SMDTYPE.STAGE3D_SOLID;
 
 import org.apache.log4j.Logger;
 import org.pstale.asset.loader.SmdKey;
+import org.pstale.asset.loader.InxKey;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.maxase.AseKey;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
@@ -106,16 +106,7 @@ public class ModelFactory {
 		try {
 			model = (Node)assetManager.loadAsset(new SmdKey(smd, STAGE3D));
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("加载"+smd+"失败，尝试加载原模型");
-			try {
-				// 如果加载失败，则尝试加载ase文件。
-				AseKey key = new AseKey(path);
-				model = (Node) assetManager.loadAsset(key);
-			} catch (Exception e2) {
-				e2.printStackTrace();
-				System.out.println("加载" + path + "失败");
-			}
+			log.warn("加载"+smd+"失败", e);
 		}
 		
 		return model;
@@ -145,6 +136,7 @@ public class ModelFactory {
 		
 		return (Node)assetManager.loadAsset(new SmdKey(smd, bip?PAT3D_BIP:PAT3D));
 	}
+	
 	public static Node loadNPC(final String name) {
 		String path = name;
 		if (path != null) {
@@ -154,6 +146,6 @@ public class ModelFactory {
 		int idx = path.lastIndexOf(".");
 		String smd = path.substring(0, idx) + ".inx";
 		
-		return (Node)assetManager.loadAsset(new SmdKey(smd, INX));
+		return (Node)assetManager.loadAsset(new InxKey(smd, INX));
 	}
 }

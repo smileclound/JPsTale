@@ -1,20 +1,11 @@
 package org.pstale.app;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
 import net.jmecn.asset.ItemInitilize;
 import net.jmecn.asset.MonsterInitilize;
@@ -156,11 +147,13 @@ public class LoadingAppState extends SubAppState {
 	/**
 	 * 服务端的路径
 	 */
+	static boolean CHECK_SERVER = false;
 	static String SERVER_ROOT;
 	static String FIELD_DIR = "GameServer/Field";
 	static String MONSTER_DIR = "GameServer/Monster";
 	static String OPENITEM_DIR = "GameServer/OpenItem";
 	static String NPC_DIR = "GameServer/NPC";
+
 
 	/**
 	 * 客户端的路径
@@ -200,7 +193,7 @@ public class LoadingAppState extends SubAppState {
 			message = "Config..";
 			
 			// 解析服务端数据
-			if (SERVER_ROOT != null) {
+			if (CHECK_SERVER && SERVER_ROOT != null) {
 				// 所有怪物数据
 				MonsterInitilize mi = new MonsterInitilize();
 				mi.setFolder(SERVER_ROOT + "/" + MONSTER_DIR);
@@ -263,7 +256,7 @@ public class LoadingAppState extends SubAppState {
 				String model = field.getName();
 
 				// 尝试加载服务端文件
-				if (SERVER_ROOT != null) {
+				if (CHECK_SERVER && SERVER_ROOT != null) {
 					int index = model.lastIndexOf("/") + 1;
 					String name = model.substring(index);
 					String spp = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spp";

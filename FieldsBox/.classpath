@@ -10,7 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guava"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lemur"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-jbullet"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/AseLoader"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j"/>
 	<classpathentry kind="src" path="/Assets"/>
 	<classpathentry kind="output" path="bin"/>

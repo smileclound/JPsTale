@@ -1,14 +1,14 @@
 package org.pstale.app;
 
+import org.pstale.asset.loader.FileLocator;
 import org.pstale.asset.loader.SmdLoader;
+import org.pstale.asset.loader.InxLoader;
 
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.ScreenshotAppState;
-import com.jme3.asset.maxase.AseLoader;
-import com.jme3.asset.maxase.FileLocator;
 import com.jme3.audio.plugins.WAVLoader;
 import com.jme3.font.BitmapFont;
 import com.jme3.input.MouseInput;
@@ -29,8 +29,8 @@ public class FieldApp extends SimpleApplication {
 	
 	@Override
 	public void simpleInitApp() {
-		assetManager.registerLoader(AseLoader.class, "ase");
-		assetManager.registerLoader(SmdLoader.class, "inx", "smd", "smb");
+		assetManager.registerLoader(SmdLoader.class, "smd", "smb");
+		assetManager.registerLoader(InxLoader.class, "inx");
 		assetManager.registerLoader(WAVLoader.class, "bgm");
 		assetManager.registerLocator("/", FileLocator.class);
 		assetManager.registerLocator("assets", FileLocator.class);
@@ -44,6 +44,7 @@ public class FieldApp extends SimpleApplication {
 		}
 		
 		LoadingAppState.SERVER_ROOT = settings.getString("ServerRoot");
+		LoadingAppState.CHECK_SERVER = settings.getBoolean("CheckServer");
 		
 		/**
 		 * 是否使用灯光、法线

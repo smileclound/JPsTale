@@ -8,12 +8,12 @@ import com.jme3.asset.CloneableAssetProcessor;
 import com.jme3.asset.cache.AssetCache;
 import com.jme3.asset.cache.WeakRefAssetCache;
 
-public class SmdKey extends AssetKey<Object> {
+public class InxKey extends AssetKey<Object> {
 
 	SMDTYPE type;
 	PAT3D bone;
 
-	public SmdKey(String name, SMDTYPE type) {
+	public InxKey(String name, SMDTYPE type) {
 		super(name);
 		this.type = type;
 	}
@@ -38,10 +38,10 @@ public class SmdKey extends AssetKey<Object> {
 
 	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof SmdKey))
+		if (!(other instanceof InxKey))
 			return false;
 
-		SmdKey key = (SmdKey) other;
+		InxKey key = (InxKey) other;
 		if (!name.equals(key.name))
 			return false;
 
