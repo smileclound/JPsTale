@@ -3,3 +3,6 @@
 config.properties
 /debug.log*
 /models
+/map.png
+/f.png
+/tri.png

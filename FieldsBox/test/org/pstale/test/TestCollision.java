@@ -110,7 +110,7 @@ public class TestCollision extends TestBase {
 		/**
 		 * 地形的可视部分
 		 */
-		String model = "Field/forest/fore-1.smd";
+		String model = "Field/forest/fore-2.smd";
 		visual = (Node)assetManager.loadAsset(new SmdKey(model, STAGE3D_VISUAL));
 		visual.scale(scale);
 		rootNode.attachChild(visual);
@@ -187,8 +187,10 @@ public class TestCollision extends TestBase {
 			} else if (name.equals(DEBUG) && isPressed) {
 				if (bullet.isDebugEnabled()) {
 					bullet.setDebugEnabled(false);
+					rootNode.attachChild(visual);
 				} else {
 					bullet.setDebugEnabled(true);
+					rootNode.detachChild(visual);
 				}
 			} else if (name.equals(CHASE) && isPressed)  {
 				if (chaseCamera.isEnabled()) {
@@ -271,7 +273,7 @@ public class TestCollision extends TestBase {
 	 * @param orgin 原点
 	 * @return
 	 */
-	CollisionResult getCollisionResult(Vector3f orgin) {
+	private CollisionResult getCollisionResult(Vector3f orgin) {
 		ray.setOrigin(orgin);
 		results.clear();
 		mesh.collideWith(ray, Matrix4f.IDENTITY, mesh.getBound(), results);
@@ -307,10 +309,6 @@ public class TestCollision extends TestBase {
 		}
 	}
 	
-	public void debug(Boolean debug) {
-		bullet.setDebugEnabled(debug);
-	}
-
 	public static void main(String[] args) {
 		TestCollision app = new TestCollision();
 		app.start();

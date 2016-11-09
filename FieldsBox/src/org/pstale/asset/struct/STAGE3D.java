@@ -41,7 +41,11 @@ public class STAGE3D extends Flyweight {
 
 	// WORD *lpwAreaBuff;
 	int wAreaSize;
-	// RECT StageMapRect;// top bottom right left 4个整数
+	// RECT StageMapRect;// left top right bottom 4个整数
+	public int left;
+	public int top;
+	public int right;
+	public int bottom;
 
 	// ////////////////
 	// 这个整数用来记录TexLink在文件中的地址
@@ -91,10 +95,10 @@ public class STAGE3D extends Flyweight {
 
 		// 下列数值是地图的边缘，x,z平面的矩形。矩形的边长被放大了256倍
 		// sizeof(RECT) == 16
-		in.readInt();// minX
-		in.readInt();// minY
-		in.readInt();// maxX
-		in.readInt();// maxY
+		left = in.readInt();// minX
+		top = in.readInt();// minY
+		right = in.readInt();// maxX
+		bottom = in.readInt();// maxY
 	}
 
 	/**
