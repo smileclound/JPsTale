@@ -104,7 +104,7 @@ public class ModelFactory {
 	
 	public static Node loadNPC(final String name) {
 		String inx = changeName(name, "inx");
-		return (Node)assetManager.loadAsset(inx);
+		return (Node)assetManager.loadAsset(new SmdKey(inx, null));
 	}
 	
 	/**

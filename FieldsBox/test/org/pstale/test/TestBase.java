@@ -1,5 +1,7 @@
 package org.pstale.test;
 
+import java.io.File;
+
 import org.pstale.app.ModelFactory;
 import org.pstale.asset.loader.FileLocator;
 import org.pstale.asset.loader.InxLoader;
@@ -24,7 +26,11 @@ public abstract class TestBase extends SimpleApplication {
 		
 		// 注册模型文件的路径
 		assetManager.registerLocator("/", FileLocator.class);
-		assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
+		if (new File("I:/game/PTCN-RPT1.0").exists()) {
+			assetManager.registerLocator("I:/game/PTCN-RPT1.0", FileLocator.class);
+		} else {
+			assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
+		}
 
 		// 注册模型工厂
 		ModelFactory.setAssetManager(assetManager);
