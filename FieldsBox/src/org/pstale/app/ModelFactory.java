@@ -1,14 +1,9 @@
 package org.pstale.app;
 
-import static org.pstale.asset.loader.SMDTYPE.INX;
-import static org.pstale.asset.loader.SMDTYPE.PAT3D;
-import static org.pstale.asset.loader.SMDTYPE.PAT3D_BIP;
-import static org.pstale.asset.loader.SMDTYPE.STAGE3D;
-import static org.pstale.asset.loader.SMDTYPE.STAGE3D_SOLID;
+import static org.pstale.asset.loader.SMDTYPE.*;
 
 import org.apache.log4j.Logger;
 import org.pstale.asset.loader.SmdKey;
-import org.pstale.asset.loader.InxKey;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -93,59 +88,39 @@ public class ModelFactory {
 	 * @throws Exception 
 	 */
 	public static Node loadStage3D(final String name) {
-		Node model = null;
-		
-		// 文件路径
-		String path = name;
-		if (path != null) {
-			path = path.replaceAll("\\\\", "/");
-		}
-		
-		int idx = path.lastIndexOf(".");
-		String smd = path.substring(0, idx) + ".smd";
-		try {
-			model = (Node)assetManager.loadAsset(new SmdKey(smd, STAGE3D));
-		} catch (Exception e) {
-			log.warn("加载"+smd+"失败", e);
-		}
-		
-		return model;
+		String smd = changeName(name, "smd");
+		return (Node)assetManager.loadAsset(new SmdKey(smd, STAGE3D_VISUAL));
 	}
 	
 	public static Mesh loadStage3DMesh(final String name) {
-		// 文件路径
-		String path = name;
-		if (path != null) {
-			path = path.replaceAll("\\\\", "/");
-		}
-		
-		int idx = path.lastIndexOf(".");
-		String smd = path.substring(0, idx) + ".smd";
-				
-		return (Mesh)assetManager.loadAsset(new SmdKey(smd, STAGE3D_SOLID));
+		String smd = changeName(name, "smd");
+		return (Mesh)assetManager.loadAsset(new SmdKey(smd, STAGE3D_COLLISION));
 	}
 	
 	public static Node loadStageObj(final String name, final boolean bip) {
-		String path = name;
-		if (path != null) {
-			path = path.replaceAll("\\\\", "/");
-		}
-		
-		int idx = path.lastIndexOf(".");
-		String smd = path.substring(0, idx) + ".smd";
-		
-		return (Node)assetManager.loadAsset(new SmdKey(smd, bip?PAT3D_BIP:PAT3D));
+		String smd = changeName(name, "smd");
+		return (Node)assetManager.loadAsset(new SmdKey(smd, bip?PAT3D_BIP:PAT3D_VISUAL));
 	}
 	
 	public static Node loadNPC(final String name) {
-		String path = name;
+		String inx = changeName(name, "inx");
+		return (Node)assetManager.loadAsset(inx);
+	}
+	
+	/**
+	 * 改变文件名后缀。
+	 * @param orgin
+	 * @param ext
+	 * @return
+	 */
+	public static String changeName(final String orgin, final String ext) {
+		String path = orgin;
 		if (path != null) {
 			path = path.replaceAll("\\\\", "/");
 		}
+		int idx = path.lastIndexOf(".") + 1;
+		String dest = path.substring(0, idx) + ext;
 		
-		int idx = path.lastIndexOf(".");
-		String smd = path.substring(0, idx) + ".inx";
-		
-		return (Node)assetManager.loadAsset(new InxKey(smd, INX));
+		return dest;
 	}
 }

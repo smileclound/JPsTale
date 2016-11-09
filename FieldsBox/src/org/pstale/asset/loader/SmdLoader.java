@@ -12,6 +12,7 @@ import org.pstale.asset.struct.MATRIX;
 import org.pstale.asset.struct.OBJ3D;
 import org.pstale.asset.struct.PAT3D;
 import org.pstale.asset.struct.STAGE3D;
+import org.pstale.asset.struct.STAGE_FACE;
 import org.pstale.asset.struct.TEXLINK;
 import org.pstale.asset.struct.TM_POS;
 import org.pstale.asset.struct.TM_ROT;
@@ -45,6 +46,7 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.LittleEndien;
+import com.jme3.util.TempVars;
 
 /**
  * 精灵场景加载器
@@ -66,9 +68,9 @@ public class SmdLoader implements AssetLoader {
 	public static boolean USE_LIGHT = false;
 
 	// 是否使用OPENGL坐标系
-	boolean OPEN_GL_AXIS = true;
+	public static boolean OPEN_GL_AXIS = true;
 	// 是否打印动画日志
-	boolean LOG_ANIMATION = false;
+	public static boolean LOG_ANIMATION = false;
 
 	/**
 	 * 动画的颜色要比别的模型亮一点点。
@@ -120,22 +122,24 @@ public class SmdLoader implements AssetLoader {
 		 */
 		log.debug("模型文件:" + key.getName());
 		switch (key.type) {
-		case STAGE3D: {// 主地图
-			LittleEndien in = new LittleEndien(assetInfo.openStream());
+		case STAGE3D: {// 直接返回STAGE3D对象
 			STAGE3D stage3D = new STAGE3D();
-			stage3D.loadFile(in);
+			stage3D.loadFile(new LittleEndien(assetInfo.openStream()));
+			return stage3D;
+		}
+		case STAGE3D_VISUAL: {// 返回STAGE3D的可视部分
+			STAGE3D stage3D = new STAGE3D();
+			stage3D.loadFile(new LittleEndien(assetInfo.openStream()));
 			return buildNode(stage3D);
 		}
-		case STAGE3D_SOLID: {// 地图网格
-			LittleEndien in = new LittleEndien(assetInfo.openStream());
+		case STAGE3D_COLLISION: {// 返回STAGE3D中参加碰撞检测的网格
 			STAGE3D stage3D = new STAGE3D();
-			stage3D.loadFile(in);
-			return stage3D.buildSolidMesh();
+			stage3D.loadFile(new LittleEndien(assetInfo.openStream()));
+			return buildCollisionMesh(stage3D);
 		}
-		case BONE: {
-			LittleEndien in = new LittleEndien(assetInfo.openStream());
+		case PAT3D: {// 直接返回PAT3D对象
 			PAT3D bone = new PAT3D();
-			bone.loadFile(in, null, null);
+			bone.loadFile(new LittleEndien(assetInfo.openStream()), null, null);
 			return bone;
 		}
 		case PAT3D_BIP: {// 有动画的舞台物体
@@ -144,7 +148,7 @@ public class SmdLoader implements AssetLoader {
 			int n = smbFile.lastIndexOf(".");
 			String str = smbFile.substring(0, n);
 			smbFile = str + ".smb";
-			PAT3D bone = (PAT3D) manager.loadAsset(new SmdKey(smbFile, SMDTYPE.BONE));
+			PAT3D bone = (PAT3D) manager.loadAsset(new SmdKey(smbFile, SMDTYPE.PAT3D));
 
 			// 再加载smd文件
 			key = (SmdKey)assetInfo.getKey();
@@ -153,7 +157,7 @@ public class SmdLoader implements AssetLoader {
 			pat.loadFile(in, null, bone);
 			return buildNode(pat);
 		}
-		case PAT3D: {// 舞台物体，无动画
+		case PAT3D_VISUAL: {// 舞台物体，无动画
 			LittleEndien in = new LittleEndien(assetInfo.openStream());
 			PAT3D pat = new PAT3D();
 			pat.loadFile(in, null, key.getBone());
@@ -405,7 +409,7 @@ public class SmdLoader implements AssetLoader {
 	 * @param ske
 	 * @return
 	 */
-	public Mesh buildMesh(OBJ3D obj, int mat_id, Skeleton ske) {
+	private Mesh buildMesh(OBJ3D obj, int mat_id, Skeleton ske) {
 		Mesh mesh = new Mesh();
 
 		// 统计使用这个材质的面数
@@ -531,7 +535,7 @@ public class SmdLoader implements AssetLoader {
 	 * @param res3
 	 * @param tm
 	 */
-	public Vector3f mult(long res1, long res2, long res3, MATRIX tm) {
+	private Vector3f mult(long res1, long res2, long res3, MATRIX tm) {
 		long v1 = -((res2 * tm._33 * tm._21 - res2 * tm._23 * tm._31 - res1
 				* tm._33 * tm._22 + res1 * tm._23 * tm._32 - res3 * tm._21
 				* tm._32 + res3 * tm._31 * tm._22 + tm._43 * tm._21
@@ -574,7 +578,7 @@ public class SmdLoader implements AssetLoader {
 		}
 	}
 
-	public void invertPoint(OBJ3D obj) {
+	private void invertPoint(OBJ3D obj) {
 
 		for (int i = 0; i < obj.nVertex; i++) {
 			if (obj.Physique != null) {
@@ -589,13 +593,13 @@ public class SmdLoader implements AssetLoader {
 	
 	
 	/************************************************
-	 * PAT3D FIXME
+	 * PAT3D
 	 */
 	
 	/**
 	 * 生成骨骼
 	 */
-	Skeleton buildSkeleton(PAT3D pat) {
+	private Skeleton buildSkeleton(PAT3D pat) {
 
 		HashMap<String, Bone> boneMap = new HashMap<String, Bone>();
 		Bone[] bones = new Bone[pat.nObj3d];
@@ -608,17 +612,14 @@ public class SmdLoader implements AssetLoader {
 
 			// 设置初始POSE
 			if (OPEN_GL_AXIS) {
-				Vector3f translation = new Vector3f(-obj.py, obj.pz,
-						-obj.px);
-				Quaternion rotation = new Quaternion(-obj.qy, obj.qz,
-						-obj.qx, -obj.qw);
+				Vector3f translation = new Vector3f(-obj.py, obj.pz, -obj.px);
+				Quaternion rotation = new Quaternion(-obj.qy, obj.qz, -obj.qx, -obj.qw);
 				Vector3f scale = new Vector3f(obj.sy, obj.sz, obj.sx);
 
 				bone.setBindTransforms(translation, rotation, scale);
 			} else {
 				Vector3f translation = new Vector3f(obj.px, obj.py, obj.pz);
-				Quaternion rotation = new Quaternion(-obj.qx, -obj.qy,
-						-obj.qz, obj.qw);
+				Quaternion rotation = new Quaternion(-obj.qx, -obj.qy, -obj.qz, obj.qw);
 				Vector3f scale = new Vector3f(obj.sx, obj.sy, obj.sz);
 
 				bone.setBindTransforms(translation, rotation, scale);
@@ -639,11 +640,12 @@ public class SmdLoader implements AssetLoader {
 	}
 
 	/**
-	 * 生成骨骼
+	 * 生成骨骼动画
+	 * FIXME
 	 * 
 	 * @param ske
 	 */
-	Animation buildAnimation(PAT3D pat, Skeleton ske) {
+	private Animation buildAnimation(PAT3D pat, Skeleton ske) {
 
 		// 统计帧数
 		int maxFrame = 0;
@@ -667,8 +669,7 @@ public class SmdLoader implements AssetLoader {
 
 			if (LOG_ANIMATION) {
 				log.debug(obj.NodeName + " 最大帧=" + maxFrame);
-				log.debug("TmPos:" + obj.TmPosCnt + " TmRot:"
-						+ obj.TmRotCnt + " TmScl:" + obj.TmScaleCnt);
+				log.debug("TmPos:" + obj.TmPosCnt + " TmRot:" + obj.TmRotCnt + " TmScl:" + obj.TmScaleCnt);
 			}
 		}
 
@@ -710,8 +711,7 @@ public class SmdLoader implements AssetLoader {
 				TM_ROT rot = obj.TmRot[j];
 				Keyframe k = getOrMakeKeyframe(keyframes, rot.frame);
 				if (OPEN_GL_AXIS) {
-					k.rotation = new Quaternion(-rot.y, rot.z, -rot.x,
-							-rot.w);
+					k.rotation = new Quaternion(-rot.y, rot.z, -rot.x, -rot.w);
 				} else {
 					k.rotation = new Quaternion(rot.x, rot.y, rot.z, rot.w);
 				}
@@ -902,7 +902,7 @@ public class SmdLoader implements AssetLoader {
 	}
 	
 	/**********************************
-	 * STAGE3D TODO
+	 * STAGE3D
 	 */
 	
 	/**
@@ -916,7 +916,7 @@ public class SmdLoader implements AssetLoader {
 		Vector3f[] orginNormal = null;
 		if (USE_LIGHT) {
 			// 为了让表面平滑光照，先基于原来的面和顶点计算一次法向量。
-			orginNormal = stage.computeOrginNormals();
+			orginNormal = computeOrginNormals(stage);
 		}
 
 		int materialCount = stage.materialGroup.materialCount;
@@ -1041,6 +1041,70 @@ public class SmdLoader implements AssetLoader {
 		return rootNode;
 	}
 	
+	/**
+	 * 根据原有的面，计算每个顶点的法向量。
+	 * 
+	 * @return
+	 */
+	private Vector3f[] computeOrginNormals(STAGE3D stage) {
+		TempVars tmp = TempVars.get();
+
+		Vector3f A;// 三角形的第1个点
+		Vector3f B;// 三角形的第2个点
+		Vector3f C;// 三角形的第3个点
+
+		Vector3f vAB = tmp.vect1;
+		Vector3f vAC = tmp.vect2;
+		Vector3f n = tmp.vect4;
+
+		// Here we allocate all the memory we need to calculate the normals
+		Vector3f[] tempNormals = new Vector3f[stage.nFace];
+		Vector3f[] normals = new Vector3f[stage.nVertex];
+
+		for (int i = 0; i < stage.nFace; i++) {
+			A = stage.Vertex[stage.Face[i].v[0]].v;
+			B = stage.Vertex[stage.Face[i].v[1]].v;
+			C = stage.Vertex[stage.Face[i].v[2]].v;
+
+			vAB = B.subtract(A, vAB);
+			vAC = C.subtract(A, vAC);
+			n = vAB.cross(vAC, n);
+
+			tempNormals[i] = n.normalize();
+		}
+
+		Vector3f sum = tmp.vect4;
+		int shared = 0;
+
+		for (int i = 0; i < stage.nVertex; i++) {
+			// 统计每个点被那些面共用。
+			for (int j = 0; j < stage.nFace; j++) {
+				if (stage.Face[j].v[0] == i || stage.Face[j].v[1] == i
+						|| stage.Face[j].v[2] == i) {
+					sum.addLocal(tempNormals[j]);
+					shared++;
+				}
+			}
+
+			// 求均值
+			normals[i] = sum.divideLocal((shared)).normalize();
+
+			sum.zero(); // Reset the sum
+			shared = 0; // Reset the shared
+		}
+
+		tmp.release();
+		return normals;
+	}
+	
+	/**
+	 * 由于网格中不同的面所应用的材质不同，需要根据材质来对网格进行分组，将相同材质的面单独取出来，做成一个独立的网格。
+	 * @param stage STAGE3D对象
+	 * @param size 面数
+	 * @param mat_id 材质编号
+	 * @param orginNormal 法线
+	 * @return
+	 */
 	private Mesh buildMesh(STAGE3D stage, int size, int mat_id, Vector3f[] orginNormal) {
 
 		Vector3f[] position = new Vector3f[size * 3];
@@ -1108,6 +1172,116 @@ public class SmdLoader implements AssetLoader {
 		mesh.setStatic();
 		mesh.updateBound();
 		mesh.updateCounts();
+
+		return mesh;
+	}
+	
+	/**
+	 * 生成碰撞网格：将透明的、不参与碰撞检测的面统统裁剪掉，只保留参于碰撞检测的面。
+	 * 
+	 * @return
+	 */
+	private Mesh buildCollisionMesh(STAGE3D stage) {
+		Mesh mesh = new Mesh();
+
+		int materialCount = stage.materialGroup.materialCount;
+		/**
+		 * 根据材质的特诊来筛选参加碰撞检测的物体， 将被忽略的材质设置成null，作为一种标记。
+		 */
+		MATERIAL m;// 临时变量
+		for (int mat_id = 0; mat_id < materialCount; mat_id++) {
+			m = stage.materials[mat_id];
+
+			if (m.MeshState == 1 && m.Transparency < 0.2f && m.BlendType != 4) {
+				continue;
+			}
+
+			if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0) {
+				// 这些面要参加碰撞检测
+				continue;
+			}
+
+			if ((m.UseState & 0x07FF) != 0) {
+				// 这些面被设置为可以直接穿透
+				stage.materials[mat_id] = null;
+				continue;
+			}
+			
+			if ( m.BlendType == 1 || m.BlendType == 4) {// ALPHA混色
+				stage.materials[mat_id] = null;
+				continue;
+			}
+
+			if (m.MapOpacity != 0 || m.Transparency != 0f) {
+				// 透明的面不参加碰撞检测
+				stage.materials[mat_id] = null;
+				continue;
+			}
+
+			if (m.TextureType == 1) {
+				// 帧动画也不纳入碰撞检测。比如火焰、飞舞的光点。
+				stage.materials[mat_id] = null;
+				continue;
+			}
+
+		}
+
+		/**
+		 * 统计有多少个要参加碰撞检测的面。
+		 */
+		int loc[] = new int[stage.nVertex];
+		for (int i = 0; i < stage.nVertex; i++) {
+			loc[i] = -1;
+		}
+
+		int fSize = 0;
+		for (int i = 0; i < stage.nFace; i++) {
+			STAGE_FACE face = stage.Face[i];
+			if (stage.materials[face.v[3]] != null) {
+				loc[face.v[0]] = face.v[0];
+				loc[face.v[1]] = face.v[1];
+				loc[face.v[2]] = face.v[2];
+
+				fSize++;
+			}
+		}
+
+		int vSize = 0;
+		for (int i = 0; i < stage.nVertex; i++) {
+			if (loc[i] > -1) {
+				vSize++;
+			}
+		}
+
+		// 记录新的顶点编号
+		Vector3f[] v = new Vector3f[vSize];
+		vSize = 0;
+		for (int i = 0; i < stage.nVertex; i++) {
+			if (loc[i] > -1) {
+				v[vSize] = stage.Vertex[i].v;
+				loc[i] = vSize;
+				vSize++;
+			}
+		}
+
+		// 记录新的顶点索引号
+		int[] f = new int[fSize * 3];
+		fSize = 0;
+		for (int i = 0; i < stage.nFace; i++) {
+			STAGE_FACE face = stage.Face[i];
+			if (stage.materials[face.v[3]] != null) {
+				f[fSize * 3] = loc[face.v[0]];
+				f[fSize * 3 + 1] = loc[face.v[1]];
+				f[fSize * 3 + 2] = loc[face.v[2]];
+				fSize++;
+			}
+		}
+
+		mesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(v));
+		mesh.setBuffer(Type.Index, 3, BufferUtils.createIntBuffer(f));
+
+		mesh.updateBound();
+		mesh.setStatic();
 
 		return mesh;
 	}

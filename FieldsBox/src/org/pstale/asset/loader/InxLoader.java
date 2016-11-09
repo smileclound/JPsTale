@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.pstale.asset.struct.PAT3D;
 
 import com.jme3.animation.Animation;
 import com.jme3.asset.AssetInfo;
@@ -26,58 +27,18 @@ public class InxLoader extends ByteReader implements AssetLoader {
 
 	static Logger log = Logger.getLogger(InxLoader.class);
 
-	public InxLoader() {
-	}
-
-	public AssetManager manager = null;
-	public AssetKey<?> key = null;
-
 	@Override
-	public Object load(AssetInfo assetInfo) throws IOException {
-		key = assetInfo.getKey();
-		manager = assetInfo.getManager();
-
-		// 确认用户使用了SmdKey
-		if (!(key instanceof InxKey)) {
-			log.error("用户未使用SmdKey来加载模型:" + key.getName());
-			throw new RuntimeException("请使用SmdKey来加载精灵的smd模型。");
-		}
-
-		/**
-		 * 若用户使用了SmdKey，就根据type来决定采用哪种方式来加载模型。
-		 */
-		InxKey smdkey = (InxKey) key;
-		SMDTYPE type = smdkey.type;
-		switch (type) {
-		case INX: {
-			String inx = key.getName().toLowerCase();
-			// inx文件
-			if (inx.endsWith("inx")) {
-				// 文件长度不对
-				if (assetInfo.openStream().available() <= 67083) {
-					log.warn("Error: can't read inx-file (invalid file content)");
-					return null;
-				}
-
-				getByteBuffer(assetInfo.openStream());
-
-				return parseInx();
-			}
-
+	public Object load(AssetInfo inso) throws IOException {
+		// 文件长度不对
+		if (inso.openStream().available() <= 67083) {
+			log.warn("Error: can't read inx-file (invalid file content)");
 			return null;
 		}
 
-		default:
-			return null;
-		}
-	}
-
-	/**************************************************
-	 * 解析INX文件
-	 * 
-	 * @return
-	 */
-	private Object parseInx() {
+		AssetKey<?> key = inso.getKey();
+		AssetManager manager = inso.getManager();
+		
+		getByteBuffer(inso.openStream());
 
 		String smdFile = getString(64);
 		String smbFile = getString(64);
@@ -104,7 +65,7 @@ public class InxLoader extends ByteReader implements AssetLoader {
 			anim = readAnimFromNew();
 		}
 
-		org.pstale.asset.struct.PAT3D BipPattern = null;
+		PAT3D BipPattern = null;
 		// Read Animation from smb
 		if (smbFile.length() > 0) {
 			// 后缀名改为smb
@@ -112,7 +73,7 @@ public class InxLoader extends ByteReader implements AssetLoader {
 			String str = smbFile.substring(0, n);
 			smbFile = str + ".smb";
 
-			BipPattern = (org.pstale.asset.struct.PAT3D) manager.loadAsset(new SmdKey(key.getFolder() + smbFile, SMDTYPE.BONE));
+			BipPattern = (PAT3D) manager.loadAsset(new SmdKey(key.getFolder() + smbFile, SMDTYPE.PAT3D));
 		}
 
 		// Read Mesh from smd
@@ -121,7 +82,7 @@ public class InxLoader extends ByteReader implements AssetLoader {
 		String str = smdFile.substring(0, n);
 		smdFile = str + ".smd";
 
-		SmdKey smdKey = new SmdKey(key.getFolder() + smdFile, SMDTYPE.PAT3D);
+		SmdKey smdKey = new SmdKey(key.getFolder() + smdFile, SMDTYPE.PAT3D_VISUAL);
 		smdKey.setBone(BipPattern);
 
 		return manager.loadAsset(smdKey);
@@ -141,6 +102,7 @@ public class InxLoader extends ByteReader implements AssetLoader {
 
 		sharedInxFile = changeName(sharedInxFile);
 
+		log.debug("使用共享的动画数据:" + sharedInxFile);
 		// 读取共享的动画
 		File file = new File(sharedInxFile);
 		if (file.exists()) {
@@ -149,9 +111,7 @@ public class InxLoader extends ByteReader implements AssetLoader {
 				int length = inputStream.available();
 
 				if (length <= 67083) {
-					System.err
-							.println("Error: can't read inx-file (invalid file content):"
-									+ length);
+					log.warn("Error: can't read inx-file (invalid file content):" + length);
 				} else {
 					getByteBuffer(inputStream);
 

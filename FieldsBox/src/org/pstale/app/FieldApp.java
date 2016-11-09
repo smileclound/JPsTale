@@ -1,8 +1,9 @@
 package org.pstale.app;
 
 import org.pstale.asset.loader.FileLocator;
-import org.pstale.asset.loader.SmdLoader;
 import org.pstale.asset.loader.InxLoader;
+import org.pstale.asset.loader.SmdLoader;
+import org.pstale.gui.Style;
 
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.FlyCamAppState;
@@ -10,11 +11,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.audio.plugins.WAVLoader;
-import com.jme3.font.BitmapFont;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.simsilica.lemur.GuiGlobals;
-import com.simsilica.lemur.style.BaseStyles;
 
 public class FieldApp extends SimpleApplication {
 
@@ -53,21 +51,15 @@ public class FieldApp extends SimpleApplication {
 		SmdLoader.USE_LIGHT = useLight;
 		LightState.USE_LIGHT = useLight;
 		
-		// 设置模型工厂
+		/**
+		 * 设置模型工厂
+		 */
 		ModelFactory.setAssetManager(assetManager);
 		
-		// Initialize the Lemur helper instance
-		GuiGlobals.initialize(this);
-
-		// Load the 'glass' style
-		BaseStyles.loadGlassStyle();
-
-		// Set 'glass' as the default style when not specified
-		GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
-		
-		// 设置字体
-		BitmapFont font = assetManager.loadFont("Font/field.fnt");
-		GuiGlobals.getInstance().getStyles().setDefault(font);
+		/**
+		 * 初始化Lemur样式
+		 */
+		Style.initStyle(this);
 
 		flyCam.setMoveSpeed(50);
 		flyCam.setDragToRotate(true);

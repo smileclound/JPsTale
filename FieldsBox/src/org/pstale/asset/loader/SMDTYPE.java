@@ -13,15 +13,19 @@ public enum SMDTYPE {
 	/**
 	 * 从地图数据中单独取出网格数据。
 	 */
-	STAGE3D_SOLID,
+	STAGE3D_COLLISION,
+	/**
+	 * 从地图是中提取出可视部分。
+	 */
+	STAGE3D_VISUAL,
 	/**
 	 * 这种文件仅存储了PAT3D结构体中的骨骼动画，不包含任何材质。 后缀名为smb
 	 */
-	BONE,
+	PAT3D,
 	/**
 	 * 这种文件用于存储了角色、怪物、NPC、舞台物体的数据，包含了网格、材质等数据。
 	 */
-	PAT3D,
+	PAT3D_VISUAL,
 	/**
 	 * 这种文件和上一种类似，但是包含骨骼。 若文件名为 Field/iron/i2-bip04_ani.smd，骨骼文件为
 	 * Field/iron/i2-bip04_ani.smb，2个文件只有后缀名不同，要先加载BONE，然后再加载PAT3D才能正确绑定骨骼。
