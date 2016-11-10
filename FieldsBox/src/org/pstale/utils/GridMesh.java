@@ -144,7 +144,8 @@ public class GridMesh {
 						if ((p[0].x == px && p[0].y == py) ||
 								(p[1].x == px && p[1].y == py) || 
 								(p[2].x == px && p[2].y == py) ||
-								intersect(tri[0], tri[1], tri[2], box)) {
+								intersect(tri[0], tri[1], tri[2], box) ||
+								intersect(tri, box)) {
 							
 							if (area[py][px] == null) {
 								area[py][px] = new FaceList();
@@ -315,6 +316,71 @@ public class GridMesh {
 
 		return u + v <= 1;
 	}
+	
+
+	/**
+	 * 判断矩形和三角形相交的另一种条件。
+	 * 如果它们任意2条边相交，则它们相交
+	 * @param tri
+	 * @param box
+	 * @return
+	 */
+	private boolean intersect(Vector2f[] tri, Vector2f[] box) {
+		Vector2f a = new Vector2f();
+		Vector2f b = new Vector2f();
+		Vector2f c = new Vector2f();
+		Vector2f d = new Vector2f();
+		for(int i=0; i<3; i++) {
+			
+			a.set(tri[i]);
+			if (i == 2) {
+				b.set(tri[0]);
+			} else {
+				b.set(tri[i+1]);
+			}
+			
+			for(int j=0; j<4; j++) {
+				
+				c.set(box[j]);
+				if (j == 3) {
+					d.set(box[0]);
+				} else {
+					d.set(box[j+1]);
+				}
+				
+				if (lineCross(a, b, c, d))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * (a, b)为一条线段两端点 (c, d)为另一条线段的两端点
+	 * 相交返回true, 不相交返回false
+	 */
+	private boolean lineCross(Vector2f a, Vector2f b, Vector2f c, Vector2f d) {
+		double delta = determinant(b.x-a.x, c.x-d.x, b.y-a.y, c.y-d.y);  
+		if ( delta<=(1e-6) && delta>=-(1e-6) )  // delta=0，表示两线段重合或平行  
+			return false;
+		
+		double namenda = determinant(c.x-a.x, c.x-d.x, c.y-a.y, c.y-d.y) / delta;
+		if ( namenda>1 || namenda<0 )
+			return false;
+		
+		double miu = determinant(b.x-a.x, c.x-a.x, b.y-a.y, c.y-a.y) / delta;
+		if ( miu>1 || miu<0 )
+			return false;
+		return true;
+	}
+	
+	/**
+	 * 行列式 
+	 */
+	private double determinant(double v1, double v2, double v3, double v4) {
+		return v1 * v4 - v2 * v3;
+	}
+	
 
 	public Vector3f getMax() {
 		return max;
