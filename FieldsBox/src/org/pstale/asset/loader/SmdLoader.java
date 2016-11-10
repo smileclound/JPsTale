@@ -1192,7 +1192,7 @@ public class SmdLoader implements AssetLoader {
 		for (int mat_id = 0; mat_id < materialCount; mat_id++) {
 			m = stage.materials[mat_id];
 
-			if (m.MeshState == 1 && m.Transparency < 0.2f && m.BlendType != 4) {
+			if ((m.MeshState & 0x0001)== 1 && m.Transparency < 0.2f && m.BlendType != 4) {
 				continue;
 			}
 
