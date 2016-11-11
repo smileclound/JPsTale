@@ -1,0 +1,293 @@
+10065720: 'UPDATE %s SET RegistDay=',27h,'%s',27h,'  WHERE RNo=%d AND UserID=',27h,'%s',27h,' AND GPCode=',27h,'%s',27h,' AND ServerName=',27h,'%s',27h,' AND IP=',27h,'%s',27h,' ',0
+100657A8: 'INSERT INTO %s (RNo, UserID, GPCode, DisuseDay, UsePeriod, ServerName, IP, Active, SNo)  VALUES (%d, ',27h,'%s',27h,',',27h,'%s',27h,', ',27h,'%s',27h,', NULL, ',27h,'%s',27h,', ',27h,'%s',27h,', 2, ',27h,'%s',27h,')',0
+10065858: 'INSERT INTO %s (RNo, UserID, GPCode, DisuseDay, UsePeriod, ServerName, IP, Active, SNo)  VALUES (%d, ',27h,'%s',27h,',',27h,'%s',27h,', NULL, %d, ',27h,'%s',27h,', ',27h,'%s',27h,', 2, ',27h,'%s',27h,')',0
+10065920: 'INSERT INTO %s (RNo, UserID, GPCode, DisuseDay, UsePeriod, ServerName, IP, Active, SNo)  VALUES (%d, ',27h,'%s',27h,',',27h,'%s',27h,', ',27h,'%s',27h,', NULL, ',27h,'%s',27h,', ',27h,'%s',27h,', 1, ',27h,'%s',27h,')',0
+100659D0: 'INSERT INTO %s (RNo, UserID, GPCode, DisuseDay, UsePeriod, ServerName, IP, Active, SNo)  VALUES (%d, ',27h,'%s',27h,',',27h,'%s',27h,', NULL, %d, ',27h,'%s',27h,', ',27h,'%s',27h,', 1, ',27h,'%s',27h,')',0
+10065BD0: 'INSERT INTO ClanTicket (userid, ChName, GPCode, IP, ServerName, LogonTime, RNo, SNo)   values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'%s',27h,', %d, ',27h,'%s',27h,') ',0
+10065C9C: 'DELETE FROM ClanTicket WHERE userid=',27h,'%s',27h,' AND ChName=',27h,'%s',27h,' ',0
+10065CE8: 'INSERT INTO CUseUser (userid, GPCode, IP, ServerName, StartDay, RNo, SNo)   values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'%s',27h,', %d, ',27h,'%s',27h,') ',0
+10065D98: 'SELECT RNo FROM CUseUser  where userid=',27h,'%s',27h,' and GPCode=',27h,'%s',27h,' AND ServerName=',27h,'%s',27h,' AND Rno=%d ',0
+10065E08: 'SELECT Top 1 RNo FROM IPList  where IP=',27h,'%s',27h,' ORDER BY INO DESC ',0
+10065E54: 'PMNo',0
+10065E5C: 'SELECT Top 1 PMNo FROM IPList  where IP=',27h,'%s',27h,' ',0
+10065E94: 'RNoCount',0
+10065EA0: 'SELECT count(RNo) As RNoCount FROM CUseUser  where Rno=%d ',0
+10065EF0: 'SELECT SNo FROM CUseUser  where userid=',27h,'%s',27h,' and GPCode=',27h,'%s',27h,' AND ServerName=',27h,'%s',27h,' AND Rno=%d ',0
+10065F64: 'ServerName',0
+10065F74: 'GPCode',0
+10065F80: 'SELECT GPCode, ServerName, IP, RNo, SNo FROM CUseUser where userid=',27h,'%s',27h,' ',0
+10065FD8: 'DELETE FROM CUseUser  WHERE userid=',27h,'%s',27h,' AND GPCode=',27h,'%s',27h,' AND ServerName=',27h,'%s',27h,' ',0
+10066038: 'UPDATE CUseUser SET GPCode=',27h,'%s',27h,', IP=',27h,'%s',27h,', ServerName=',27h,'%s',27h,', StartDay=',27h,'%s',27h,', RNo=%d, SNo=',27h,'%s',27h,'  WHERE userid=',27h,'%s',27h,' ',0
+100660C0: 'UPDATE CUseUser SET GPCode=',27h,'%s',27h,', RNo=%d  WHERE userid=',27h,'%s',27h,' ',0
+10066108: 'SELECT RNo FROM CUseUser WHERE IP=',27h,'%s',27h,' AND Rno=%d ',0
+10066148: 'userid',0
+10066150: 'SELECT TOP 1 userid, GPCode, IP, ServerName, SNo FROM CUseUser WHERE Rno=%d ',0
+100661AC: 'CurrentHUseUserSearchRNo [%d] ',0Dh,0Ah,0
+100661D4: 'CurrentHUseUserSearchRNo [%s] ',0Dh,0Ah,0
+10066200: 'SELECT TOP 1 Rno, userid, GPCode, IP, ServerName, SNo FROM HUseUser WHERE Rno=%d ',0
+10066268: 'SELECT RNo FROM CUseUser WHERE IP=',27h,'%s',27h,' AND Rno=%d AND userid=',27h,'%s',27h,' ',0
+100662B8: 'SELECT userid FROM CUseUser WHERE userid=',27h,'%s',27h,' ',0
+100662F0: 'AddIPCount',0
+10066300: 'IPCount',0
+1006630C: 'BonusIP',0
+10066318: 'IPAddress3',0
+10066328: 'IPAddress2',0
+10066338: 'IPAddress1',0
+10066348: 'MinNum',0
+10066350: 'SELECT userid, MinNum, GPCode, IPAddress1, IPAddress2, IPAddress3, BonusIP, IPCount, AddIPCount, PMNo FROM RegIPAddress WHERE RNo=%d ',0
+100663F0: 'UPDATE PCUseCount set Pcount=0 WHERE ServerName=',27h,'%s',27h,' ',0
+1006643C: 'DELETE FROM CUseUser WHERE ServerName=',27h,'%s',27h,' ',0
+10066478: 'select inuse from %s where userid=',27h,'%s',27h,' ',0
+100664A8: 'update %s set UsePeriod = UsePeriod - %d where userid = ',27h,'%s',27h,' and ServerName = ',27h,'%s',27h,' and GPCode = ',27h,'%s',27h,'  ',0
+10066548: 'SELECT UsePeriod, StartDay, EditDay FROM %s  WHERE userid = ',27h,'%s',27h,' AND ServerName = ',27h,'%s',27h,'  ',0
+100665B8: 'SELECT UsePeriod FROM %s  WHERE userid = ',27h,'%s',27h,' AND ServerName = ',27h,'%s',27h,' AND GPCode = ',27h,'%s',27h,'  ',0
+10066628: 'insert into %s (UserID,GPCode, ServerName, RegistDay, UsePeriod, IP ) values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', %d, ',27h,'%s',27h,')',0
+100666AC: 'UserUseTimeLog%s%02d',0
+100666C8: '%s ',0Dh,0Ah,0
+100666D0: 'update RegIPAddress set UsePeriod = UsePeriod - %d where RNo = %d and Active=1 ',0
+10066730: 'insert into %s(RNo, UserID,GPCode, ServerName, UsePeriod, IP, SNo ) values(%d, ',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', %d, ',27h,'%s',27h,', ',27h,'%s',27h,')',0
+100667E8: 'SELECT RNo, userid, GPCode, UsePeriod, RegistDay, DisuseDay FROM RegIPAddress  WHERE RNo = %d AND Active =',27h,'1',27h,' ',0
+10066870: 'SELECT GPCode, UsePeriod FROM RegIPAddress  WHERE  RNo =%d AND Active =',27h,'1',27h,' ',0
+100668D0: 'SELECT RNo, userid, GPCode, UsePeriod, RegistDay, DisuseDay, IPCount FROM RegIPAddress  WHERE (RNo IN  (SELECT   RNo  FROM  IPList  WHERE IP = ',27h,'%s',27h,' )) AND GPCode Like ',27h,'PTG-_T%%',27h,' AND Active =',27h,'1',27h,' ',0
+100669C0: 'SELECT RNo, userid, GPCode, UsePeriod, RegistDay, DisuseDay, IPCount FROM RegIPAddress  WHERE (RNo IN  (SELECT   RNo  FROM  IPList  WHERE IP = ',27h,'%s',27h,' )) AND GPCode Like ',27h,'PTG-_U%%',27h,' AND Active =',27h,'1',27h,' ',0
+10066AB0: ' SELECT RNo, userid, GPCode, UsePeriod, RegistDay, DisuseDay, IPCount FROM RegIPAddress  WHERE (RNo IN  (SELECT   RNo  FROM  IPList  WHERE IP = ',27h,'%s',27h,' )) AND GPCode Like ',27h,'PTG-_U%%',27h,' AND Active =',27h,'1',27h,' ',0
+10066BC8: 'SELECT DisuseDay, UsePeriod  FROM RegIPAddress  WHERE userid IN (  SELECT userid FROM RegIPaddress  WHERE Rno=%d ) AND active=',27h,'3',27h,'  AND GPCode like ',27h,'PTG-_T%%',27h,' ',0
+10066C88: 'SELECT DisuseDay, UsePeriod  FROM RegIPAddress  WHERE userid IN (  SELECT userid FROM RegIPaddress  WHERE Rno=%d ) AND active=',27h,'3',27h,'  AND GPCode like ',27h,'PTG-_U%%',27h,' ',0
+10066D98: 'insert into IPChangeLog(userid, MinNum,GPCode, IPAddress1, IPAddress2, IPAddress3, BonusIP, IPCount, AddIPCount, RegistDay, DisuseDay,  UsePeriod, Idx, EditDate, RNo, PMNo, PPMNo, Pid, Flag, Note, Status) values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',0
+10066EAC: 'insert into IPList(PMNo, RNo, IP) values(',27h,'%s',27h,', %d,',27h,'%s.%d',27h,' )',0
+10066EF4: 'insert into IPList(PMNo, RNo, IP) values(',27h,'%s',27h,', %d,',27h,'%s.%s',27h,' )',0
+10066F3C: 'DELETE FROM IPList WHERE RNo =%d ',0
+10066F68: 'UPDATE RegIPAddress SET Active=',27h,'1',27h,' WHERE userid=',27h,'%s',27h,' AND RNo =%d ',0
+10066FB8: 'UPDATE RegIPAddress SET Active=',27h,'1',27h,', DisuseDay=',27h,'%s',27h,' WHERE userid=',27h,'%s',27h,' AND RNo =%d ',0
+10067020: 'INSERT INTO PCUseCount (userid, RNo, Pcount, IPCount) Values (',27h,'%s',27h,', %d, 0, %d ) ',0
+10067084: 'DELETE FROM PCUseCount WHERE RNo =%d ',0
+100670B4: 'DELETE FROM RegIPAddress WHERE userid=',27h,'%s',27h,' AND RNo =%d ',0
+100670F8: 'UPDATE RegIPAddress SET Active=',27h,'1',27h,' WHERE userid=',27h,'%s',27h,'  AND RNo =%d ',0
+10067148: 'PCUseCountSearchResult [%d] [%d] ',0Dh,0Ah,0
+10067180: 'SELECT TOP 1 RNo, PCount, IPCount FROM PCUseCount where RNo=%d ',0
+100671D0: 'SELECT TOP 1 RNo, PCount, IPCount FROM PCUseCount where RNo =%d ',0
+10067220: 'SELECT TOP 1 RNo, PCount, IPCount FROM PCUseCount where userid =',27h,'%s',27h,' ',0
+10067278: 'INSERT INTO PCUseCount (userid, RNo, PCount, IPCount, ServerName)   values(',27h,'%s',27h,',%d, 1, %d, ',27h,'%s',27h,') ',0
+100672F0: 'UPDATE PCUseCount set PCount = PCount - 1  where RNo =%d ',0
+10067338: 'UPDATE PCUseCount set PCount = PCount + 1  where RNo =%d ',0
+10067380: 'UPDATE PCUseCount set PCount = PCount - 1, S20 = S20 -1  where RNo =%d ',0
+100673E8: 'UPDATE PCUseCount set PCount = PCount - 1, S19 = S19 -1  where RNo =%d ',0
+10067450: 'UPDATE PCUseCount set PCount = PCount - 1, S18 = S18 -1  where RNo =%d ',0
+100674B8: 'UPDATE PCUseCount set PCount = PCount - 1, S17 = S17 -1  where RNo =%d ',0
+10067510: 'UPDATE PCUseCount set PCount = PCount - 1, S16 = S16 -1  where RNo =%d ',0
+10067568: 'UPDATE PCUseCount set PCount = PCount - 1, S15 = S15 -1  where RNo =%d ',0
+100675C0: 'UPDATE PCUseCount set PCount = PCount - 1, S14 = S14 -1  where RNo =%d ',0
+10067618: 'UPDATE PCUseCount set PCount = PCount - 1, S13 = S13 -1  where RNo =%d ',0
+10067670: 'UPDATE PCUseCount set PCount = PCount - 1, S12 = S12 -1  where RNo =%d ',0
+100676C8: 'UPDATE PCUseCount set PCount = PCount - 1, S11 = S11 -1  where RNo =%d ',0
+10067720: 'UPDATE PCUseCount set PCount = PCount - 1, S09 = S09 -1  where RNo =%d ',0
+10067778: 'UPDATE PCUseCount set PCount = PCount - 1, S10 = S10 -1  where RNo =%d ',0
+100677D0: 'UPDATE PCUseCount set PCount = PCount - 1, S06 = S06 -1  where RNo =%d ',0
+10067828: 'UPDATE PCUseCount set PCount = PCount - 1, S05 = S05 -1  where RNo =%d ',0
+10067880: 'UPDATE PCUseCount set PCount = PCount - 1, S04 = S04 -1  where RNo =%d ',0
+100678D8: 'UPDATE PCUseCount set PCount = PCount - 1, S03 = S03 -1  where RNo =%d ',0
+10067930: 'UPDATE PCUseCount set PCount = PCount - 1, S02 = S02 -1  where RNo =%d ',0
+10067988: 'UPDATE PCUseCount set PCount = PCount - 1, S01 = S01 -1  where RNo =%d ',0
+100679E0: 'UPDATE PCUseCount set PCount = PCount + 1, S17 = S17 +1  where RNo =%d ',0
+10067A48: 'UPDATE PCUseCount set PCount = PCount + 1, S16 = S16 +1  where RNo =%d ',0
+10067AB0: 'UPDATE PCUseCount set PCount = PCount + 1, S15 = S15 +1  where RNo =%d ',0
+10067B18: 'UPDATE PCUseCount set PCount = PCount + 1, S14 = S14 +1  where RNo =%d ',0
+10067B78: 'UPDATE PCUseCount set PCount = PCount + 1, S13 = S13 +1  where RNo =%d ',0
+10067BD8: 'UPDATE PCUseCount set PCount = PCount + 1, S12 = S12 +1  where RNo =%d ',0
+10067C40: 'UPDATE PCUseCount set PCount = PCount + 1, S11 = S11 +1  where RNo =%d ',0
+10067CA0: 'Billing',0
+10067CB0: 'UPDATE PCUseCount set PCount = PCount + 1, S09 = S09 +1  where RNo =%d ',0
+10067D18: 'UPDATE PCUseCount set PCount = PCount + 1, S10 = S10 +1  where RNo =%d ',0
+10067D70: 'UPDATE PCUseCount set PCount = PCount + 1, S06 = S06 +1  where RNo =%d ',0
+10067DC8: 'UPDATE PCUseCount set PCount = PCount + 1, S05 = S05 +1  where RNo =%d ',0
+10067E20: 'UPDATE PCUseCount set PCount = PCount + 1, S04 = S04 +1  where RNo =%d ',0
+10067E78: 'UPDATE PCUseCount set PCount = PCount + 1, S03 = S03 +1  where RNo =%d ',0
+10067ED0: 'UPDATE PCUseCount set PCount = PCount + 1, S02 = S02 +1  where RNo =%d ',0
+10067F28: 'UPDATE PCUseCount set PCount = PCount + 1, S01 = S01 +1  where RNo =%d ',0
+10067F80: 'DELETE FROM PCUseCount WHERE RNo=%d ',0
+10067FB0: 'insert into %s(RNo, PCount, IP,  Flag) values(%d, %d,',27h,'%s',27h,', %d )',0
+10068038: 'insert into ServerUP (ServerName, UCount, RegistDay)  values(',27h,'%s',27h,',%d,',27h,'%s',27h,')',0
+1006829C: 'update %s set RNo =%d where userid = ',27h,'%s',27h,0
+100682D0: 'update %s set GPCode = ',27h,'%s',27h,', RegistDay = ',27h,'%s',27h,',  DisuseDay = NULL, UsePeriod = %d where userid = ',27h,'%s',27h,0
+10068350: 'update %s set GPCode = ',27h,'%s',27h,', RegistDay = ',27h,'%s',27h,',  DisuseDay = ',27h,'%s',27h,', UsePeriod=NULL where userid = ',27h,'%s',27h,0
+100683CC: '%02d-%02d-%04d 00:00:01',0
+100683F0: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'3',27h,'  ORDER BY UNo ASC',0
+10068468: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'2',27h,'  ORDER BY UNo DESC',0
+100684E0: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'1',27h,'  ORDER BY UNo DESC',0
+10068558: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'3',27h,' AND SUBSTRING(GPCode,3,1)=',27h,'%s',27h,'  ORDER BY UNo ASC',0
+100685F0: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'2',27h,' AND SUBSTRING(GPCode,3,1)=',27h,'%s',27h,'  ORDER BY UNo DESC',0
+10068690: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'1',27h,' AND SUBSTRING(GPCode,3,1)=',27h,'%s',27h,'  ORDER BY UNo DESC',0
+10068730: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'3',27h,' AND SUBSTRING(GPCode,3,1)=',27h,'P',27h,' AND SUBSTRING(GPCode,5,1)=',27h,'C',27h,' ORDER BY UNo ASC',0
+100687F0: 'INSERT INTO UserDetail (userid, UserName, MinNum, GameCode, GPCode, ChaId, ItemCode, RegistDay, UseDay, DisuseDay, AccMethod, AccNo, TradeID, Cost, DiscountRate, UsePeriod, RegChk, PMNo) VALUES (',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'PRISTON',27h,',',27h,'PTG-ITH015',27h,', ',27h,27h,', ',27h,27h,',  ',27h,'%s',27h,',',27h,'%s',27h,', NULL, ',27h,'FREE',27h,',0,',27h,27h,',0,0,540000,  ',27h,'1',27h,', ',27h,'%s',27h,') ',0
+10068958: 'INSERT INTO UserDetail (userid, UserName, MinNum, GameCode, GPCode, ChaId, ItemCode, RegistDay, UseDay, DisuseDay, AccMethod, AccNo, TradeID, Cost, DiscountRate, UsePeriod, RegChk, PMNo) VALUES (',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'PRISTON',27h,',',27h,'PTG-IUD003',27h,', ',27h,27h,', ',27h,27h,',  ',27h,'%s',27h,',',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'FREE',27h,',0,',27h,27h,',0,0,0,  ',27h,'1',27h,', ',27h,'%s',27h,') ',0
+10068AB8: 'SELECT RNo, GPCode, DisuseDay, UsePeriod FROM  %s  WHERE userid = ',27h,'%s',27h,' ',0
+10068B10: 'SELECT StartDay, EditDay FROM HUseUser  where userid=',27h,'%s',27h,' and GPCode=',27h,'%s',27h,' AND ServerName=',27h,'%s',27h,' AND IP=',27h,'%s',27h,' AND RNo=%d ',0
+10068BA0: 'INSERT INTO ChangeGPCode (RNo) values(%d) ',0
+10068BD4: 'DELETE FROM ChangeGPCode WHERE RNo=%d ',0
+10068C04: 'ServerExit ',0Dh,0Ah,0
+10068C14: 'INSERT INTO ServerDown (ServerName) values(',27h,'%s',27h,') ',0
+10068C50: 'ServerDown ',0Dh,0Ah,0
+10068C60: 'TempServerName [%s] ',0Dh,0Ah,0
+10068C84: 'SELECT * FROM ServerDown ',0
+10068CA4: 'SELECT * FROM ServerDown WHERE ServerName=',27h,'%s',27h,' ',0
+10068CE0: 'DELETE FROM ServerDown WHERE ServerName=',27h,'%s',27h,' ',0
+10068D18: 'UPDATE HUseUser SET GPCode=',27h,'%s',27h,', RNo=%d, StartDay=',27h,'%s',27h,', EditDay=',27h,'%s',27h,', SNo=',27h,'%s',27h,'  WHERE userid=',27h,'%s',27h,' ',0
+10068D90: 'DELETE FROM HUseUser  WHERE userid=',27h,'%s',27h,' AND GPCode=',27h,'%s',27h,' AND ServerName=',27h,'%s',27h,' ',0
+10068DF0: 'SELECT RNo FROM RegIPAddress WHERE Substring(GPCode,6,1)=',27h,'T',27h,' AND userid IN ( SELECT userid FROM RegIPaddress WHERE Rno=%d ) ',0
+10068E88: 'NewDisUseDay %d ',0Dh,0Ah,0
+10068EA0: 'SELECT RNo, userid, GPCode, DisuseDay, UsePeriod, IPAddress1, IPAddress2, IPAddress3, IPCount, PMNo, Pid FROM RegIPAddress WHERE Substring(GPCode,6,1)=',27h,'U',27h,' AND userid IN ( SELECT userid FROM RegIPaddress WHERE Rno=%d ) AND RNo in (select Rno from IPList where IP=',27h,'%s',27h,')',0
+10068FE4: 'UserName',0
+10068FF0: 'SELECT PMNo, MinNum, UserName FROM PCBangMember WHERE userid = ',27h,'%s',27h,' ',0
+10069044: 'BAddress1',0
+10069050: 'BusinessName',0
+10069060: 'SELECT BusinessName, BAddress1 FROM PCBangMember WHERE PMNo = %d ',0
+100690B0: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'3',27h,' AND GPCode=',27h,'%s',27h,'  ORDER BY UNo ASC',0
+10069138: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'2',27h,' AND GPCode=',27h,'%s',27h,'  ORDER BY UNo DESC',0
+100691C0: 'SELECT TOP 1 UNo, GPCode FROM  UserDetail  WHERE userid = ',27h,'%s',27h,' AND Active=',27h,'1',27h,' AND GPCode=',27h,'%s',27h,'  ORDER BY UNo DESC',0
+10069248: 'update UserDetail set Active = ',27h,'2',27h,', DisuseDay = ',27h,'%s',27h,' where userid = ',27h,'%s',27h,' and GPCode = ',27h,'%s',27h,' and Active=',27h,'1',27h,' ',0
+100692C8: 'update UserDetail set Active = ',27h,'2',27h,', DisuseDay = ',27h,'%s',27h,'  where userid = ',27h,'%s',27h,' and GPCode = ',27h,'%s',27h,' and Active=',27h,'1',27h,' ',0
+10069350: 'update UserDetail set Active = ',27h,'1',27h,', UseDay = ',27h,'%s',27h,', DisuseDay = NULL, UsePeriod = %d where userid = ',27h,'%s',27h,' and GPCode = ',27h,'%s',27h,' and Active=',27h,'3',27h,' ',0
+100693F8: 'update UserDetail set Active = ',27h,'1',27h,', UseDay =',27h,'%s',27h,', DisuseDay = DATEADD(d,%d,',27h,'%s',27h,'),  UsePeriod=NULL where userid = ',27h,'%s',27h,' and  GPCode = ',27h,'%s',27h,' and Active=',27h,'3',27h,' ',0
+100694B0: 'update UserDetail set Active = ',27h,'1',27h,', UseDay =',27h,'%s',27h,', DisuseDay = ',27h,'%s',27h,',  UsePeriod=NULL where userid = ',27h,'%s',27h,' and  GPCode = ',27h,'%s',27h,' and Active=',27h,'3',27h,' ',0
+10069558: 'update UserDetail set Active = ',27h,'1',27h,', UseDay = ',27h,'%s',27h,', DisuseDay = NULL where userid = ',27h,'%s',27h,' and GPCode = ',27h,'%s',27h,' and Active=',27h,'3',27h,' ',0
+100695F0: 'insert into UDUpdateLog (UNo, CDate, Operator, IP, OperCode, Note )  values(%d, ',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,')',0
+10069670: 'update %s set StartDay = ',27h,'%s',27h,', EditDay =',27h,'%s',27h,', RNo=%d, ServerName =',27h,'%s',27h,', inuse=',27h,'1',27h,', SNo=',27h,'%s',27h,' where userid = ',27h,'%s',27h,0
+100696F8: 'update %s set StartDay = ',27h,'%s',27h,', EditDay =',27h,'%s',27h,', RNo=%d, ServerName =',27h,'%s',27h,', inuse=',27h,'1',27h,', SNo=',27h,'%s',27h,', IP=',27h,'%s',27h,', UGPCode=',27h,'%s',27h,' where userid = ',27h,'%s',27h,0
+1006979C: 'update %s set EditDay = ',27h,'%s',27h,' where userid = ',27h,'%s',27h,0
+100697D8: 'update %s set EditDay = ',27h,'%s',27h,', RNo=%d where userid = ',27h,'%s',27h,0
+1006981C: 'LastDay',0
+10069828: 'SELECT StartDay, LastDay  FROM %s WHERE userid = ',27h,'%s',27h,'  ',0
+1006986C: '%s',27h,'s DB Error %s %s',0Dh,0Ah,0
+10069888: 'error ',0Dh,0Ah,0
+10069894: 'ItemCode',0
+100698A0: 'SELECT ItemCode FROM GiveYouItem WHERE GNo=%d AND userid = ',27h,'%s',27h,' AND Server=',27h,'%s',27h,' AND Flag=',27h,'1',27h,'  ',0
+10069918: 'UPDATE GiveYouItem SET Flag=',27h,'2',27h,' , EditDay=',27h,'%s',27h,' WHERE GNo=%d AND userid = ',27h,'%s',27h,' AND Server=',27h,'%s',27h,'  ',0
+1006998C: 'SELECT DisuseDay FROM %s WHERE userid = ',27h,'%s',27h,' ',0
+100699C4: 'SELECT RegistDay FROM %s WHERE userid = ',27h,'%s',27h,' ',0
+10069A00: 'SELECT DisuseDay FROM RegIPAddress WHERE RNo = %d AND Active =',27h,'1',27h,' ',0
+10069A50: 'SELECT StartDay, LastDay, EditDay  FROM %s WHERE userid = ',27h,'%s',27h,'  ',0
+10069AA0: 'UPDATE %s SET LastDay = ',27h,'%s',27h,', inuse=',27h,'0',27h,', RNo=NULL, SNo=NULL, IP=NULL, UGPCode=NULL  WHERE userid = ',27h,'%s',27h,' and ServerName=',27h,'%s',27h,' ',0
+10069B38: 'update %s set inuse = ',27h,'%s',27h,', ServerName = ',27h,'%s',27h,' where userid = ',27h,'%s',27h,0
+10069B88: 'HackLog%s%02d',0
+10069B98: 'insert into %s(UserID, CharType, GameLogonId,GPCode, HCode, ServerName, IP, RegistDay ) values(',27h,'%s',27h,',%d, ',27h,'%s',27h,', ',27h,'%s',27h,',%d,',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,')',0
+10069C38: 'insert into %s(SNo, LogoutTime, SPacket, CPacket) values(',27h,'%s',27h,',',27h,'%s',27h,',%d ,%d )',0
+10069C94: 'LogoutLog%s%02d',0
+10069CA8: 'insert into %s(SNo, GameLogonID,GPCode, UserID, CharType, LogonTime, ServerName, IP ) values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', %d, ',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,')',0
+10069D48: 'LogonLog%s%02d',0
+10069D60: 'UPDATE %s SET LogoutTime=',27h,'%s',27h,' WHERE SNo=',27h,'%s',27h,' AND UserID=',27h,'%s',27h,' AND GPCode=',27h,'%s',27h,' AND ServerName=',27h,'%s',27h,' AND IP=',27h,'%s',27h,' ',0
+10069DE4: 'GameOut%s%02d',0
+10069DF8: 'insert into %s(SNo, UserID, GPCode,ServerName, IP) values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,')',0
+10069E60: 'insert into %s(SNo, UserID, GPCode,ServerName, IP, RNo ) values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', %d)',0
+10069ED0: 'GameOn%s%02d',0
+10069EE0: 'IPNo',0
+10069EE8: 'select @@identity as IPNo ',0
+10069F08: 'INSERT INTO IPRecord (ServerName, IPList, RegistDay)  VALUES (',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'%s',27h,' )',0
+10069F70: 'INSERT INTO SODRecord (UserID, CharName, CharType, Point, KillCount, GLevel, ServerName, RegistDay)  VALUES (',27h,'%s',27h,', ',27h,'%s',27h,', %d, %d, %d, %d, ',27h,'%s',27h,', ',27h,'%s',27h,' )',0
+1006A028: 'INSERT INTO SODRecord (UserID, CharName, CharType, Point, KillCount, GLevel, TotalPoint, TotalUser, SuccessUser, ServerName, RegistDay)  VALUES (',27h,'%s',27h,', ',27h,'%s',27h,', %d, %d, %d, %d, %d, %d, %d, ',27h,'%s',27h,', ',27h,'%s',27h,' )',0
+1006A118: 'INSERT INTO SODRecord (UserID, CharName, CharType, Point, KillCount, GLevel, TotalPoint, TotalUser, SuccessUser, ServerName, PCRNo, GPCode, Contribute, RegistDay)  VALUES (',27h,'%s',27h,', ',27h,'%s',27h,', %d, %d, %d, %d, %d, %d, %d, ',27h,'%s',27h,', %d, ',27h,'%s',27h,', %d, ',27h,'%s',27h,' )',0
+1006A240: 'ClanName',0
+1006A24C: 'MIDX',0
+1006A258: 'SELECT MIDX, ClanName FROM %s WHERE userid=',27h,'%s',27h,' AND ChName=',27h,'%s',27h,' AND DelActive=0 ',0
+1006A2BC: 'select @@identity as SNo ',0
+1006A2E0: 'INSERT INTO %s (UserID, CharName, CharType, Point, KillCount, GLevel, TotalPoint, TotalUser, SuccessUser, ServerName, PCRNo, GPCode, Contribute, RegistDay, BusinessName, BAddress1, PMNo, ServerTime)  VALUES (',27h,'%s',27h,', ',27h,'%s',27h,', %d, %d, %d, %d, %d, %d, %d, ',27h,'%s',27h,', %d, ',27h,'%s',27h,', %d, ',27h,'%s',27h,', ',27h,'%s',27h,',',27h,'%s',27h,',%d, %d)',0
+1006A440: 'SODRecord%s%02d',0
+1006A454: 'DB Error %d %d %s %s',0Dh,0Ah,0
+1006A470: 'INSERT INTO %s (UserID, CharName, IP, Flag, ItemCount, ItemCode, ItemINo, ItemINo_1, RegistDay)  VALUES (',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'%s',27h,', %d, %d, %d, %d, %d,',27h,'%s',27h,' )',0
+1006A528: 'S9LogITEM%s%02d',0
+1006A53C: 'S7LogITEM%s%02d',0
+1006A550: 'S6LogITEM%s%02d',0
+1006A564: 'S5LogITEM%s%02d',0
+1006A578: 'S4LogITEM%s%02d',0
+1006A58C: 'S3LogITEM%s%02d',0
+1006A5A0: 'S2LogITEM%s%02d',0
+1006A5B4: 'S1LogITEM%s%02d',0
+1006A5C8: 'DB Error %d %s %s',0Dh,0Ah,0
+1006A5E0: 'insert into %s (UserID, CharName, IP, Flag, TUserID, TCharName, TMoney, TIP, ItemCount,  ItemCode, ItemINo, ItemINo_1, RegistDay) values(',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'%s',27h,', 2, ',27h,'%s',27h,', ',27h,'%s',27h,', %d, ',27h,'%s',27h,', %d, %d, %d, %d, ',27h,'%s',27h,'  ) ',0
+1006A6D8: 'insert into %s (UserID, CharName, IP, Flag, TUserID, TCharName, TMoney, TIP, ItemCount,  ItemCode, ItemINo, ItemINo_1,  RegistDay) values(',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'%s',27h,', %d, ',27h,'%s',27h,', ',27h,'%s',27h,', %d, ',27h,'%s',27h,', %d, %d, %d, %d, ',27h,'%s',27h,'  ) ',0
+1006A7D0: 'INSERT INTO %s (UserID, CharName, IP, Flag, ItemCount, ItemCode, ItemINo, ItemINo_1, RegistDay)  VALUES (',27h,'%s',27h,', ',27h,'%s',27h,', ',27h,'%s',27h,', %d, 1, %d, %d, %d,',27h,'%s',27h,' )',0
+1006A884: 'LogITEMPostRecord dwINo[0] [%d]',0Dh,0Ah,0
+1006A8AC: 'LogITEMPostRecord dwCode [%d]',0Dh,0Ah,0
+1006A8D4: 'LogITEMPostRecord TEL [%s]',0Dh,0Ah,0
+1006A8F8: 'LogITEMPostRecord IP [%d]',0Dh,0Ah,0
+1006A91C: 'LogITEMPostRecord GNo [%d]',0Dh,0Ah,0
+1006A940: 'LogITEMPostRecord Flag [%d]',0Dh,0Ah,0
+1006A964: 'LogITEMPostRecord CharName [%s]',0Dh,0Ah,0
+1006A98C: 'LogITEMPostRecord UserID [%s]',0Dh,0Ah,0
+1006A9B8: 'insert into %s (UserID, CharType, GameLogonID,GPCode, ServerName, IP, GameLevel, Exp, GameMoney, EditDay) values(',27h,'%s',27h,',%d, ',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', %d, %d, %d, ',27h,'%s',27h,')',0
+1006AA80: 'insert into %s (UserID, CharType, GameLogonID,GPCode, ServerName, IP, GameLevel, Exp, GameMoney, DisuseDay) values(',27h,'%s',27h,',%d, ',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', %d, %d, %d, ',27h,'%s',27h,')',0
+1006AB48: 'insert into %s (UserID, CharType, GameLogonID,GPCode, ServerName, IP, GameLevel, Exp, GameMoney, RegistDay) values(',27h,'%s',27h,',%d, ',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,', %d, %d, %d, ',27h,'%s',27h,')',0
+1006AC0C: 'CharRecord%s%02d',0
+1006AC20: 'Code',0
+1006AC28: 'SELECT Code FROM Country_KR where IP=',27h,'%s',27h,' AND Code=',27h,'%s',27h,' ',0
+1006AC6C: 'ClanDbName',0
+1006AC7C: 'ClanDbPwd',0
+1006AC88: 'ClanDbID',0
+1006AC94: 'ClanDbIP',0
+1006ACA0: 'ITEMLogDbName',0
+1006ACB0: 'ITEMLogDbPwd',0
+1006ACC0: 'ITEMLogDbID',0
+1006ACD0: 'ITEMLogDbIP',0
+1006ACE0: 'PCDBName',0
+1006ACEC: 'PCDbPwd',0
+1006ACF8: 'PCDbID',0
+1006AD00: 'PCDbIP',0
+1006AD08: 'PCCheck',0
+1006AD14: 'CountryCheck',0
+1006AD24: 'BillingLogDbName',0
+1006AD38: 'BillingLogDbPwd',0
+1006AD4C: 'BillingLogDbID',0
+1006AD60: 'BillingLogDbIP',0
+1006AD74: 'LogDbName',0
+1006AD80: 'LogDbPwd',0
+1006AD8C: 'LogDbID',0
+1006AD98: 'LogDbIP',0
+1006ADA4: 'BillingDbName',0
+1006ADB4: 'BillingDbPwd',0
+1006ADC4: 'BillingDbID',0
+1006ADD4: 'BillingDbIP',0
+1006ADE4: 'AccountDbName',0
+1006ADF4: 'AccountDbPwd',0
+1006AE04: 'AccountDbID',0
+1006AE14: 'AccountDbIP',0
+1006AE24: 'LogPath',0
+1006AE38: 'SOFTWARE\PristonTale\GameServer',0
+1006AE68: 'SELECT RNo, IPAddress1, IPAddress2, IPAddress3, PMNo  FROM RegIPAddress WHERE userid=',27h,'%s',27h,' AND Active=',27h,'1',27h,' AND GPCode=',27h,'%s',27h,' ',0
+1006AF00: 27h,'%s',27h,0
+1006AF18: 'insert into RegIPAddress(userid, MinNum,GPCode, IPAddress1, IPAddress2, IPAddress3, BonusIP, IPCount, AddIPCount, RegistDay, DisuseDay,  UsePeriod, Active, Idx, PMNo) values(',27h,'%s',27h,',',27h,'%s',27h,',',27h,'%s',27h,',',0
+1006B058: 'Auto_KDH',0
+1006B088: 'SELECT RNo, userid, GPCode, UsePeriod, RegistDay, DisuseDay, IPCount FROM RegIPAddress  WHERE (RNo IN  (SELECT   RNo  FROM  IPList  WHERE IP = ',27h,'%s',27h,' )) AND Active =',27h,'1',27h,' ',0
+1006B158: 'Provider=SQLOLEDB;Persist Security Info=False;Initial Catalog=%s;Data Source=%s',0
+1006B1B8: 'Flag',0
+1006B1C4: 'PPMNo',0
+1006B1D0: ' SELECT TOP 1 RNo, MinNum, GPCode, IPAddress1, IPAddress2, IPAddress3, BonusIP,  IPCount, AddIPCount, CONVERT(char(19), RegistDay, 120) AS RegistDay ,  CONVERT(char(19), DisuseDay, 120) AS DisuseDay, UsePeriod,  Idx, PMNo, PPMNo, Pid, Flag FROM RegIPAddress  WHERE userid = ',27h,'%s',27h,' AND GPCode = ',27h,'%s',27h,' AND RNo = %d AND Active=',27h,'1',27h,'  ORDER BY RNo ASC',0
+1006B370: 'SELECT RNo, userid, GPCode, DisuseDay, UsePeriod, IPAddress1, IPAddress2, IPAddress3, IPCount, PMNo, Pid FROM RegIPAddress WHERE userid IN ( SELECT userid FROM RegIPaddress WHERE Rno=%d ) AND active=',27h,'3',27h,' AND GPCode like ',27h,'PTG-_T%%',27h,' ',0
+1006B488: 'SELECT RNo, userid, GPCode, DisuseDay, UsePeriod, IPAddress1, IPAddress2, IPAddress3, IPCount, PMNo, Pid FROM RegIPAddress WHERE userid IN ( SELECT userid FROM RegIPaddress WHERE Rno=%d ) AND active=',27h,'3',27h,' AND GPCode like ',27h,'PTG-_U%%',27h,' ',0
+1006B6F8: 'New_RNo[%s] New_Gpcode[%s] New_DisuseDay[%s]  ',0Dh,0Ah,0
+1006B738: 'change_RNo[%d] change_userid[%s] change_gpcode[%s] change_IP[%s] change_ServerName[%s] change_SNo[%s] ',0Dh,0Ah,0
+1006B884: 'lpszUserID[%s] lpszNewGPCOde[%s] lpszNewDisUseDay [%d] ',0Dh,0Ah,0
+1006B8CC: 'ChangeUseridGPCodeGame PCRNo[%d] ',0Dh,0Ah,0
+1006B8F8: '211.44.231.57',0
+1006B908: '211.62.4.231',0
+1006B918: '211.62.4.12',0
+1006BA90: 'SELECT userid, Passwd, GameCode, GPCode, RegistDay, DisuseDay,  UsePeriod, Credit, SelectChk, EventChk, BlockChk, inuse, DelChk, ServerName, EditDay, RNo, SNo, IP, UGPCode  FROM %s WHERE userid = ',27h,'%s',27h,' ',0
+10077670: '192.168.2.172\ACCOUNTDB01,1080',0
+10077770: 'rmffhdnaccount',0
+100777F0: '192.168.2.173\BILLINGDB01,1081',0
+100778F0: 'rmffhdnbilling',0
+10077970: '192.168.2.175\LOGDB01,1082',0
+10077A70: 'rmffhdnlog',0
+10077AF0: '192.168.2.175\LOGDB01,1082',0
+10077BF0: 'rmffhdnlog',0
+10077DF0: '192.168.2.174\PCBANGDB01,1433',0
+10077EF0: 'rmffhdnpcbang',0
+10077F70: '218.145.57.196',0
+10078070: 'dkdlxpawjdqh',0
+100780F0: '220.117.158.157',0
+100781F0: 'rmffhdncount',0
+10078278: 'AccountDB',0
+100782F8: 'BillingDB',0
+10078378: 'BillingLogDB',0
+100783F8: 'GameLogDB',0
+100784F8: 'PCRoom',0
+10078578: 'ITEMLogDB',0
+100785F8: 'ClanDB',0
