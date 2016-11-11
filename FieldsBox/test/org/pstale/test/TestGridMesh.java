@@ -63,7 +63,7 @@ public class TestGridMesh extends JFrame {
 	
 	static Logger log = Logger.getLogger(TestGridMesh.class);
 	// 绘图单元格的大小
-	private int GRID_SIZE = 4;
+	private int GRID_SIZE = 3;
 	/**
 	 * 窗口控件
 	 */
@@ -107,7 +107,7 @@ public class TestGridMesh extends JFrame {
 		canvas = new MyPanel();
 		
 		this.setTitle("Test GridMesh");
-		this.setSize(1024, 768);
+		this.setSize(790, 910);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		this.setJMenuBar(getJMenuBar());// 设置菜单

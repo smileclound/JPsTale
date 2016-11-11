@@ -60,7 +60,7 @@ public class CollisionState extends BaseAppState {
 	float radius = 8f * scale;// 半径
 	float height = 30f * scale;// 身高
 	float halfH = height * 0.5f;// 这个变量代表胶囊体一半的高度，用于射线检测。
-	float mass = 10f * scale;// 质量
+	float stepHeight = 12f * scale;// 质量
 	float jumpSpeed = 140f * scale;// 跳跃速度
 	float fallSpeed = 400f * scale;// 摔落速度
 	float gravity = 400f * scale;// 重力加速度
@@ -242,7 +242,7 @@ public class CollisionState extends BaseAppState {
 
 			if (player == null) {
 				CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(radius, height, 1);
-				player = new CharacterControl(capsuleShape, mass);
+				player = new CharacterControl(capsuleShape, stepHeight);
 				player.setJumpSpeed(jumpSpeed);
 				player.setFallSpeed(fallSpeed);
 				player.setGravity(gravity);

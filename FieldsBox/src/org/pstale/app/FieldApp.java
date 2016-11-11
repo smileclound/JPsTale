@@ -1,7 +1,6 @@
 package org.pstale.app;
 
 import org.pstale.asset.loader.FileLocator;
-import org.pstale.asset.loader.InxLoader;
 import org.pstale.asset.loader.SmdLoader;
 import org.pstale.gui.Style;
 
@@ -27,8 +26,8 @@ public class FieldApp extends SimpleApplication {
 	
 	@Override
 	public void simpleInitApp() {
-		assetManager.registerLoader(SmdLoader.class, "smd", "smb");
-		assetManager.registerLoader(InxLoader.class, "inx");
+		assetManager.registerLoader(SmdLoader.class, "smd", "smb", "inx");
+		//assetManager.registerLoader(InxLoader.class, "inx");
 		assetManager.registerLoader(WAVLoader.class, "bgm");
 		assetManager.registerLocator("/", FileLocator.class);
 		assetManager.registerLocator("assets", FileLocator.class);

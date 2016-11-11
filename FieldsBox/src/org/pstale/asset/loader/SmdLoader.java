@@ -7,16 +7,7 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.pstale.asset.control.WindAnimationControl;
-import org.pstale.asset.struct.MATERIAL;
-import org.pstale.asset.struct.MATRIX;
-import org.pstale.asset.struct.OBJ3D;
-import org.pstale.asset.struct.PAT3D;
-import org.pstale.asset.struct.STAGE3D;
-import org.pstale.asset.struct.STAGE_FACE;
-import org.pstale.asset.struct.TEXLINK;
-import org.pstale.asset.struct.TM_POS;
-import org.pstale.asset.struct.TM_ROT;
-import org.pstale.asset.struct.TM_SCALE;
+import org.pstale.asset.struct.*;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
@@ -120,7 +111,7 @@ public class SmdLoader implements AssetLoader {
 		/**
 		 * 若用户使用了SmdKey，就根据type来决定采用哪种方式来加载模型。
 		 */
-		log.debug("模型文件:" + key.getName());
+		log.debug("FILE:" + key.getName() + " TYPE:" + key.type);
 		switch (key.type) {
 		case STAGE3D: {// 直接返回STAGE3D对象
 			STAGE3D stage3D = new STAGE3D();
@@ -144,10 +135,7 @@ public class SmdLoader implements AssetLoader {
 		}
 		case PAT3D_BIP: {// 有动画的舞台物体
 			// 后缀名改为smb
-			String smbFile = key.getName();
-			int n = smbFile.lastIndexOf(".");
-			String str = smbFile.substring(0, n);
-			smbFile = str + ".smb";
+			String smbFile = changeExt(key.getName(), "smb");
 			PAT3D bone = (PAT3D) manager.loadAsset(new SmdKey(smbFile, SMDTYPE.PAT3D));
 
 			// 再加载smd文件
@@ -163,11 +151,73 @@ public class SmdLoader implements AssetLoader {
 			pat.loadFile(in, null, key.getBone());
 			return buildNode(pat);
 		}
-		case INX: {
-			log.info("not supported yet");
-			return null;
+		case MODELINFO: {
+			LittleEndien in = new LittleEndien(assetInfo.openStream());
+			MODELINFO modelInfo = new MODELINFO();
+			modelInfo.loadData(in);
+			return modelInfo;
 		}
+		case MODELINFO_ANIMATION: {
+			LittleEndien in = new LittleEndien(assetInfo.openStream());
+			MODELINFO modelInfo = new MODELINFO();
+			modelInfo.loadData(in);
+			
+			// 有共享数据?
+			String linkFile = modelInfo.linkFile;
+			if (linkFile.length() > 0) {
+				SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
+				MODELINFO mi = (MODELINFO)manager.loadAsset(linkFileKey);
+				modelInfo.animationFile = mi.animationFile;
+			}
+			
+			PAT3D BipPattern = null;
+			// 读取动画
+			if (modelInfo.animationFile.length() > 0) {
+				// 后缀名改为smb
+				String smbFile = changeExt(modelInfo.animationFile, "smb");
+				smbFile = changeName(smbFile);
+				BipPattern = (PAT3D) manager.loadAsset(new SmdKey(key.getFolder() + smbFile, SMDTYPE.PAT3D));
+				
+				// 生成动画
+				Skeleton ske = buildSkeleton(BipPattern);
+				Animation anim = buildAnimation(BipPattern, ske);
+				AnimControl ac = new AnimControl(ske);
+				ac.addAnim(anim);
+				return ac;
+			} else {
+				return null;
+			}
+		}
+		case MODELINFO_MODEL: {
+			LittleEndien in = new LittleEndien(assetInfo.openStream());
+			MODELINFO modelInfo = new MODELINFO();
+			modelInfo.loadData(in);
+			
+			// 有共享数据?
+			String linkFile = modelInfo.linkFile;
+			if (linkFile.length() > 0) {
+				SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
+				MODELINFO mi = (MODELINFO)manager.loadAsset(linkFileKey);
+				modelInfo.animationFile = mi.animationFile;
+			}
+			
+			PAT3D BipPattern = null;
+			// 读取动画
+			if (modelInfo.animationFile.length() > 0) {
+				// 后缀名改为smb
+				String smbFile = changeExt(modelInfo.animationFile, "smb");
+				smbFile = changeName(smbFile);
+				BipPattern = (PAT3D) manager.loadAsset(new SmdKey(key.getFolder() + smbFile, SMDTYPE.PAT3D));
+			}
 
+			// 读取网格
+			String smdFile = changeExt(modelInfo.modelFile, "smd");
+			smdFile = changeName(smdFile);
+
+			SmdKey smdKey = new SmdKey(key.getFolder() + smdFile, SMDTYPE.PAT3D_VISUAL);
+			smdKey.setBone(BipPattern);
+			return manager.loadAsset(smdKey);
+		}
 		default:
 			return null;
 		}
@@ -189,10 +239,25 @@ public class SmdLoader implements AssetLoader {
 		if (index != -1) {
 			line = line.substring(index + 1);
 		}
-
 		return line;
 	}
 
+	/**
+	 * 改变文件名后缀。
+	 * @param orgin
+	 * @param ext
+	 * @return
+	 */
+	public static String changeExt(final String orgin, final String ext) {
+		String path = orgin;
+		path = path.replaceAll("\\\\", "/");
+		
+		int idx = path.lastIndexOf(".") + 1;
+		String dest = path.substring(0, idx) + ext;
+		
+		return dest;
+	}
+	
 	/**
 	 * 创建纹理
 	 * 
@@ -203,7 +268,8 @@ public class SmdLoader implements AssetLoader {
 
 		Texture texture = null;
 		try {
-			texture = manager.loadTexture(new TextureKey(key.getFolder() + name));
+			TextureKey texKey = new TextureKey(key.getFolder() + name);
+			texture = manager.loadTexture(texKey);
 			texture.setWrap(WrapMode.Repeat);
 		} catch (Exception ex) {
 			texture = manager.loadTexture("Common/Textures/MissingTexture.png");
@@ -1192,38 +1258,9 @@ public class SmdLoader implements AssetLoader {
 		for (int mat_id = 0; mat_id < materialCount; mat_id++) {
 			m = stage.materials[mat_id];
 
-			if ((m.MeshState & 0x0001)== 1 && m.Transparency < 0.2f && m.BlendType != 4) {
-				continue;
-			}
-
-			if ((m.UseState & sMATS_SCRIPT_NOTPASS) != 0) {
-				// 这些面要参加碰撞检测
-				continue;
-			}
-
-			if ((m.UseState & 0x07FF) != 0) {
-				// 这些面被设置为可以直接穿透
+			if ((m.MeshState & 0x0001) == 0) {
 				stage.materials[mat_id] = null;
-				continue;
 			}
-			
-			if ( m.BlendType == 1 || m.BlendType == 4) {// ALPHA混色
-				stage.materials[mat_id] = null;
-				continue;
-			}
-
-			if (m.MapOpacity != 0 || m.Transparency != 0f) {
-				// 透明的面不参加碰撞检测
-				stage.materials[mat_id] = null;
-				continue;
-			}
-
-			if (m.TextureType == 1) {
-				// 帧动画也不纳入碰撞检测。比如火焰、飞舞的光点。
-				stage.materials[mat_id] = null;
-				continue;
-			}
-
 		}
 
 		/**

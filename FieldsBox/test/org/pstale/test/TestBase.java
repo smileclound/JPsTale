@@ -4,14 +4,13 @@ import java.io.File;
 
 import org.pstale.app.ModelFactory;
 import org.pstale.asset.loader.FileLocator;
-import org.pstale.asset.loader.InxLoader;
 import org.pstale.asset.loader.SmdLoader;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.plugins.WAVLoader;
 
 /**
- * 测试基类，主要是注册SmdLoader、InxLoader之类的东西。
+ * 测试基类，主要是注册SmdLoader之类的东西。
  * @author yanmaoyuan
  *
  */
@@ -20,8 +19,7 @@ public abstract class TestBase extends SimpleApplication {
 	@Override
 	public void simpleInitApp() {
 		// 注册Loader
-		assetManager.registerLoader(SmdLoader.class, "smd", "smb");
-		assetManager.registerLoader(InxLoader.class, "inx");
+		assetManager.registerLoader(SmdLoader.class, "smd", "smb", "inx");
 		assetManager.registerLoader(WAVLoader.class, "bgm");
 		
 		// 注册模型文件的路径

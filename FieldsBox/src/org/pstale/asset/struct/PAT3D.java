@@ -164,6 +164,8 @@ public class PAT3D extends Flyweight {
 		}
 
 		TmParent = BipPat;
+		
+		in.close();
 	}
 
 	boolean addObject(OBJ3D obj) {

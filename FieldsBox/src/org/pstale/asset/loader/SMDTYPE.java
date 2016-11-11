@@ -32,7 +32,15 @@ public enum SMDTYPE {
 	 */
 	PAT3D_BIP,
 	/**
-	 * 这是角色、怪物、NPC等带有复杂动画模型的文件类型。先解析INX文件获得动画索引，然后再加载具体的模型。
+	 * 这是角色、怪物、NPC等带有复杂动画模型的文件类型。直接返回MODELINFO结构体
 	 */
-	INX;
+	MODELINFO,
+	/**
+	 * 先解析INX文件，获得动画数据。
+	 */
+	MODELINFO_ANIMATION,
+	/**
+	 * 先解析INX文件获得动画索引，然后再加载具体的模型。
+	 */
+	MODELINFO_MODEL;
 }

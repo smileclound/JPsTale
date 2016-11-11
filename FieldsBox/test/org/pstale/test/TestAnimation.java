@@ -1,5 +1,6 @@
 package org.pstale.test;
 
+import org.pstale.asset.loader.SMDTYPE;
 import org.pstale.asset.loader.SmdKey;
 import org.pstale.asset.loader.SmdLoader;
 
@@ -25,7 +26,7 @@ public class TestAnimation extends TestBase {
 		
 		float scale = 0.1f;
 
-		Node npc = (Node)assetManager.loadAsset(new SmdKey("char/npc/arad/arad.inx", null));
+		Node npc = (Node)assetManager.loadAsset(new SmdKey("char/npc/arad/arad.inx", SMDTYPE.MODELINFO_MODEL));
 		npc.scale(scale);
 		rootNode.attachChild(npc);
 		

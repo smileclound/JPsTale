@@ -10,6 +10,9 @@ public abstract class Flyweight {
 	
 	public final static int OBJ_FRAME_SEARCH_MAX = 32;
 	
+	/****
+	 * MATERIAL中MeshStage、UseState的取值
+	 */
 	public final static int sMATS_SCRIPT_WIND = 1;
 	public final static int sMATS_SCRIPT_WINDZ1 = 0x0020;
 	public final static int sMATS_SCRIPT_WINDZ2 = 0x0040;
@@ -24,6 +27,20 @@ public abstract class Flyweight {
 	public final static int sMATS_SCRIPT_CHECK_ICE = 0x8000;
 	public final static int sMATS_SCRIPT_ORG_WATER = 0x10000;
 	
+	/********
+	 * ModelInfo结构体、MotionInfo结构体的常量
+	 */
+	public final static int MOTION_INFO_MAX = 512;
+	public final static int MOTION_LIST_MAX = 32;
+	public final static int MOTION_TOOL_MAX = 52;
+	public final static int MOTION_SKIL_MAX = 8;
+	
+	public final static int NPC_MOTION_INFO_MAX = 30;
+	public final static int TALK_MOTION_INFO_MAX = 30;
+
+	public final static int TALK_MOTION_FILE_MAX = 2;
+	public final static int TALK_MOTION_FILE = 0;
+	public final static int FACIAL_MOTION_FILE = 1;
 	
 	/**
 	 * <pre>
@@ -37,7 +54,7 @@ public abstract class Flyweight {
 	
 	Logger log = Logger.getLogger(Flyweight.class);
 	
-	abstract void loadData(LittleEndien in) throws IOException;
+	public abstract void loadData(LittleEndien in) throws IOException;
 	
 	
 	/**
@@ -50,7 +67,7 @@ public abstract class Flyweight {
 			stringBuffer.append(charIn);
 			charIn = (char) in.read();
 		}
-		return stringBuffer.toString();
+		return stringBuffer.toString().trim();
 	}
 	
 	/**
@@ -73,6 +90,6 @@ public abstract class Flyweight {
 				in.read();
 			}
 		}
-		return stringBuffer.toString();
+		return stringBuffer.toString().trim();
 	}
 }

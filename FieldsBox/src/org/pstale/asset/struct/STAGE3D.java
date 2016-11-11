@@ -152,6 +152,8 @@ public class STAGE3D extends Flyweight {
 
 		// 重新建立Face与TexLink之间的关联
 		relinkFaceAndTex();
+		
+		in.close();
 	}
 
 	/**
