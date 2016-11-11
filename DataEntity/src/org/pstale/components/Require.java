@@ -5,7 +5,7 @@ package org.pstale.components;
  * @author yanmaoyuan
  *
  */
-public class ItemRequire {
+public class Require {
 	
 	int level; // 等级
 	int strength; // 力量
@@ -14,7 +14,7 @@ public class ItemRequire {
 	int dexterity; // 敏捷
 	int health; // 体质
 	
-	public ItemRequire() {
+	public Require() {
 		level = 0;
 		strength = 0;
 		spirit = 0;
@@ -23,7 +23,7 @@ public class ItemRequire {
 		health = 0;
 	}
 	
-	public ItemRequire(int lv, int str, int spirit, int talent, int dex, int vit) {
+	public Require(int lv, int str, int spirit, int talent, int dex, int vit) {
 		this.level = lv;
 		this.strength = str;
 		this.spirit = spirit;
