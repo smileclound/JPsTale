@@ -50,7 +50,7 @@ public class GridMesh {
 	private float unitX;
 	private float unitY;
 	
-	private FaceList[][] area;
+	private ArrayList<Integer>[][] area;
 	
 	public GridMesh (Mesh mesh) {
 		this.mesh = mesh;
@@ -75,10 +75,10 @@ public class GridMesh {
 	/**
 	 * 计算每个格子中有哪些面
 	 */
-	public FaceList[][] getFaceList() {
+	public ArrayList<Integer>[][] getFaceList() {
 
 		if (area == null) {
-			area = new FaceList[MAP_SIZE][MAP_SIZE];
+			area = new ArrayList[MAP_SIZE][MAP_SIZE];
 			
 			// 用来表示每个三角形的顶点坐标
 			Vector2f[] tri = new Vector2f[] {new Vector2f(), new Vector2f(), new Vector2f()};
@@ -158,6 +158,18 @@ public class GridMesh {
 					}
 				}
 			}
+			
+			/***
+			 * 第二段算法，检查每个格子及其周围8格，合计有那些面要参加碰撞检测。
+			 */
+			ArrayList<Integer>[][] nineGridFaceList = new ArrayList[MAP_SIZE][MAP_SIZE];
+			for(int row=0; row<MAP_SIZE; row++) {
+				for(int col=0; col<MAP_SIZE; col++) {
+					nineGridFaceList[row][col] = getNineGridFaceList(col, row);
+				}
+			}
+			
+			area = nineGridFaceList;
 		}
 		
 		return area;
@@ -201,6 +213,52 @@ public class GridMesh {
 	}
 	
 	/**
+	 * 根据(x, y)坐标，附近九宫格中参加碰撞的面数。
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	private ArrayList<Integer> getNineGridFaceList(final int x, final int y) {
+		
+		ArrayList<Integer> faces = new ArrayList<Integer>();
+		
+		// 取以xy为中心，附近9个格子。
+		for(int i=y-1; i<=y+1; i++) {
+			// 下标越界
+			if (i < 0 || i>MAP_SIZE-1) {
+				continue;
+			}
+			
+			for(int j=x-1; j<=x+1; j++) {
+				// 下标越界
+				if (j<0 || j > MAP_SIZE -1) {
+					continue;
+				}
+				
+				// 这个格子中没有三角形
+				ArrayList<Integer> fl = area[i][j];
+				if (fl == null)
+					continue;
+				
+				// 将面的索引添加到faces集合中
+				for(int k=0; k<fl.size(); k++) {
+					int e = fl.get(k);
+					// 防止出现重复的面
+					if (!faces.contains(e)) {
+						faces.add(e);
+					}
+				}
+			}
+		}
+		
+		if (faces.size() == 0)
+			return null;
+		else
+			return faces;
+		
+	}
+	
+	/**
 	 * 根据Vector3f坐标，获得参加碰撞的面数
 	 * @param position
 	 * @return
@@ -222,42 +280,9 @@ public class GridMesh {
 	 * @return
 	 */
 	public ArrayList<Integer> getFaceList(final int x, final int y) {
-		
-		ArrayList<Integer> faces = new ArrayList<Integer>();
-		
-		// 取以xy为中心，附近9个格子。
-		for(int i=y-1; i<=y+1; i++) {
-			// 下标越界
-			if (i < 0 || i>MAP_SIZE-1) {
-				continue;
-			}
-			
-			for(int j=x-1; j<=x+1; j++) {
-				// 下标越界
-				if (j<0 || j > MAP_SIZE -1) {
-					continue;
-				}
-				
-				// 这个格子中没有三角形
-				FaceList fl = area[i][j];
-				if (fl == null)
-					continue;
-				
-				// 将面的索引添加到faces集合中
-				for(int k=0; k<fl.size(); k++) {
-					int e = fl.get(k);
-					// 防止出现重复的面
-					if (!faces.contains(e)) {
-						faces.add(e);
-					}
-				}
-			}
-		}
-		
-		if (faces.size() == 0)
+		if (x < 0 || y< 0 || x >= MAP_SIZE || y >= MAP_SIZE)
 			return null;
-		else
-			return faces;
+		return area[y][x];
 		
 	}
 	
