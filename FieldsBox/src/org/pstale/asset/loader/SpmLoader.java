@@ -1,34 +1,24 @@
 package org.pstale.asset.loader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 import org.pstale.fields.RespawnList;
 import org.pstale.fields.StgBoss;
 import org.pstale.fields.StgMonster;
 
-import com.jme3.asset.AssetInfo;
-import com.jme3.asset.AssetLoader;
-
-public class SpmLoader implements AssetLoader {
+/**
+ * 解析并加载服务端每个Field的生态信息
+ * @author yanmaoyuan
+ *
+ */
+public class SpmLoader extends PTScriptLoader<RespawnList> {
 
 	static Logger log = Logger.getLogger(SpmLoader.class);
 	
-	private boolean handleToken = false;
-	
-	protected BufferedReader reader = null;
-	protected String line;
-	protected String[] token;
-	
-	private String charset = "gbk";
-	
 	@Override
-	public RespawnList load(AssetInfo assetInfo) throws IOException {
+	public RespawnList decode() throws IOException {
 		RespawnList list = new RespawnList();
-
-		reader = new BufferedReader(new InputStreamReader(assetInfo.openStream(), charset));
 
 		while (nextLine()) {
 			if (line.length() == 0 || line.startsWith("//")
@@ -80,85 +70,5 @@ public class SpmLoader implements AssetLoader {
 			}
 		}
 		return list;
-	}
-	
-	/**
-	 * 读取下一行文本
-	 * 
-	 * @throws IOException
-	 */
-	protected boolean nextLine() throws IOException {
-		handleToken = false;
-		boolean flag = false;
-
-		if (reader != null && (line = reader.readLine()) != null) {
-			line = line.trim();
-			token = line.split("\\s+");// 拆解成token
-			flag = true;
-		}
-
-		return flag;
-	}
-	
-	/**
-	 * 比较命令行，默认检查1个参数
-	 * @param token
-	 * @return
-	 */
-	protected boolean startWith(final String token) {
-		return startWith(token, 1);
-	}
-	
-	/**
-	 * 比较命令行
-	 * @param token
-	 * @param argCnt 参数数量
-	 * @return
-	 */
-	protected boolean startWith(final String token, final int argCnt) {
-		boolean startToken = false;
-		for(String start : token.split("\\|")) {
-			if (start.equals(this.token[0])) {
-				startToken = true;
-				break;
-			}
-		}
-		boolean flag = !handleToken && startToken && this.token.length > argCnt;
-		if (flag) {
-			handleToken = true;
-		}
-		return flag;
-	}
-	/**
-	 * 读取文本数据
-	 * @return
-	 */
-	protected String getString() {
-		String value = line.substring(token[0].length()).trim();
-		return value;
-	}
-	
-	/**
-	 * 读取整数
-	 * @param index
-	 * @return
-	 */
-	protected int getInt() {
-		return getInt(0);
-	}
-	
-	/**
-	 * 读取整数
-	 * @param index
-	 * @return
-	 */
-	protected int getInt(int index) {
-		int value = 0;
-		try {
-			value = Integer.parseInt(token[1 + index]);
-		} catch (NumberFormatException e) {
-			log.info("解析数值失败", e);
-		}
-		return value;
 	}
 }

@@ -26,6 +26,8 @@ public class TestSppLoader {
 		for(StartPoint p: points) {
 			log.info("" + p.x + ", " + p.z);
 		}
+		
+		log.info("刷怪点数量:" + points.size());
 	}
 
 }

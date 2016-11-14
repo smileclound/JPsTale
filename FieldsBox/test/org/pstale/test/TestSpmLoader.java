@@ -25,6 +25,7 @@ public class TestSpmLoader {
 		log.info("" + respawn.IntervalTime);
 		log.info("" + respawn.OpenLimit);
 		log.info("" + respawn.PercentageCnt);
+		
 	}
 
 }

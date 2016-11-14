@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
-import org.pstale.fields.NPC;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;

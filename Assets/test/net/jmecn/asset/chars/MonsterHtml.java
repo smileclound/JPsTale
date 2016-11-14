@@ -24,11 +24,11 @@ public class MonsterHtml implements Convertable {
 
 	public MonsterHtml() {
 		MonsterInitilize monsterInit = new MonsterInitilize();
-		monsterInit.setFolder("F:\\1_DEVELOP\\精灵重构版_20150326\\3060\\3060\\GameServer\\Monster");
+		monsterInit.setFolder("D:/Priston Tale/0_素材/Server/精灵中国全服务端3060/3060/GameServer/Monster");
 		monsterInit.init();
 
 		ItemInitilize itemInit = new ItemInitilize();
-		itemInit.setFolder("F:\\1_DEVELOP\\精灵重构版_20150326\\3060\\3060\\GameServer\\OpenItem");
+		itemInit.setFolder("D:/Priston Tale/0_素材/Server/精灵中国全服务端3060/3060/GameServer/OpenItem");
 		itemInit.init();
 		items = itemInit.getList();
 
@@ -56,7 +56,7 @@ public class MonsterHtml implements Convertable {
 			out.println("<!DOCTYPE html>");
 			out.println("<HTML>");
 			out.println("	<HEAD>");
-			out.println("		<meta http-equiv=\"content-type\" content=\"text/html;charset=gbk\">");
+			out.println("		<meta http-equiv=\"content-type\" content=\"text/html;charset=utf8\">");
 			out.println("		<title>精灵中国 - 怪物列表</title>");
 			out.println("		<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"/>");
 			out.println("	</HEAD>");
@@ -109,7 +109,7 @@ public class MonsterHtml implements Convertable {
 			out.println("<!DOCTYPE html>");
 			out.println("<HTML>");
 			out.println("	<HEAD>");
-			out.println("		<meta http-equiv=\"content-type\" content=\"text/html;charset=gbk\">");
+			out.println("		<meta http-equiv=\"content-type\" content=\"text/html;charset=utf8\">");
 			out.println("		<title>" + monster.szName + "的掉落列表</title>");
 			out.println("		<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"/>");
 			out.println("	</HEAD>");

@@ -1,6 +1,6 @@
 package org.pstale.asset.struct.chars;
 
-public class CharMonsterInfo {
+public class CharMonsterInfo extends CHAR_INFO {
 	public final static int FALLITEM_MAX = 200;
 	public final static int FALLITEM2_MAX = 3;
 	public final static int NPC_MESSAGE_MAX = 20;
