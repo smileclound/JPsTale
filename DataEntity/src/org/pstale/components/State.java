@@ -11,4 +11,20 @@ public class State {
 	int talent; // 才能
 	int dexterity; // 敏捷
 	int health; // 体质
+	public int getStrength() {
+		return strength;
+	}
+	public int getSpirit() {
+		return spirit;
+	}
+	public int getTalent() {
+		return talent;
+	}
+	public int getDexterity() {
+		return dexterity;
+	}
+	public int getHealth() {
+		return health;
+	}
+	
 }
