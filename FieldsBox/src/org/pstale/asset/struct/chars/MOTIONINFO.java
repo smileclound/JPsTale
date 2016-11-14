@@ -1,6 +1,8 @@
-package org.pstale.asset.struct;
+package org.pstale.asset.struct.chars;
 
 import java.io.IOException;
+
+import org.pstale.asset.struct.Flyweight;
 
 import com.jme3.util.LittleEndien;
 

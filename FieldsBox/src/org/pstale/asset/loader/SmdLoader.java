@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.pstale.asset.control.WindAnimationControl;
 import org.pstale.asset.struct.*;
+import org.pstale.asset.struct.chars.MODELINFO;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;

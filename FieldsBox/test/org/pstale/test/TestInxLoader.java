@@ -7,8 +7,8 @@ import org.pstale.asset.loader.FileLocator;
 import org.pstale.asset.loader.SMDTYPE;
 import org.pstale.asset.loader.SmdKey;
 import org.pstale.asset.loader.SmdLoader;
-import org.pstale.asset.struct.MODELINFO;
-import org.pstale.asset.struct.MOTIONINFO;
+import org.pstale.asset.struct.chars.MODELINFO;
+import org.pstale.asset.struct.chars.MOTIONINFO;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;

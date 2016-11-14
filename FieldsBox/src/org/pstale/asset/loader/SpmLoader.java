@@ -1,46 +1,35 @@
-package org.pstale.loader;
+package org.pstale.asset.loader;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.log4j.Logger;
 import org.pstale.fields.RespawnList;
 import org.pstale.fields.StgBoss;
 import org.pstale.fields.StgMonster;
 
-/**
- * 
- * @author yanmaoyuan
- *
- */
-public class MonsterLoader {
+import com.jme3.asset.AssetInfo;
+import com.jme3.asset.AssetLoader;
 
+public class SpmLoader implements AssetLoader {
+
+	static Logger log = Logger.getLogger(SpmLoader.class);
+	
 	private boolean handleToken = false;
 	
-	protected File file = null;
 	protected BufferedReader reader = null;
 	protected String line;
 	protected String[] token;
 	
 	private String charset = "gbk";
 	
-	public RespawnList load(String name) throws IOException {
+	@Override
+	public RespawnList load(AssetInfo assetInfo) throws IOException {
 		RespawnList list = new RespawnList();
 
-		// 加载文件
-		file = new File(name);
-		if (!file.exists()) {
-			// 文件不存在
-			return null;
-		}
-		
-		reader = new BufferedReader(
-				new InputStreamReader(
-						new FileInputStream(file), charset));
+		reader = new BufferedReader(new InputStreamReader(assetInfo.openStream(), charset));
 
-		// 解析文件
 		while (nextLine()) {
 			if (line.length() == 0 || line.startsWith("//")
 					|| token[0].length() == 0) {
@@ -165,12 +154,10 @@ public class MonsterLoader {
 	 */
 	protected int getInt(int index) {
 		int value = 0;
-		// B_32_Ghoul.inf中，怪物格挡率为6%。。。多了一个%号。
 		try {
 			value = Integer.parseInt(token[1 + index]);
 		} catch (NumberFormatException e) {
-			System.out.println(file.getName()); // TODO for test
-			e.printStackTrace();
+			log.info("解析数值失败", e);
 		}
 		return value;
 	}

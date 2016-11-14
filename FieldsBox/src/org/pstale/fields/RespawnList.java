@@ -9,8 +9,6 @@ import java.util.List;
  *
  */
 public class RespawnList {
-	public String File;// 文件名
-	
 	public int LimitMax;// 地图中允许存在的怪物总数
 	public int OpenLimit = 3;// 每次刷新的最大数量
 
