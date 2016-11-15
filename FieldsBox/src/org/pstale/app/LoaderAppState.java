@@ -8,23 +8,31 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
+import org.pstale.asset.struct.chars.CharMonsterInfo;
+import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
 import org.pstale.fields.Field;
 import org.pstale.fields.Music;
 import org.pstale.fields.StageObject;
 import org.pstale.fields.StartPoint;
 
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Skeleton;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.texture.Texture;
 
 /**
@@ -235,44 +243,17 @@ public class LoaderAppState extends SubAppState {
 				});
 			}
 			
-			/**
-			 * 刷怪点
-			 */
-			final MonsterAppState monsterAppState = getStateManager().getState(MonsterAppState.class);
-			if (monsterAppState != null) {
-				StartPoint[] spawns = field.getSpawnPoints();
-				if (spawns != null) {
-					// 刷怪点的坐标只有X/Z坐标，而且有些刷怪点是无效的，需要重新计算。
-					for(int i=0; i<spawns.length; i++) {
-						StartPoint point = spawns[i];
-						if (point != null && point.state != 0) {
-							Vector3f pos = new Vector3f(point.x, 0, point.z);
-							pos.multLocal(scale);
-							pos.y = 1000;
-							pos = getLocationOnField(pos, mesh);
-							
-							try {
-								final Spatial model = flag.clone();
-								model.scale(scale);
-								model.setLocalTranslation(pos);
-								app.enqueue(new Runnable() {
-									public void run() {
-										rootNode.attachChild(model);
-									}
-								});
-							} catch (Exception e) {
-								log.error("加载模型失败", e);
-							}
-						}
-					}
-				}
+			if (LoadingAppState.CHECK_SERVER) {
+				/**
+				 * 刷怪点
+				 */
+				setupSpawnPoints(field, mesh);
+				
+				/**
+				 * NPC
+				 */
+				setupNpc(field);
 			}
-			
-			/**
-			 * NPC
-			 */
-			setupNpc(field);
-			
 			
 			// 设置为空
 			fields.add(field);
@@ -330,15 +311,92 @@ public class LoaderAppState extends SubAppState {
 			});
 		}
 	}
+	
+	private void setupSpawnPoints(final Field field, Mesh mesh) {
+		final MonsterAppState monsterAppState = getStateManager().getState(MonsterAppState.class);
+		if (monsterAppState != null) {
+			ArrayList<StartPoint> spawns = ModelFactory.loadSpp(field.getName());
+			
+			if (spawns != null) {
+				// 刷怪点的坐标只有X/Z坐标，而且有些刷怪点是无效的，需要重新计算。
+				int len = spawns.size();
+				for(int i=0; i<len; i++) {
+					StartPoint point = spawns.get(i);
+					
+					Vector3f pos = new Vector3f(point.x, 0, point.z);
+					pos.multLocal(scale);
+					pos.y = 1000;
+					pos = getLocationOnField(pos, mesh);
+					
+					try {
+						final Spatial model = flag.clone();
+						model.scale(scale);
+						model.setLocalTranslation(pos);
+						app.enqueue(new Runnable() {
+							public void run() {
+								rootNode.attachChild(model);
+							}
+						});
+					} catch (Exception e) {
+						log.error("加载模型失败", e);
+					}
+				}
+			}
+		}
+	}
 
 	private void setupNpc(final Field field) {
 		final NpcAppState npcAppState = getStateManager().getState(NpcAppState.class);
 		if (npcAppState != null) {
-			app.enqueue(new Runnable() {
-				public void run() {
-					npcAppState.load(field.getNpcs());
+			
+			ArrayList<TRNAS_PLAYERINFO> npcs = ModelFactory.loadSpc(field.getName());
+			if (npcs == null) {
+				return;
+			}
+			
+			int len = npcs.size();
+			for(int i=0; i<len; i++) {
+				TRNAS_PLAYERINFO npc = npcs.get(i);
+				Vector3f pos = new Vector3f(npc.x, npc.y, npc.z);
+				pos.multLocal(scale);
+
+				/**
+				 * 创建一个NPC模型
+				 * @param pos
+				 */
+				// 首先尝试直接读取NPC模型
+				final Node model = (Node)ModelFactory.loadNPC(npc.charInfo.szModelName);
+				
+				// Debug skeleton
+				final AnimControl ac = model.getControl(AnimControl.class);
+				if (ac != null) {
+					final Skeleton skel = ac.getSkeleton();
+					SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", skel);
+					final Material mat = new Material(getApplication().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+					mat.setColor("Color", ColorRGBA.Green);
+					mat.getAdditionalRenderState().setDepthTest(false);
+					skeletonDebug.setMaterial(mat);
+					model.attachChild(skeletonDebug);
+					
+					// ac.createChannel().setAnim("Anim");
 				}
-			});
+				
+				model.scale(scale);
+				model.setLocalTranslation(pos);
+				getApplication().enqueue(new Runnable() {
+					public void run() {
+						rootNode.attachChild(model);
+					}
+				});
+				
+				CharMonsterInfo cmNPC = ModelFactory.loadNpcScript(npc.charInfo.szModelName2);
+				if (cmNPC != null) {
+					log.debug("Found:" + cmNPC.szName);
+				} else {
+					log.debug("NPC not found:" + npc.charInfo.szModelName2);
+				}
+			}
+			
 		}
 	}
 

@@ -1,11 +1,29 @@
 package org.pstale.app;
 
-import static org.pstale.asset.loader.SMDTYPE.*;
+import static org.pstale.asset.loader.SMDTYPE.MODELINFO_MODEL;
+import static org.pstale.asset.loader.SMDTYPE.PAT3D_BIP;
+import static org.pstale.asset.loader.SMDTYPE.PAT3D_VISUAL;
+import static org.pstale.asset.loader.SMDTYPE.STAGE3D_COLLISION;
+import static org.pstale.asset.loader.SMDTYPE.STAGE3D_VISUAL;
+
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.pstale.asset.loader.CharInfoLoader;
+import org.pstale.asset.loader.FileLocator;
+import org.pstale.asset.loader.ItemLoader;
 import org.pstale.asset.loader.SmdKey;
+import org.pstale.asset.loader.SmdLoader;
+import org.pstale.asset.loader.SpcLoader;
+import org.pstale.asset.loader.SpmLoader;
+import org.pstale.asset.loader.SppLoader;
+import org.pstale.asset.struct.chars.CharMonsterInfo;
+import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
+import org.pstale.fields.RespawnList;
+import org.pstale.fields.StartPoint;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.plugins.WAVLoader;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
@@ -32,6 +50,15 @@ public class ModelFactory {
 	
 	public static void setAssetManager(final AssetManager manager) {
 		assetManager = manager;
+		assetManager.registerLoader(SmdLoader.class, "smd", "smb", "inx");
+		assetManager.registerLoader(WAVLoader.class, "bgm");
+		assetManager.registerLoader(SpcLoader.class, "spc");
+		assetManager.registerLoader(SpmLoader.class, "spm");
+		assetManager.registerLoader(SppLoader.class, "spp");
+		assetManager.registerLoader(CharInfoLoader.class, "inf", "npc");
+		assetManager.registerLoader(ItemLoader.class, "txt");
+		assetManager.registerLocator("/", FileLocator.class);
+		assetManager.registerLocator("assets", FileLocator.class);
 	}
 	
 	/**
@@ -107,6 +134,79 @@ public class ModelFactory {
 		return (Node)assetManager.loadAsset(new SmdKey(inx, MODELINFO_MODEL));
 	}
 	
+	public static ArrayList<StartPoint> loadSpp(final String name) {
+		String path = String.format("GameServer/Field/%s.ase.spp", getSimpleName(name));
+		try {
+			ArrayList<StartPoint> spp = (ArrayList<StartPoint>)assetManager.loadAsset(path);
+			return spp;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public static RespawnList loadSpm(final String name) {
+		String path = String.format("GameServer/Field/%s.ase.spm", getSimpleName(name));
+		try {
+			RespawnList creatures = (RespawnList)assetManager.loadAsset(path);
+			return creatures;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public static ArrayList<TRNAS_PLAYERINFO> loadSpc(final String name) {
+		String path = String.format("GameServer/Field/%s.ase.spc", getSimpleName(name));
+		try {
+			ArrayList<TRNAS_PLAYERINFO> npcs = (ArrayList<TRNAS_PLAYERINFO>)assetManager.loadAsset(path);
+			return npcs;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * 导入NPC的脚本文件
+	 * @param name
+	 * @return
+	 */
+	public static CharMonsterInfo loadNpcScript(final String name) {
+		String npc = changeName(name, "npc");
+		
+		try {
+			CharMonsterInfo info = (CharMonsterInfo)assetManager.loadAsset(npc);
+			return info;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * 将文件名掐头去尾，只留下名字。
+	 * “Field/forest/fore-3.ASE”会变成"fore-3"
+	 * @param name
+	 * @return
+	 */
+	public static String getSimpleName(final String orgin) {
+		if (orgin == null)
+			return null;
+		
+		// 替换可能存在的window文件夹符号
+		String path = orgin.replaceAll("\\\\", "/");
+		
+		// 掐头
+		int idx = path.lastIndexOf("/");
+		if (idx != -1) {
+			path = path.substring(idx+1);
+		}
+
+		// 去尾
+		idx = path.indexOf(".");
+		if (idx != -1) {
+			path = path.substring(0, idx);
+		}
+		
+		return path;
+	}
 	/**
 	 * 改变文件名后缀。
 	 * @param orgin

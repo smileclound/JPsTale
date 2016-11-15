@@ -1,7 +1,5 @@
 package org.pstale.app;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -14,13 +12,8 @@ import net.jmecn.asset.item.ItemInfo;
 
 import org.apache.log4j.Logger;
 import org.pstale.fields.Field;
-import org.pstale.fields.NPC;
 import org.pstale.fields.RespawnList;
-import org.pstale.fields.StartPoint;
 import org.pstale.loader.FieldLoader;
-import org.pstale.loader.MonsterLoader;
-import org.pstale.loader.NpcLoader;
-import org.pstale.loader.SpawnLoader;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
@@ -209,19 +202,6 @@ public class LoadingAppState extends SubAppState {
 					log.info("EnName:" + monster.enName + " LocalName:" + monster.szName +  " File:" + monster.File);
 				}
 				
-				// 所有NPC数据
-				mi.setFolder(SERVER_ROOT + "/" + NPC_DIR);
-				mi.init();
-				data.allNpc = mi.getList();
-				
-				value = 47;
-				message = "NPC:" + data.allNpc.size();
-				log.info(message);
-				for(int i=0; i<data.allNpc.size(); i++) {
-					CharMonsterInfo npc = data.allNpc.get(i);
-					log.info("EnName:" + npc.enName + " LocalName:" + npc.szName + " File:" + npc.File);
-				}
-				
 				// 所有装备数据
 				ItemInitilize ii = new ItemInitilize();
 				ii.setFolder(SERVER_ROOT + "/" + OPENITEM_DIR);
@@ -242,53 +222,6 @@ public class LoadingAppState extends SubAppState {
 			data.fields = fields;
 			value = 78;
 			message = "解析地区";
-
-			SpawnLoader sppLoader = new SpawnLoader();
-			MonsterLoader spmLoader = new MonsterLoader();
-			NpcLoader spcLoader = new NpcLoader();
-			int size = fields.length;
-			for (int i = 0; i < size; i++) {
-				Field field = fields[i];
-				// 计算进度
-				value = 78 + 22 * (i + 1) / (size + 1);
-				message = "解析:" + field.getTitle();
-
-				// 检查模型文件是否存在
-				String model = field.getName();
-
-				// 尝试加载服务端文件
-				if (CHECK_SERVER && SERVER_ROOT != null) {
-					int index = model.lastIndexOf("/") + 1;
-					String name = model.substring(index);
-					String spp = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spp";
-					String spm = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spm";
-					String spc = SERVER_ROOT + "/" + FIELD_DIR + "/" + name + ".spc";
-
-					try {
-						// 怪物刷新点
-						StartPoint[] points = sppLoader.load(spp);
-						field.setSpawnPoints(points);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-					try {
-						// 刷怪种类
-						RespawnList monsters = spmLoader.load(spm);
-						field.setRespawnList(monsters);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-					try {
-						// NPC信息
-						ArrayList<NPC> npcs = spcLoader.load(spc);
-						field.setNpcs(npcs);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
 
 			value = 100;
 			message = "完成";
