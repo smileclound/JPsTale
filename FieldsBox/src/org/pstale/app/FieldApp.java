@@ -35,13 +35,22 @@ public class FieldApp extends SimpleApplication {
 		/**
 		 * 客户端资源的根目录
 		 */
-		if (settings.getString("ClientRoot") != null) {
-			String clientRoot = settings.getString("ClientRoot");
+		String clientRoot = settings.getString("ClientRoot");
+		if (clientRoot != null) {
 			assetManager.registerLocator(clientRoot, FileLocator.class);
 		}
 		
-		LoadingAppState.SERVER_ROOT = settings.getString("ServerRoot");
-		LoadingAppState.CHECK_SERVER = settings.getBoolean("CheckServer");
+		/**
+		 * 服务端资源的根目录
+		 */
+		String serverRoot = settings.getString("ServerRoot");
+		boolean checkServer = settings.getBoolean("CheckServer");
+		if (checkServer && serverRoot != null) {
+			assetManager.registerLocator(serverRoot, FileLocator.class);
+			
+			LoadingAppState.CHECK_SERVER = true;
+			LoadingAppState.SERVER_ROOT = serverRoot;
+		}
 		
 		/**
 		 * 是否使用灯光、法线
