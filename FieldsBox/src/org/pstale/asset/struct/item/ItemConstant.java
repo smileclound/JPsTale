@@ -6,48 +6,46 @@ public interface ItemConstant {
 
 	public final static int ITEMSIZE = 22; // 酒捞袍 捞固瘤狼 农扁甫 唱穿绰 蔼
 
-	public final static long CHECK_COPY_ITEM = 1; // 汗荤酒捞袍
-	public final static long CHECK_GIVE_ITEM = 2; // 刘沥侩酒捞袍
+	public final static int CHECK_COPY_ITEM = 1; // 汗荤酒捞袍
+	public final static int CHECK_GIVE_ITEM = 2; // 刘沥侩酒捞袍
 
 	/*---------------------------------------------*
 	 *			装备位置
 	 *----------------------------------------------*/
-	public final static long INVENTORY_POS_BOX = 0x00000001;
-	public final static long INVENTORY_POS_LHAND = 0x00000002;
-	public final static long INVENTORY_POS_RHAND = 0x00000004;
-	public final static long INVENTORY_POS_ARMOR = 0x00000008;
-	public final static long INVENTORY_POS_BOOTS = 0x00000010;
-	public final static long INVENTORY_POS_GLOVES = 0x00000020;
-	public final static long INVENTORY_POS_LRING = 0x00000040;
-	public final static long INVENTORY_POS_RRING = 0x00000080;
-	public final static long INVENTORY_POS_SHELTOM = 0x00000100;
-	public final static long INVENTORY_POS_AMULET = 0x00000200;
-	public final static long INVENTORY_POS_ARMLET = 0x00000800;
-	public final static long INVENTORY_POS_TWO_HAND = 0x00001000;
-	public final static long INVENTORY_POS_POTION = 0x00002000;
+	public final static int INVENTORY_POS_BOX = 0x00000001;
+	public final static int INVENTORY_POS_LHAND = 0x00000002;
+	public final static int INVENTORY_POS_RHAND = 0x00000004;
+	public final static int INVENTORY_POS_ARMOR = 0x00000008;
+	public final static int INVENTORY_POS_BOOTS = 0x00000010;
+	public final static int INVENTORY_POS_GLOVES = 0x00000020;
+	public final static int INVENTORY_POS_LRING = 0x00000040;
+	public final static int INVENTORY_POS_RRING = 0x00000080;
+	public final static int INVENTORY_POS_SHELTOM = 0x00000100;
+	public final static int INVENTORY_POS_AMULET = 0x00000200;
+	public final static int INVENTORY_POS_ARMLET = 0x00000800;
+	public final static int INVENTORY_POS_TWO_HAND = 0x00001000;
+	public final static int INVENTORY_POS_POTION = 0x00002000;
 
 	/*---------------------------------------------*
 	 *			装备类型
 	 *----------------------------------------------*/
 
-	public final static long ITEM_CLASS_WEAPON_ONE = INVENTORY_POS_RHAND;
-	public final static long ITEM_CLASS_WEAPON_TWO = (INVENTORY_POS_RHAND | INVENTORY_POS_LHAND); // 捧勤靛绰
-																									// 绢叼俊唱
-																									// 甸绢哎荐乐促
-	public final static long ITEM_CLASS_ARMOR = INVENTORY_POS_ARMOR;
-	public final static long ITEM_CLASS_BOOTS = INVENTORY_POS_BOOTS;
-	public final static long ITEM_CLASS_GLOVES = INVENTORY_POS_GLOVES;
-	public final static long ITEM_CLASS_SHIELDS = INVENTORY_POS_LHAND;
-	public final static long ITEM_CLASS_RING = (INVENTORY_POS_LRING | INVENTORY_POS_RRING);
-	public final static long ITEM_CLASS_SHELTOM = INVENTORY_POS_SHELTOM;
-	public final static long ITEM_CLASS_AMULET = INVENTORY_POS_AMULET;
-	public final static long ITEM_CLASS_ARMLET = INVENTORY_POS_ARMLET;
-	public final static long ITEM_CLASS_MAGICIAL_STUFFS = INVENTORY_POS_LHAND;
-	public final static long ITEM_CLASS_POTION = INVENTORY_POS_POTION;
-	public final static long ITEM_CLASS_ECORE = INVENTORY_POS_BOX;
-	public final static long ITEM_CLASS_QUEST = INVENTORY_POS_BOX;
-	public final static long ITEM_CLASS_FORCEORB = INVENTORY_POS_BOX;
-	public final static long ITEM_CLASS_SEEL = INVENTORY_POS_BOX;
+	public final static int ITEM_CLASS_WEAPON_ONE = INVENTORY_POS_RHAND;
+	public final static int ITEM_CLASS_WEAPON_TWO = (INVENTORY_POS_RHAND | INVENTORY_POS_LHAND);
+	public final static int ITEM_CLASS_ARMOR = INVENTORY_POS_ARMOR;
+	public final static int ITEM_CLASS_BOOTS = INVENTORY_POS_BOOTS;
+	public final static int ITEM_CLASS_GLOVES = INVENTORY_POS_GLOVES;
+	public final static int ITEM_CLASS_SHIELDS = INVENTORY_POS_LHAND;
+	public final static int ITEM_CLASS_RING = (INVENTORY_POS_LRING | INVENTORY_POS_RRING);
+	public final static int ITEM_CLASS_SHELTOM = INVENTORY_POS_SHELTOM;
+	public final static int ITEM_CLASS_AMULET = INVENTORY_POS_AMULET;
+	public final static int ITEM_CLASS_ARMLET = INVENTORY_POS_ARMLET;
+	public final static int ITEM_CLASS_MAGICIAL_STUFFS = INVENTORY_POS_LHAND;
+	public final static int ITEM_CLASS_POTION = INVENTORY_POS_POTION;
+	public final static int ITEM_CLASS_ECORE = INVENTORY_POS_BOX;
+	public final static int ITEM_CLASS_QUEST = INVENTORY_POS_BOX;
+	public final static int ITEM_CLASS_FORCEORB = INVENTORY_POS_BOX;
+	public final static int ITEM_CLASS_SEEL = INVENTORY_POS_BOX;
 
 	// 武器类型
 	public final static int ITEM_WEAPONCLASS_NOT_SHOOTING = 1; // 辟立屈
@@ -58,208 +56,207 @@ public interface ItemConstant {
 	/*---------------------------------------------*
 	 *			武器类型编码				    
 	 *----------------------------------------------*/
-	public final static long sinWA1 = 0x01010000;// Axes
-	public final static long sinWC1 = 0x01020000;// Claws
-	public final static long sinWH1 = 0x01030000;// Hammer & So On
-	public final static long sinWM1 = 0x01040000;// Magicial Stuffs
-	public final static long sinWP1 = 0x01050000;// Poles & Spears
-	public final static long sinWS1 = 0x01060000;// Shooters
-	public final static long sinWS2 = 0x01070000;// Swords
-	public final static long sinWT1 = 0x01080000;// Throwing Arms
+	public final static int sinWA1 = 0x01010000;// Axes
+	public final static int sinWC1 = 0x01020000;// Claws
+	public final static int sinWH1 = 0x01030000;// Hammer & So On
+	public final static int sinWM1 = 0x01040000;// Magicial Stuffs
+	public final static int sinWP1 = 0x01050000;// Poles & Spears
+	public final static int sinWS1 = 0x01060000;// Shooters
+	public final static int sinWS2 = 0x01070000;// Swords
+	public final static int sinWT1 = 0x01080000;// Throwing Arms
 
 	/*---------------------------------------------*
 	 *			防具类型编码			    
 	 *----------------------------------------------*/
-	public final static long sinDA1 = 0x02010000;// Armor
-	public final static long sinDB1 = 0x02020000;// Boots
-	public final static long sinDG1 = 0x02030000;// Gloves
-	public final static long sinDS1 = 0x02040000;// Shields
-	public final static long sinDA2 = 0x02050000;// Armor
+	public final static int sinDA1 = 0x02010000;// Armor
+	public final static int sinDB1 = 0x02020000;// Boots
+	public final static int sinDG1 = 0x02030000;// Gloves
+	public final static int sinDS1 = 0x02040000;// Shields
+	public final static int sinDA2 = 0x02050000;// Armor
 
 	/*---------------------------------------------*
 	 *			护身符、戒指、石头、臂环等编码
 	 *----------------------------------------------*/
 
-	public final static long sinOA1 = 0x03010000;// Amulet
-	public final static long sinOA2 = 0x03020000;// Armlet
-	public final static long sinOM1 = 0x03030000;// Magicial Stuffs
-	public final static long sinOR1 = 0x03040000;// Ring
-	public final static long sinOR2 = 0x03050000;// Ring2
-	public final static long sinOS1 = 0x02350000;// Sheltom
-	public final static long sinFO1 = 0x03060000;// Force Orb
-	public final static long sinSE1 = 0x03070000;// Seel
-	public final static long sinPR1 = 0x03080000;// 堡籍 pluto
-	public final static long sinPR2 = 0x03090000;// 荐沥 pluto
-	public final static long sinPR3 = 0x03100000;// 烽(A) pluto
-	public final static long sinPR4 = 0x03110000;// 烽(B) pluto
+	public final static int sinOA1 = 0x03010000;// Amulet
+	public final static int sinOA2 = 0x03020000;// Armlet
+	public final static int sinOM1 = 0x03030000;// Magicial Stuffs
+	public final static int sinOR1 = 0x03040000;// Ring
+	public final static int sinOR2 = 0x03050000;// Ring2
+	public final static int sinOS1 = 0x02350000;// Sheltom
+	public final static int sinFO1 = 0x03060000;// Force Orb
+	public final static int sinSE1 = 0x03070000;// Seel
+	public final static int sinPR1 = 0x03080000;// 堡籍 pluto
+	public final static int sinPR2 = 0x03090000;// 荐沥 pluto
+	public final static int sinPR3 = 0x03100000;// 烽(A) pluto
+	public final static int sinPR4 = 0x03110000;// 烽(B) pluto
 	/*---------------------------------------------*
 	 *			药剂类型编码
 	 *----------------------------------------------*/
-	public final static long sinPM1 = 0x04010000;// Mana
-	public final static long sinPL1 = 0x04020000;// Life
-	public final static long sinPS1 = 0x04030000;// Stamina
+	public final static int sinPM1 = 0x04010000;// Mana
+	public final static int sinPL1 = 0x04020000;// Life
+	public final static int sinPS1 = 0x04030000;// Stamina
 
 	/*---------------------------------------------*
 	 *			经济类型编码
 	 *----------------------------------------------*/
-	public final static long sinGG1 = 0x05010000; // Gold
-	public final static long sinBS1 = 0x05020000; // 骇扼配胶沛
+	public final static int sinGG1 = 0x05010000; // Gold
+	public final static int sinBS1 = 0x05020000; // 骇扼配胶沛
 
 	/*---------------------------------------------*
 	 *			卷轴类型编码
 	 *----------------------------------------------*/
-	public final static long sinEC1 = 0x06010000;
+	public final static int sinEC1 = 0x06010000;
 
 	/*---------------------------------------------*
 	 *			 任务物品类型编码
 	 *----------------------------------------------*/
 
-	public final static long sinQT1 = 0x07010000;
+	public final static int sinQT1 = 0x07010000;
 
 	/*---------------------------------------------*
 	 *			  商城物品类型编码
 	 *----------------------------------------------*/
-	public final static long sinSP1 = 0x08010000;
-	public final static long sinGP1 = 0x08020000; // 0x09010000 栏肺窍聪 巩力捞匙 弊妨..
+	public final static int sinSP1 = 0x08010000;
+	public final static int sinGP1 = 0x08020000; // 0x09010000 栏肺窍聪 巩力捞匙 弊妨..
 													// (& sinITEM_MASK2 啊 救冈澜)
-	public final static long sinQW1 = 0x08030000; // 况橇霸捞飘 喇
-	public final static long sinGF1 = 0x08040000; // 喊惑前鼻
-	public final static long sinPZ1 = 0x08060000; // 酒贸 欺榴
-	public final static long sinPZ2 = 0x08070000; // 欧龋乔 欺榴
-	public final static long sinCH1 = 0x08080000; // 惯坊鸥牢单捞 檬妮房
-	public final static long sinSD2 = 0x08090000; // Sod2 惯积 酒捞袍
-	public final static long sinBC1 = 0x080A0000; // 傍己傈 惯积 酒捞袍
-	public final static long sinBI1 = 0x080B0000; // 蜡丰备概 酒捞袍
-	public final static long sinBI2 = 0x080C0000; // 蜡丰备概 酒捞袍(菩虐瘤 某浆 酒捞袍 )
-	public final static long sinGP2 = 0x080D0000; // 厘喊 - 家匡胶沛
+	public final static int sinQW1 = 0x08030000; // 况橇霸捞飘 喇
+	public final static int sinGF1 = 0x08040000; // 喊惑前鼻
+	public final static int sinPZ1 = 0x08060000; // 酒贸 欺榴
+	public final static int sinPZ2 = 0x08070000; // 欧龋乔 欺榴
+	public final static int sinCH1 = 0x08080000; // 惯坊鸥牢单捞 檬妮房
+	public final static int sinSD2 = 0x08090000; // Sod2 惯积 酒捞袍
+	public final static int sinBC1 = 0x080A0000; // 傍己傈 惯积 酒捞袍
+	public final static int sinBI1 = 0x080B0000; // 蜡丰备概 酒捞袍
+	public final static int sinBI2 = 0x080C0000; // 蜡丰备概 酒捞袍(菩虐瘤 某浆 酒捞袍 )
+	public final static int sinGP2 = 0x080D0000; // 厘喊 - 家匡胶沛
 
 	/*---------------------------------------------*
 	 *			  Make Item
 	 *----------------------------------------------*/
-	public final static long sinMA1 = 0x09010000;
-	public final static long sinMA2 = 0x09020000;
+	public final static int sinMA1 = 0x09010000;
+	public final static int sinMA2 = 0x09020000;
 
 	/*---------------------------------------------*
 	 *			  力累 犁丰 酒捞袍
 	 *----------------------------------------------*/
-	// pluto 力累
-	public final static long sinWR1 = 0x0A010000; // 公备 饭矫乔
-	public final static long sinDR1 = 0x0A020000; // 癌林 饭矫乔
+	public final static int sinWR1 = 0x0A010000; // 公备 饭矫乔
+	public final static int sinDR1 = 0x0A020000; // 癌林 饭矫乔
 
-	public final static long EXTREME_RECIPE = 1; // 镭囚柳 饭矫乔
-	public final static long ANCIENT_RECIPE = 2; // 绊措狼 饭矫乔
-	public final static long MINOTAUR_RECIPE = 3; // 措瘤狼 饭矫乔
-	public final static long DOOM_RECIPE = 4; // 绢狄狼 饭矫乔
-	public final static long SALAMANDER_RECIPE = 5; // 拳疙狼 饭矫乔
-	public final static long WYVERN_RECIPE = 6; // 官恩狼 饭矫乔
-	public final static long PHOENIX_RECIPE = 7; // 怕剧狼 饭矫乔
-	public final static long FRENZY_RECIPE = 8; // 堡器茄 饭矫乔
-	public final static long HEAVENS_RECIPE = 9; // 玫惑狼 饭矫乔
-	public final static long SNOW_RECIPE = 10; // 器汲狼 饭矫乔
-	public final static long MEMORY_RECIPE = 11; // 扁撅狼 饭矫乔 // 厘喊 - 措厘厘捞狼 去
+	public final static int EXTREME_RECIPE = 1; // 镭囚柳 饭矫乔
+	public final static int ANCIENT_RECIPE = 2; // 绊措狼 饭矫乔
+	public final static int MINOTAUR_RECIPE = 3; // 措瘤狼 饭矫乔
+	public final static int DOOM_RECIPE = 4; // 绢狄狼 饭矫乔
+	public final static int SALAMANDER_RECIPE = 5; // 拳疙狼 饭矫乔
+	public final static int WYVERN_RECIPE = 6; // 官恩狼 饭矫乔
+	public final static int PHOENIX_RECIPE = 7; // 怕剧狼 饭矫乔
+	public final static int FRENZY_RECIPE = 8; // 堡器茄 饭矫乔
+	public final static int HEAVENS_RECIPE = 9; // 玫惑狼 饭矫乔
+	public final static int SNOW_RECIPE = 10; // 器汲狼 饭矫乔
+	public final static int MEMORY_RECIPE = 11; // 扁撅狼 饭矫乔 // 厘喊 - 措厘厘捞狼 去
 
 	/*---------------------------------------------*
 	 *			装备序号
 	 *----------------------------------------------*/
-	public final static long sin00 = 0x00000000;
-	public final static long sin01 = 0x00000100;
-	public final static long sin02 = 0x00000200;
-	public final static long sin03 = 0x00000300;
-	public final static long sin04 = 0x00000400;
-	public final static long sin05 = 0x00000500;
-	public final static long sin06 = 0x00000600;
-	public final static long sin07 = 0x00000700;
-	public final static long sin08 = 0x00000800;
-	public final static long sin09 = 0x00000900;
-	public final static long sin10 = 0x00000A00;
-	public final static long sin11 = 0x00000B00;
-	public final static long sin12 = 0x00000C00;
-	public final static long sin13 = 0x00000D00;
-	public final static long sin14 = 0x00000E00;
-	public final static long sin15 = 0x00000F00;
-	public final static long sin16 = 0x00001000;
-	public final static long sin17 = 0x00001100;
-	public final static long sin18 = 0x00001200;
-	public final static long sin19 = 0x00001300;
-	public final static long sin20 = 0x00001400;
-	public final static long sin21 = 0x00001500;
-	public final static long sin22 = 0x00001600;
-	public final static long sin23 = 0x00001700;
-	public final static long sin24 = 0x00001800;
-	public final static long sin25 = 0x00001900;
-	public final static long sin26 = 0x00002A00;
-	public final static long sin27 = 0x00002B00;
-	public final static long sin28 = 0x00002C00;
-	public final static long sin29 = 0x00002D00;
-	public final static long sin30 = 0x00002E00;
-	public final static long sin31 = 0x00002F00;
-	public final static long sin32 = 0x00003000;
-	public final static long sin33 = 0x00003100;
-	public final static long sin34 = 0x00003200;
-	public final static long sin35 = 0x00003300;
-	public final static long sin36 = 0x00003400;
-	public final static long sin37 = 0x00003500;
-	public final static long sin38 = 0x00003600;
-	public final static long sin39 = 0x00003700;
-	public final static long sin40 = 0x00003800;
-	public final static long sin41 = 0x00003900;
-	public final static long sin42 = 0x00003A00;
-	public final static long sin43 = 0x00003B00;
-	public final static long sin44 = 0x00003C00;
-	public final static long sin45 = 0x00003D00;
-	public final static long sin46 = 0x00003E00;
-	public final static long sin47 = 0x00003F00;
-	public final static long sin48 = 0x00004000;
-	public final static long sin49 = 0x00004100;
-	public final static long sin50 = 0x00004200;
-	public final static long sin51 = 0x00004300;
-	public final static long sin52 = 0x00004400;
-	public final static long sin53 = 0x00004500;
-	public final static long sin54 = 0x00004600;
-	public final static long sin55 = 0x00004700;
-	public final static long sin56 = 0x00004800;
-	public final static long sin57 = 0x00004900;
-	public final static long sin58 = 0x00004A00;
-	public final static long sin59 = 0x00004B00;
-	public final static long sin60 = 0x00004C00;
-	public final static long sin61 = 0x00004D00;
-	public final static long sin62 = 0x00004E00;
-	public final static long sin63 = 0x00004F00;
-	public final static long sin64 = 0x00005000;
-	public final static long sin65 = 0x00005100;
-	public final static long sin66 = 0x00005200;
-	public final static long sin67 = 0x00005300;
-	public final static long sin68 = 0x00005400;
-	public final static long sin69 = 0x00005500;
-	public final static long sin70 = 0x00005600;
-	public final static long sin71 = 0x00005700;
-	public final static long sin72 = 0x00005800;
-	public final static long sin73 = 0x00005900;
-	public final static long sin74 = 0x00005A00;
-	public final static long sin75 = 0x00005B00;
-	public final static long sin76 = 0x00005C00;
-	public final static long sin77 = 0x00005D00;
-	public final static long sin78 = 0x00005E00;
-	public final static long sin79 = 0x00005F00;
-	public final static long sin80 = 0x00006000;
-	public final static long sin81 = 0x00006100;
-	public final static long sin82 = 0x00006200;
-	public final static long sin83 = 0x00006300;
-	public final static long sin84 = 0x00006400;
-	public final static long sin85 = 0x00006500;
-	public final static long sin86 = 0x00006600;
-	public final static long sin87 = 0x00006700;
-	public final static long sin88 = 0x00006800;
-	public final static long sin89 = 0x00006900;
-	public final static long sin90 = 0x00006A00;
-	public final static long sin91 = 0x00006B00;
-	public final static long sin92 = 0x00006C00;
-	public final static long sin93 = 0x00006D00;
-	public final static long sin94 = 0x00006E00;
-	public final static long sin95 = 0x00006F00;
-	public final static long sin96 = 0x00007000;
-	public final static long sin97 = 0x00007100;
-	public final static long sin98 = 0x00007200;
+	public final static int sin00 = 0x00000000;
+	public final static int sin01 = 0x00000100;
+	public final static int sin02 = 0x00000200;
+	public final static int sin03 = 0x00000300;
+	public final static int sin04 = 0x00000400;
+	public final static int sin05 = 0x00000500;
+	public final static int sin06 = 0x00000600;
+	public final static int sin07 = 0x00000700;
+	public final static int sin08 = 0x00000800;
+	public final static int sin09 = 0x00000900;
+	public final static int sin10 = 0x00000A00;
+	public final static int sin11 = 0x00000B00;
+	public final static int sin12 = 0x00000C00;
+	public final static int sin13 = 0x00000D00;
+	public final static int sin14 = 0x00000E00;
+	public final static int sin15 = 0x00000F00;
+	public final static int sin16 = 0x00001000;
+	public final static int sin17 = 0x00001100;
+	public final static int sin18 = 0x00001200;
+	public final static int sin19 = 0x00001300;
+	public final static int sin20 = 0x00001400;
+	public final static int sin21 = 0x00001500;
+	public final static int sin22 = 0x00001600;
+	public final static int sin23 = 0x00001700;
+	public final static int sin24 = 0x00001800;
+	public final static int sin25 = 0x00001900;
+	public final static int sin26 = 0x00002A00;
+	public final static int sin27 = 0x00002B00;
+	public final static int sin28 = 0x00002C00;
+	public final static int sin29 = 0x00002D00;
+	public final static int sin30 = 0x00002E00;
+	public final static int sin31 = 0x00002F00;
+	public final static int sin32 = 0x00003000;
+	public final static int sin33 = 0x00003100;
+	public final static int sin34 = 0x00003200;
+	public final static int sin35 = 0x00003300;
+	public final static int sin36 = 0x00003400;
+	public final static int sin37 = 0x00003500;
+	public final static int sin38 = 0x00003600;
+	public final static int sin39 = 0x00003700;
+	public final static int sin40 = 0x00003800;
+	public final static int sin41 = 0x00003900;
+	public final static int sin42 = 0x00003A00;
+	public final static int sin43 = 0x00003B00;
+	public final static int sin44 = 0x00003C00;
+	public final static int sin45 = 0x00003D00;
+	public final static int sin46 = 0x00003E00;
+	public final static int sin47 = 0x00003F00;
+	public final static int sin48 = 0x00004000;
+	public final static int sin49 = 0x00004100;
+	public final static int sin50 = 0x00004200;
+	public final static int sin51 = 0x00004300;
+	public final static int sin52 = 0x00004400;
+	public final static int sin53 = 0x00004500;
+	public final static int sin54 = 0x00004600;
+	public final static int sin55 = 0x00004700;
+	public final static int sin56 = 0x00004800;
+	public final static int sin57 = 0x00004900;
+	public final static int sin58 = 0x00004A00;
+	public final static int sin59 = 0x00004B00;
+	public final static int sin60 = 0x00004C00;
+	public final static int sin61 = 0x00004D00;
+	public final static int sin62 = 0x00004E00;
+	public final static int sin63 = 0x00004F00;
+	public final static int sin64 = 0x00005000;
+	public final static int sin65 = 0x00005100;
+	public final static int sin66 = 0x00005200;
+	public final static int sin67 = 0x00005300;
+	public final static int sin68 = 0x00005400;
+	public final static int sin69 = 0x00005500;
+	public final static int sin70 = 0x00005600;
+	public final static int sin71 = 0x00005700;
+	public final static int sin72 = 0x00005800;
+	public final static int sin73 = 0x00005900;
+	public final static int sin74 = 0x00005A00;
+	public final static int sin75 = 0x00005B00;
+	public final static int sin76 = 0x00005C00;
+	public final static int sin77 = 0x00005D00;
+	public final static int sin78 = 0x00005E00;
+	public final static int sin79 = 0x00005F00;
+	public final static int sin80 = 0x00006000;
+	public final static int sin81 = 0x00006100;
+	public final static int sin82 = 0x00006200;
+	public final static int sin83 = 0x00006300;
+	public final static int sin84 = 0x00006400;
+	public final static int sin85 = 0x00006500;
+	public final static int sin86 = 0x00006600;
+	public final static int sin87 = 0x00006700;
+	public final static int sin88 = 0x00006800;
+	public final static int sin89 = 0x00006900;
+	public final static int sin90 = 0x00006A00;
+	public final static int sin91 = 0x00006B00;
+	public final static int sin92 = 0x00006C00;
+	public final static int sin93 = 0x00006D00;
+	public final static int sin94 = 0x00006E00;
+	public final static int sin95 = 0x00006F00;
+	public final static int sin96 = 0x00007000;
+	public final static int sin97 = 0x00007100;
+	public final static int sin98 = 0x00007200;
 
 	/** 元素抗性编码 **/
 	public final static int ITEMINFO_BIONIC = 0; // 积眉
@@ -273,15 +270,15 @@ public interface ItemConstant {
 	public final static int ITEMINFO_NONE = 15; // 加己 公矫
 
 	// ////////* 酒捞袍 辆幅 *////////
-	public final static long ITEM_KIND_NORMAL = 0; // 扁夯 酒捞袍
-	public final static long ITEM_KIND_CRAFT = 1; // 炼钦 酒捞袍
-	public final static long ITEM_KIND_AGING = 2; // 俊捞隆 酒捞袍
-	public final static long ITEM_KIND_QUEST = 3; // 涅胶飘侩 酒捞袍
-	public final static long ITEM_KIND_EVENT = 4; // 捞亥飘 酒捞袍
-	public final static long ITEM_KIND_MAKE_MAIN = 5; // 捞亥飘 酒捞袍
-	public final static long ITEM_KIND_MAKE_ELEMENT = 6; // 捞亥飘 酒捞袍
-	public final static long ITEM_KIND_QUEST_WEAPON = 7; // 捞亥飘 酒捞袍
-	public final static long ITEM_KIND_SPECIAL = 8; // SpecialItemFlag[1] 俊
+	public final static int ITEM_KIND_NORMAL = 0; // 扁夯 酒捞袍
+	public final static int ITEM_KIND_CRAFT = 1; // 炼钦 酒捞袍
+	public final static int ITEM_KIND_AGING = 2; // 俊捞隆 酒捞袍
+	public final static int ITEM_KIND_QUEST = 3; // 涅胶飘侩 酒捞袍
+	public final static int ITEM_KIND_EVENT = 4; // 捞亥飘 酒捞袍
+	public final static int ITEM_KIND_MAKE_MAIN = 5; // 捞亥飘 酒捞袍
+	public final static int ITEM_KIND_MAKE_ELEMENT = 6; // 捞亥飘 酒捞袍
+	public final static int ITEM_KIND_QUEST_WEAPON = 7; // 捞亥飘 酒捞袍
+	public final static int ITEM_KIND_SPECIAL = 8; // SpecialItemFlag[1] 俊
 													// 敲发殿废矫 胶其既酒捞袍栏肺 备盒
 	/*---------------------------------------------*
 	*			物品音效编码

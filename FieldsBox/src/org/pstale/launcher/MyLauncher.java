@@ -16,7 +16,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -40,7 +39,6 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 import org.pstale.app.FieldApp;
-import org.pstale.utils.ImageDecoder;
 
 import com.jme3.system.AppSettings;
 
@@ -237,15 +235,8 @@ public final class MyLauncher extends JFrame {
 		decodeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (checkClientRoot(CLIENT_ROOT)) {
-					String[] folders = { "effect", "Field", "char", "cursor", "sky" };
-					// 一级目录
-					for (String subFolder : folders) {
-						// 二级目录
-						File file = new File(CLIENT_ROOT + "/" + subFolder);
-						decode(file);
-					}
-				} else {
-					
+					DecodeDialog dialog = new DecodeDialog(MyLauncher.this, CLIENT_ROOT);
+					dialog.setVisible(true);
 				}
 			}
 		});
@@ -253,15 +244,8 @@ public final class MyLauncher extends JFrame {
 		encodeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (checkClientRoot(CLIENT_ROOT)) {
-					String[] folders = { "effect", "Field", "char", "cursor", "sky" };
-					// 一级目录
-					for (String subFolder : folders) {
-						// 二级目录
-						File file = new File(CLIENT_ROOT + "/" + subFolder);
-						encode(file);
-					}
-				} else {
-					
+					EncodeDialog dialog = new EncodeDialog(MyLauncher.this, CLIENT_ROOT);
+					dialog.setVisible(true);
 				}
 			}
 		});
@@ -970,7 +954,7 @@ public final class MyLauncher extends JFrame {
 			return false;
 		}
 
-		String[] folders = { "effect", "field", "char", "wav", "sky" };
+		String[] folders = { "effect", "field", "char", "wav", "sky", "image"};
 		for (String subFolder : folders) {
 			if (!new File(folder + "/" + subFolder).exists()) {
 				return false;
@@ -1000,41 +984,6 @@ public final class MyLauncher extends JFrame {
 		}
 		return true;
 	}
-
-	/**
-	 * 图片解密
-	 */
-	private void decode(File file) {
-		File[] folder = file.listFiles(folderFilter);
-		if (folder != null) {
-			int len = folder.length;
-			for(int i=0; i<len; i++) {
-				decode(folder[i]);
-			}
-		}
-		ImageDecoder.decode(file);
-	}
-	
-	/**
-	 * 图片加密
-	 */
-	private void encode(File file) {
-		File[] folder = file.listFiles(folderFilter);
-		if (folder != null) {
-			int len = folder.length;
-			for(int i=0; i<len; i++) {
-				decode(folder[i]);
-			}
-		}
-		ImageDecoder.encode(file);
-	}
-	
-	FileFilter folderFilter = new FileFilter() {
-		@Override
-		public boolean accept(File pathname) {
-			return pathname.isDirectory();
-		}
-	};
 	
 	private void startApp() {
 		new Thread() {

@@ -2,21 +2,21 @@ package org.pstale.asset.struct.item;
 
 public class Item {
 
-	public long CODE;
-	String ItemNameIndex; // Item Name
+	public int code;
+	public String name; // Item Name
 
 	/*-------------------------*
 	 *	It is set during initialization
 	 *--------------------------*/
-	public String LastCategory; // The final category
-	int w;
-	int h; // Item size
-	String ItemFilePath; // Items loaded on a file path
-	long Class; // The type of item
-	String DorpItem; // Items when dropped
-	long SetModelPosi; // Position the item to be set
-	int SoundIndex; // Items sound
-	int WeaponClass;
+	public String category; // The final category
+	public int width;
+	public int height; // Item size
+	public int Class; // The type of item
+	public String folder; // Items loaded on a file path 
+	public String dorpItem; // Items when dropped
+	public int SetModelPosi; // Position the item to be set
+	public int sound; // Items sound
+	public int WeaponClass;
 
 	// --------------------------
 
@@ -39,36 +39,34 @@ public class Item {
 	public Item() {
 	}
 
-	public Item(long cODE, String itemNameIndex, String lastCategory, int w,
-			int h, String itemFilePath, long class1, String dorpItem,
-			long setModelPosi, int soundIndex, int weaponClass) {
-		super();
-		CODE = cODE;
-		ItemNameIndex = itemNameIndex;
-		LastCategory = lastCategory;
-		this.w = w;
-		this.h = h;
-		ItemFilePath = itemFilePath;
-		Class = class1;
-		DorpItem = dorpItem;
-		SetModelPosi = setModelPosi;
-		SoundIndex = soundIndex;
-		WeaponClass = weaponClass;
+	public Item(int cODE, String itemNameIndex, String lastCategory, int w,
+			int h, String itemFilePath, int class1, String dorpItem,
+			int setModelPosi, int soundIndex, int weaponClass) {
+		this.code = cODE;
+		this.name = itemNameIndex;
+		this.category = lastCategory;
+		this.width = w;
+		this.height = h;
+		this.Class = class1;
+		this.folder = itemFilePath;
+		this.dorpItem = dorpItem;
+		this.SetModelPosi = setModelPosi;
+		this.sound = soundIndex;
+		this.WeaponClass = weaponClass;
 	}
 	
-	public Item(long cODE, String itemNameIndex, String lastCategory, int w,
-			int h, String itemFilePath, long class1, String dorpItem,
-			long setModelPosi, int soundIndex) {
-		super();
-		CODE = cODE;
-		ItemNameIndex = itemNameIndex;
-		LastCategory = lastCategory;
-		this.w = w;
-		this.h = h;
-		ItemFilePath = itemFilePath;
-		Class = class1;
-		DorpItem = dorpItem;
-		SetModelPosi = setModelPosi;
-		SoundIndex = soundIndex;
+	public Item(int cODE, String itemNameIndex, String lastCategory, int w,
+			int h, String itemFilePath, int class1, String dorpItem,
+			int setModelPosi, int soundIndex) {
+		this.code = cODE;
+		this.name = itemNameIndex;
+		this.category = lastCategory;
+		this.width = w;
+		this.height = h;
+		this.folder = itemFilePath;
+		this.Class = class1;
+		this.dorpItem = dorpItem;
+		this.SetModelPosi = setModelPosi;
+		this.sound = soundIndex;
 	}
 }

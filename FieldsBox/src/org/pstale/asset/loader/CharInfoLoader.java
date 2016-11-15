@@ -494,8 +494,8 @@ public class CharInfoLoader extends PTScriptLoader<CharMonsterInfo> {
 			}
 			if (startWith(EVENT_ITEM)) {
 				for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
-					if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[1])) {
-						monster.dwEvnetItem = itemDataBase[cnt].CODE;
+					if (itemDataBase[cnt].category.equalsIgnoreCase(token[1])) {
+						monster.dwEvnetItem = itemDataBase[cnt].code;
 						break;
 					}
 				}
@@ -547,8 +547,8 @@ public class CharInfoLoader extends PTScriptLoader<CharMonsterInfo> {
 					monster.FallItems_Plus[count].Percentage = getInt();
 					// 掉落物
 					for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
-						if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[2])) {
-							monster.FallItems_Plus[count].dwItemCode = itemDataBase[cnt].CODE;
+						if (itemDataBase[cnt].category.equalsIgnoreCase(token[2])) {
+							monster.FallItems_Plus[count].dwItemCode = itemDataBase[cnt].code;
 							monster.FallItemPlusCount++;
 							break;
 						}
@@ -587,8 +587,8 @@ public class CharInfoLoader extends PTScriptLoader<CharMonsterInfo> {
 						for(int i=2; i<token.length; i++) {
 							// 掉落物
 							for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
-								if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[i])) {
-									dwItemCode[ItemCodeCnt++] = itemDataBase[cnt].CODE;
+								if (itemDataBase[cnt].category.equalsIgnoreCase(token[i])) {
+									dwItemCode[ItemCodeCnt++] = itemDataBase[cnt].code;
 									break;
 								}
 							}
@@ -628,8 +628,8 @@ public class CharInfoLoader extends PTScriptLoader<CharMonsterInfo> {
 					
 					// 出售的商品列表
 					for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
-						if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[i])) {
-							npc.SellAttackItem[npc.SellAttackItemCount++] = itemDataBase[cnt].CODE;
+						if (itemDataBase[cnt].category.equalsIgnoreCase(token[i])) {
+							npc.SellAttackItem[npc.SellAttackItemCount++] = itemDataBase[cnt].code;
 							break;
 						}
 					}
@@ -647,8 +647,8 @@ public class CharInfoLoader extends PTScriptLoader<CharMonsterInfo> {
 					
 					// 出售的商品列表
 					for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
-						if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[i])) {
-							npc.SellDefenceItem[npc.SellDefenceItemCount++] = itemDataBase[cnt].CODE;
+						if (itemDataBase[cnt].category.equalsIgnoreCase(token[i])) {
+							npc.SellDefenceItem[npc.SellDefenceItemCount++] = itemDataBase[cnt].code;
 							break;
 						}
 					}
@@ -665,8 +665,8 @@ public class CharInfoLoader extends PTScriptLoader<CharMonsterInfo> {
 					}
 					// 出售的商品列表
 					for (int cnt = 0; cnt < itemDataBase.length; cnt++) {
-						if (itemDataBase[cnt].LastCategory.equalsIgnoreCase(token[i])) {
-							npc.SellEtcItem[npc.SellEtcItemCount++] = itemDataBase[cnt].CODE;
+						if (itemDataBase[cnt].category.equalsIgnoreCase(token[i])) {
+							npc.SellEtcItem[npc.SellEtcItemCount++] = itemDataBase[cnt].code;
 							break;
 						}
 					}
