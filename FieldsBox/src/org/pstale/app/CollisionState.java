@@ -79,9 +79,9 @@ public class CollisionState extends BaseAppState {
 	private Vector3f camLeft = new Vector3f();
 	private Vector3f walkDirection = new Vector3f();
 
-	public CollisionState(int fieldCnt) {
-		meshes = new ArrayList<Mesh>(fieldCnt);
-		rigids = new ArrayList<PhysicsRigidBody>(fieldCnt);
+	public CollisionState() {
+		meshes = new ArrayList<Mesh>(100);
+		rigids = new ArrayList<PhysicsRigidBody>(100);
 		bullet = new BulletAppState();
 		bullet.setDebugEnabled(false);
 	}

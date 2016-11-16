@@ -112,7 +112,6 @@ public class SmdLoader implements AssetLoader {
 		/**
 		 * 若用户使用了SmdKey，就根据type来决定采用哪种方式来加载模型。
 		 */
-		log.debug("FILE:" + key.getName() + " TYPE:" + key.type);
 		switch (key.type) {
 		case STAGE3D: {// 直接返回STAGE3D对象
 			STAGE3D stage3D = new STAGE3D();

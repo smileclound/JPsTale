@@ -4,7 +4,6 @@ import org.pstale.asset.loader.FileLocator;
 import org.pstale.asset.loader.SmdLoader;
 import org.pstale.gui.Style;
 
-import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
@@ -17,7 +16,6 @@ public class FieldApp extends SimpleApplication {
 	public FieldApp() {
 		super(new LoadingAppState(),
 				new CursorState(),
-				new DebugKeysAppState(),
 				new StatsAppState(),
 				new FlyCamAppState(),
 				new ScreenshotAppState());

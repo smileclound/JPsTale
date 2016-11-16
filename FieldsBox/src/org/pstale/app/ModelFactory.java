@@ -19,6 +19,7 @@ import org.pstale.asset.loader.SpmLoader;
 import org.pstale.asset.loader.SppLoader;
 import org.pstale.asset.struct.chars.CharMonsterInfo;
 import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
+import org.pstale.asset.struct.item.ItemInfo;
 import org.pstale.fields.RespawnList;
 import org.pstale.fields.StartPoint;
 
@@ -170,10 +171,42 @@ public class ModelFactory {
 	 * @return
 	 */
 	public static CharMonsterInfo loadNpcScript(final String name) {
-		String npc = changeName(name, "npc");
+		String path = String.format("GameServer/NPC/%s.npc", getSimpleName(name));
 		
 		try {
-			CharMonsterInfo info = (CharMonsterInfo)assetManager.loadAsset(npc);
+			CharMonsterInfo info = (CharMonsterInfo)assetManager.loadAsset(path);
+			return info;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * 导入怪物的脚本文件
+	 * @param name
+	 * @return
+	 */
+	public static CharMonsterInfo loadMonsterScript(final String name) {
+		String path = String.format("GameServer/Monster/%s.inf", getSimpleName(name));
+		
+		try {
+			CharMonsterInfo info = (CharMonsterInfo)assetManager.loadAsset(path);
+			return info;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * 导入装备的脚本
+	 * @param name
+	 * @return
+	 */
+	public static ItemInfo loadItemScript(String name) {
+		String path = String.format("GameServer/OpenItem/%s.txt", getSimpleName(name));
+		
+		try {
+			ItemInfo info = (ItemInfo)assetManager.loadAsset(path);
 			return info;
 		} catch (Exception e) {
 			return null;
@@ -223,4 +256,5 @@ public class ModelFactory {
 		
 		return dest;
 	}
+
 }

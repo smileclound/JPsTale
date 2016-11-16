@@ -39,24 +39,12 @@ public class Field {
 
 	private List<Vector2f> startPoint; // 地区出生点
 
-	private ActionFieldCamera ActionCamera;
-
-	/**
-	 * 服务端数据
-	 */
-	private StartPoint[] spawnPoints = null;// 怪物刷新点
-	private RespawnList respawnList = null;// 刷怪种类信息
-	private ArrayList<NPC> npcs = null;// NPC信息
-	
 	public Field() {
 		stgObj = new ArrayList<StageObject>();
 		ambientPos = new ArrayList<AmbientPos>();
-
 		fieldGate = new ArrayList<FieldGate>();
-
 		warpGate = new ArrayList<WarpGate>();
 		posWarpOut = new Vector3f(0f, 0f, 0f);
-
 		startPoint = new ArrayList<Vector2f>();
 	}
 
@@ -293,41 +281,6 @@ public class Field {
 
 	}
 
-	public ActionFieldCamera getActionCamera() {
-		return ActionCamera;
-	}
-
-	public void setActionCamera(ActionFieldCamera actionCamera) {
-		ActionCamera = actionCamera;
-	}
-
-	public StartPoint[] getSpawnPoints() {
-		return spawnPoints;
-	}
-
-	public void setSpawnPoints(StartPoint[] spawnPoints) {
-		this.spawnPoints = spawnPoints;
-	}
-
-	public RespawnList getRespawnList() {
-		return respawnList;
-	}
-
-	public void setRespawnList(RespawnList respawnList) {
-		this.respawnList = respawnList;
-	}
-
-	public NPC[] getNpcs() {
-		if (npcs == null) {
-			return new NPC[]{};
-		}
-		return npcs.toArray(new NPC[]{});
-	}
-
-	public void setNpcs(ArrayList<NPC> npcs) {
-		this.npcs = npcs;
-	}
-	
 	@Override
 	public String toString() {
 		return "[" + id + "-" + this.title + "]";

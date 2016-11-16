@@ -1,19 +1,15 @@
 package org.pstale.app;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import net.jmecn.asset.ItemInitilize;
-import net.jmecn.asset.MonsterInitilize;
-import net.jmecn.asset.chars.CharMonsterInfo;
-import net.jmecn.asset.item.ItemInfo;
-
 import org.apache.log4j.Logger;
-import org.pstale.fields.Field;
-import org.pstale.fields.RespawnList;
-import org.pstale.loader.FieldLoader;
+import org.pstale.asset.struct.chars.CharMonsterInfo;
+import org.pstale.asset.struct.item.ItemInfo;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
@@ -119,11 +115,11 @@ public class LoadingAppState extends SubAppState {
 	 */
 	private void initLoader(Data data) {
 		AppState[] states = { new AxisAppState(),
-				new DataState(data.serverRoot, data.allMonster, data.allNpc, data.allItem, data.fields),
+				new DataState(data.serverRoot, data.allMonster, data.allNpc, data.allItem),
 				//new CursorState(),
 				new HudState(),
 				new LoaderAppState(),
-				new CollisionState(data.fields.length),
+				new CollisionState(),
 				new MusicAppState(),
 				new AmbientAppState(),
 				new FieldgateAppState(),
@@ -163,8 +159,6 @@ public class LoadingAppState extends SubAppState {
 		public List<CharMonsterInfo> allMonster;
 		public List<CharMonsterInfo> allNpc;
 		public List<ItemInfo> allItem;
-		
-		public Field[] fields;
 	}
 
 	class LoadingTask implements Callable<Data> {
@@ -189,59 +183,79 @@ public class LoadingAppState extends SubAppState {
 			// 解析服务端数据
 			if (CHECK_SERVER && SERVER_ROOT != null) {
 				// 所有怪物数据
-				MonsterInitilize mi = new MonsterInitilize();
-				mi.setFolder(SERVER_ROOT + "/" + MONSTER_DIR);
-				mi.init();
-				data.allMonster = mi.getList();
+				File folder = new File(SERVER_ROOT + "/" + MONSTER_DIR);
+				String[] files = folder.list();
+				int len = files.length;
+				data.allMonster = new ArrayList<CharMonsterInfo>(len);
+				for(int i=0; i<len; i++) {
+					String name = files[i];
+					CharMonsterInfo m = ModelFactory.loadMonsterScript(name);
+					if (m != null) {
+						data.allMonster.add(m);
+						System.out.print(m.szName + ",");
+					}
+					
+					value = 30 * (i+1) / len;
+					message = "Monster:" + (i+1) + "/" + len;
+				}
+				System.out.println();
 				
-				value = 23;
+				value = 30;
 				message = "Monster:" + data.allMonster.size();
 				log.info(message);
-				for(int i=0; i<data.allMonster.size(); i++) {
-					CharMonsterInfo monster = data.allMonster.get(i);
-					log.info("EnName:" + monster.enName + " LocalName:" + monster.szName +  " File:" + monster.File);
-				}
 				
 				// 所有装备数据
-				ItemInitilize ii = new ItemInitilize();
-				ii.setFolder(SERVER_ROOT + "/" + OPENITEM_DIR);
-				ii.init();
-				data.allItem = ii.getList();
+				folder = new File(SERVER_ROOT + "/" + OPENITEM_DIR);
+				files = folder.list();
+				len = files.length;
+				data.allItem = new ArrayList<ItemInfo>(len);
+				for(int i=0; i<len; i++) {
+					String name = files[i];
+					ItemInfo item = ModelFactory.loadItemScript(name);
+					if (item != null) {
+						data.allItem.add(item);
+						System.out.print(item.localeName + ",");
+					}
+					
+					value = 30 + 50 * (i+1) / len;
+					message = "Item:" + (i+1) + "/" + len;
+				}
+				System.out.println();
 				
-				value = 78;
+				value = 80;
 				message = "Item:" + data.allItem.size();
 				log.info(message);
 				
+				// 所有NPC数据
+				folder = new File(SERVER_ROOT + "/" + NPC_DIR);
+				files = folder.list();
+				len = files.length;
+				for(int i=0; i<len; i++) {
+					String name = files[i];
+					CharMonsterInfo npc = ModelFactory.loadNpcScript(name);
+					if (npc != null) {
+						System.out.print(npc.szName + ",");
+					}
+					
+					value = 80 + 20 * (i+1) / len;
+					message = "NPC:" + (i+1) + "/" + len;
+				}
+				System.out.println();
+				
+				value = 100;
+				message = "NPC:" + len;
+				log.info(message);
+				
 			} else {
-				value = 78;
+				value = 100;
 				message = "No server found";
 				log.info(message);
 			}
-
-			Field[] fields = new FieldLoader().load();
-			data.fields = fields;
-			value = 78;
-			message = "解析地区";
 
 			value = 100;
 			message = "完成";
 
 			return data;
-		}
-
-		void calcRespawn(Field... lists) {
-			int sum = 0;
-			for (int i = 0; i < lists.length; i++) {
-				Field f = lists[i];
-				RespawnList rl = f.getRespawnList();
-				if (rl != null) {
-					sum += rl.LimitMax;
-
-					log.info(f.getTitle() + " limit=" + rl.LimitMax);
-				}
-			}
-
-			log.info("sum = " + sum);
 		}
 
 	}

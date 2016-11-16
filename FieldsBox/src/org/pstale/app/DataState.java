@@ -2,11 +2,11 @@ package org.pstale.app;
 
 import java.util.List;
 
-import net.jmecn.asset.chars.CharMonsterInfo;
-import net.jmecn.asset.item.ItemInfo;
-
 import org.apache.log4j.Logger;
+import org.pstale.asset.struct.chars.CharMonsterInfo;
+import org.pstale.asset.struct.item.ItemInfo;
 import org.pstale.fields.Field;
+import org.pstale.loader.FieldLoader;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
@@ -39,16 +39,17 @@ public class DataState extends BaseAppState {
 	 * @param fields
 	 */
 	public DataState(String serverRoot, List<CharMonsterInfo> allMonster,
-			List<CharMonsterInfo> allNpc, List<ItemInfo> allItem, Field[] fields) {
+			List<CharMonsterInfo> allNpc, List<ItemInfo> allItem) {
 		this.serverRoot = serverRoot;
 		this.allMonster = allMonster;
 		this.allNpc = allNpc;
 		this.allItem = allItem;
-		this.fields = fields;
 	}
 
 	@Override
 	protected void initialize(Application app) {
+		Field[] fields = new FieldLoader().load();
+		this.fields = fields;
 	}
 
 	@Override

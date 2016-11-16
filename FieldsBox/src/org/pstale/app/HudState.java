@@ -1,5 +1,6 @@
 package org.pstale.app;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.pstale.fields.Field;
@@ -25,6 +26,7 @@ import com.simsilica.lemur.LayerComparator;
 import com.simsilica.lemur.ListBox;
 import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.Slider;
+import com.simsilica.lemur.TabbedPanel;
 import com.simsilica.lemur.component.QuadBackgroundComponent;
 import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.core.VersionedList;
@@ -47,6 +49,11 @@ public class HudState extends BaseAppState {
     private VersionedReference<Boolean> showMeshRef;
     private VersionedReference<Boolean> collisionRef;
     private VersionedReference<Double> speedRef;
+    
+    private VersionedList<String> npcList = new VersionedList<String>();
+    private VersionedList<String> spawnPointList = new VersionedList<String>();
+    private VersionedList<String> monsterList = new VersionedList<String>();
+    private VersionedList<String> bossList = new VersionedList<String>();
     
 	private float width;// 屏幕宽度
 	private float height;// 屏幕高度
@@ -75,6 +82,10 @@ public class HudState extends BaseAppState {
 		 * 小地图
 		 */
 		createMiniMap();
+		
+		if (LoadingAppState.CHECK_SERVER) {
+			createCreaturePanel();
+		}
 	}
 
 	@Override
@@ -293,5 +304,112 @@ public class HudState extends BaseAppState {
         Vector3f hudSize = new Vector3f(200,0,0);
         hudSize.maxLocal(window.getPreferredSize());
         window.setPreferredSize( hudSize );
+	}
+	
+	/**
+	 * 生态信息面板
+	 */
+	private void createCreaturePanel() {
+		
+//		10:01:29,704 DEBUG [LoaderAppState] 生物数量上限:300
+//		10:01:29,705 DEBUG [LoaderAppState] 刷怪时间间隔:31
+//		10:01:29,705 DEBUG [LoaderAppState] 每次最多刷怪:3
+//		10:01:29,705 DEBUG [LoaderAppState] 怪物:独眼蜈蚣 几率:20
+//		10:01:29,705 DEBUG [LoaderAppState] 怪物:僵尸 几率:25
+//		10:01:29,705 DEBUG [LoaderAppState] 怪物:梦魇树 几率:30
+//		10:01:29,705 DEBUG [LoaderAppState] 怪物:独眼魔人 几率:5
+//		10:01:29,705 DEBUG [LoaderAppState] 怪物:青精灵 几率:15
+//		10:01:29,705 DEBUG [LoaderAppState] 怪物:浮灵 几率:5
+//		10:01:29,705 DEBUG [LoaderAppState] BOSS:超级盗尸贼 伴生小怪:僵尸*8 刷新时段:4
+//		10:01:29,739 DEBUG [LoaderAppState] BOSS:超级刀斧手 伴生小怪:青精灵*8 刷新时段:4
+		
+		Container window = new Container("glass");
+		window.addChild( new Label( "区域", new ElementId("title"), "glass" ) );
+		
+		// 初始化列表数据
+		TabbedPanel tabPanel = new TabbedPanel("glass");
+		window.addChild(tabPanel);
+		
+		/**
+		 * 生态信息界面
+		 */
+		Container creaturePanel = new Container("glass");
+		tabPanel.addTab("怪物", creaturePanel);
+		
+		ListBox<String> mlistBox = new ListBox<String>(monsterList, "glass");
+		mlistBox.setVisibleItems(10);
+		creaturePanel.addChild(mlistBox);
+		
+		/**
+		 * 生态信息界面
+		 */
+		Container bossPanel = new Container("glass");
+		tabPanel.addTab("BOSS", bossPanel);
+
+		ListBox<String> blistBox = new ListBox<String>(bossList, "glass");
+		blistBox.setVisibleItems(10);
+		bossPanel.addChild(blistBox);
+		
+		/**
+		 * 刷怪点信息界面
+		 */
+		Container spawnPointPanel = new Container("glass");
+		tabPanel.addTab("刷怪点", spawnPointPanel);
+		
+		ListBox<String> spplistBox = new ListBox<String>(spawnPointList, "glass");
+		spplistBox.setVisibleItems(10);
+		spawnPointPanel.addChild(spplistBox);
+		
+		/**
+		 * NPC界面
+		 */
+		Container npcPanel = new Container("glass");
+		tabPanel.addTab("NPC", npcPanel);
+		
+		// 创建一个ListBox控件，并添加到窗口中
+		ListBox<String> listBox = new ListBox<String>(npcList, "glass");
+		listBox.setVisibleItems(10);
+		npcPanel.addChild(listBox);
+		
+		/**
+		 * 限制窗口的最小宽度
+		 */
+        Vector3f hudSize = new Vector3f(200, 250, 0);
+        hudSize.maxLocal(tabPanel.getPreferredSize());
+        tabPanel.setPreferredSize( hudSize );
+        
+        // 将窗口添加到屏幕右上角。
+        window.setLocalTranslation(5, height - 200, 0);
+		// 使其可以拖拽
+		CursorEventControl.addListenersToSpatial(window, new DragHandler());
+		guiNode.attachChild(window);
+	}
+	
+	public void setNpc(List<String> npcs) {
+		npcList.clear();
+		if (npcs != null) {
+			npcList.addAll(npcs);
+		}
+	}
+	
+	public void setMonster(List<String> monster) {
+		monsterList.clear();
+		if (monster != null) {
+			monsterList.addAll(monster);
+		}
+	}
+	
+	public void setBoss(List<String> boss) {
+		bossList.clear();
+		if (boss != null) {
+			bossList.addAll(boss);
+		}
+	}
+	
+	public void setSpawnPoint(List<String> spp) {
+		spawnPointList.clear();
+		if (spp != null) {
+			spawnPointList.addAll(spp);
+		}
 	}
 }
