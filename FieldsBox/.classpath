@@ -11,6 +11,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lemur"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-jbullet"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j"/>
-	<classpathentry kind="src" path="/Assets"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
