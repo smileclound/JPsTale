@@ -192,15 +192,13 @@ public class LoadingAppState extends SubAppState {
 					CharMonsterInfo m = ModelFactory.loadMonsterScript(name);
 					if (m != null) {
 						data.allMonster.add(m);
-						System.out.print(m.szName + ",");
 					}
 					
-					value = 30 * (i+1) / len;
+					value = 40 * (i+1) / len;
 					message = "Monster:" + (i+1) + "/" + len;
 				}
-				System.out.println();
 				
-				value = 30;
+				value = 40;
 				message = "Monster:" + data.allMonster.size();
 				log.info(message);
 				
@@ -214,36 +212,14 @@ public class LoadingAppState extends SubAppState {
 					ItemInfo item = ModelFactory.loadItemScript(name);
 					if (item != null) {
 						data.allItem.add(item);
-						System.out.print(item.localeName + ",");
 					}
 					
-					value = 30 + 50 * (i+1) / len;
+					value = 40 + 60 * (i+1) / len;
 					message = "Item:" + (i+1) + "/" + len;
 				}
-				System.out.println();
-				
-				value = 80;
-				message = "Item:" + data.allItem.size();
-				log.info(message);
-				
-				// 所有NPC数据
-				folder = new File(SERVER_ROOT + "/" + NPC_DIR);
-				files = folder.list();
-				len = files.length;
-				for(int i=0; i<len; i++) {
-					String name = files[i];
-					CharMonsterInfo npc = ModelFactory.loadNpcScript(name);
-					if (npc != null) {
-						System.out.print(npc.szName + ",");
-					}
-					
-					value = 80 + 20 * (i+1) / len;
-					message = "NPC:" + (i+1) + "/" + len;
-				}
-				System.out.println();
 				
 				value = 100;
-				message = "NPC:" + len;
+				message = "Item:" + data.allItem.size();
 				log.info(message);
 				
 			} else {

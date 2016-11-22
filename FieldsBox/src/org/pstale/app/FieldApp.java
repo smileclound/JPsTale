@@ -1,5 +1,7 @@
 package org.pstale.app;
 
+import jme3utilities.sky.SkyAppState;
+
 import org.pstale.asset.loader.FileLocator;
 import org.pstale.asset.loader.SmdLoader;
 import org.pstale.gui.Style;
@@ -16,6 +18,7 @@ public class FieldApp extends SimpleApplication {
 	public FieldApp() {
 		super(new LoadingAppState(),
 				new CursorState(),
+				new SkyAppState(false),
 				new StatsAppState(),
 				new FlyCamAppState(),
 				new ScreenshotAppState());
