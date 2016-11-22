@@ -243,7 +243,7 @@ public class SkyAppState extends BaseAppState {
 	/**
      * 初始为 6:00 a.m.
      */
-	final private TimeOfDay timeOfDay = new TimeOfDay(6.0f);
+	final private TimeOfDay timeOfDay = new TimeOfDay(21.0f);
 	
 	public SkyAppState(boolean singleDome) {
 		rootNode = new Node("sky node");
