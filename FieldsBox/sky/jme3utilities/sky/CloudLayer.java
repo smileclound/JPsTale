@@ -98,7 +98,7 @@ public class CloudLayer
      * @param material (not null)
      * @param layerIndex (&ge;0)
      */
-    CloudLayer(SkyMaterial material, int layerIndex) {
+    public CloudLayer(SkyMaterial material, int layerIndex) {
         assert material != null;
         assert layerIndex >= 0 : layerIndex;
         assert layerIndex < material.getMaxCloudLayers() : layerIndex;

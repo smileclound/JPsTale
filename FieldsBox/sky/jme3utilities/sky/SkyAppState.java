@@ -10,12 +10,13 @@ import com.jme3.asset.AssetManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -46,41 +47,13 @@ public class SkyAppState extends BaseAppState {
      * message logger for this class
      */
     final private static Logger logger = Logger.getLogger(SkyAppState.class.getName());
-    /**
-     * name for the bottom geometry
-     */
-    final private static String bottomName = "bottom";
-    /**
-     * name for the clouds-only geometry
-     */
-    final private static String cloudsName = "clouds";
-    /**
-     * name for the northern sky geometry
-     */
-    final private static String northName = "north";
-    /**
-     * name for the southern sky geometry
-     */
-    final private static String southName = "south";
     // *************************************************************************
     // fields
-    final private boolean singleDome;
-    /**
-     * true to create a material and geometry for the hemisphere below the
-     * horizon, false to leave this hemisphere to background color (if
-     * starMotionFlag==false) or stars (if starMotionFlag==true): set by
-     * constructor
-     */
-    final private boolean bottomDomeFlag;
     /**
      * true to counteract rotation of the controlled node, false to allow
      * rotation
      */
     private boolean stabilizeFlag = false;
-    /**
-     * true to simulate moving stars, false for fixed stars: set by constructor
-     */
-    final protected boolean starMotionFlag;
     /**
      * information about individual cloud layers
      */
@@ -97,14 +70,7 @@ public class SkyAppState extends BaseAppState {
      * mesh of the dome with sun, moon, and horizon haze
      */
     protected DomeMesh topMesh = null;
-    /**
-     * simulation time for cloud layer animations
-     */
-    private float cloudsAnimationTime = 0f;
-    /**
-     * rate of motion for cloud layer animations (1 &rarr; standard)
-     */
-    private float cloudsRelativeSpeed = 1f;
+
     /**
      * phase angle of the moon: default corresponds to a 100% full moon
      */
@@ -239,22 +205,13 @@ public class SkyAppState extends BaseAppState {
 	/**
      * 初始为 6:00 a.m.
      */
-	final private TimeOfDay timeOfDay = new TimeOfDay(21.0f);
+	final private TimeOfDay timeOfDay = new TimeOfDay(6.0f);
 	
-	public SkyAppState(boolean singleDome) {
+	public SkyAppState() {
 		rootNode = new Node("sky node");
 		rootNode.setQueueBucket(Bucket.Sky);
 		rootNode.setShadowMode(ShadowMode.Off);
 		
-		this.singleDome = singleDome;
-        if (singleDome) {
-            starMotionFlag = false; // single dome implies non-moving stars
-            bottomDomeFlag = false; // single dome implies exposed background
-        } else {
-            starMotionFlag = true; // allow stars to move
-            bottomDomeFlag = true; // helpful in case the scene has a low horizon
-        }
-        
         cloudLayers = new CloudLayer[numCloudLayers];
 	}
 	
@@ -264,8 +221,107 @@ public class SkyAppState extends BaseAppState {
 		camera = app.getCamera();
 		viewPort = app.getViewPort();
 		
-		createSkyDome();
+        /*
+         * 北半球
+         */
+        DomeMesh hemisphere = new DomeMesh(rimSamples, quadrantSamples);
+        Material north = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        north.setTexture("ColorMap", assetManager.loadTexture("Textures/skies/star-maps/northern.png"));
+        
+        northDome = new Geometry("north", hemisphere);
+        northDome.setMaterial(north);
+        
+
+        /*
+         * 南半球
+         */
+        Material south = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        south.setTexture("ColorMap", assetManager.loadTexture("Textures/skies/star-maps/southern.png"));
+        
+        southDome = new Geometry("south", hemisphere);
+        southDome.setMaterial(south);
+        
+        /*
+         * 顶层天球：太阳、月亮
+         */
+        topMesh = new DomeMesh(rimSamples, quadrantSamples);
+        
+        topMaterial = new SkyMaterial(assetManager, 2, 0);
+        topMaterial.initialize();
+        topMaterial.addHaze();
+        /*
+         * 月相
+         */
+        topMaterial.addObject(moonIndex, "Textures/skies/moon/full.png");
+        /*
+         * 日相
+         */
+        topMaterial.addObject(sunIndex, "Textures/skies/suns/hazy-disc.png");
+        topDome = new Geometry("top", topMesh);
+        topDome.setMaterial(topMaterial);
+        
+        /*
+         * 底层天球
+         */
+        bottomMesh = new DomeMesh(rimSamples, 2);
+        
+        bottomMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        
+        bottomDome = new Geometry("bottom", bottomMesh);
+        bottomDome.setMaterial(bottomMaterial);
+        Quaternion upsideDown = new Quaternion();
+        upsideDown.lookAt(Vector3f.UNIT_X, Vector3f.UNIT_Y.negate());
+        bottomDome.setLocalRotation(upsideDown);
+
+        /*
+         * 云层
+         */
+        cloudsMaterial = new SkyMaterial(assetManager, 0, numCloudLayers);
+        cloudsMaterial.initialize();
+        cloudsMaterial.getAdditionalRenderState().setDepthWrite(false);
+        cloudsMaterial.setClearColor(ColorRGBA.BlackNoAlpha);
+
+        for (int layerIndex = 0; layerIndex < numCloudLayers; layerIndex++) {
+            cloudLayers[layerIndex] = new CloudLayer(cloudsMaterial, layerIndex);
+        }
+        setCloudiness(0.5f);
+        
+        cloudsMesh = new DomeMesh(rimSamples, quadrantSamples);
+        
+        cloudsOnlyDome = new Geometry("clouds", cloudsMesh);
+        cloudsOnlyDome.setMaterial(cloudsMaterial);
+        cloudsOnlyDome.setLocalScale(1f, 0.3f, 1f);// 云层的高度，使其更贴近观察者。
+        cloudsOnlyDome.setLocalTranslation(0f, 0f, 0f);// 云层的位置
+        
+        /*
+         * 根据渲染循序，从外到内添加天体。
+         */
+        rootNode.attachChild(northDome);
+        rootNode.attachChild(southDome);
+        rootNode.attachChild(topDome);
+        rootNode.attachChild(bottomDome);
+        rootNode.attachChild(cloudsOnlyDome);
+        
+        /*
+         * Add a new filter post-processor.
+         */
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        viewPort.addProcessor(fpp);
+        BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
+        fpp.addFilter(bloom);
+        
+        /*
+         * 设置观察者的维度
+         */
+        sunAndStars.setObserverLatitude(0f);
+        moonScale = 0.031f * topMesh.uvScale / FastMath.HALF_PI;
+        sunScale = 0.031f * topMesh.uvScale / (Constants.discDiameter * FastMath.HALF_PI);
+        sunAndStars.setSolarLongitude(0f);
+        setTopVerticalAngle(FastMath.HALF_PI);
 		
+        /*
+         * 设置亮度
+         */
         mainLight = new DirectionalLight();
         mainLight.setName("main");
 
@@ -276,7 +332,7 @@ public class SkyAppState extends BaseAppState {
 		updater.setAmbientLight(ambientLight);
 		updater.setMainLight(mainLight);
 		
-	    timeOfDay.setRate(50f);// 时间流逝速度为现实的50倍
+	    timeOfDay.setRate(1000f);// 时间流逝速度为现实的1000倍
 		getStateManager().attach(timeOfDay);
 	}
 
@@ -319,137 +375,6 @@ public class SkyAppState extends BaseAppState {
         updateAll();
 	}
 	
-	private void createSkyDome() {
-		/*
-         * Create a SkyControl to animate the sky.
-         */
-        float cloudFlattening;
-        if (singleDome) {
-            cloudFlattening = 0f; // single dome implies clouds on top dome
-        } else {
-            cloudFlattening = 0.9f; // overhead clouds 10x closer than horizon
-        }
-        
-		/*
-         * Create and initialize the sky material for sun, moon, and haze.
-         */
-        int topObjects = 2; // a sun and a moon
-        boolean cloudDomeFlag = cloudFlattening != 0f;
-        int topCloudLayers = cloudDomeFlag ? 0 : numCloudLayers;
-        topMaterial = new SkyMaterial(assetManager, topObjects, topCloudLayers);
-        topMaterial.initialize();
-        topMaterial.addHaze();
-        if (!starMotionFlag) {
-            topMaterial.addStars();
-        }
-
-        if (cloudDomeFlag) {
-            /*
-             * Create and initialize a separate sky material for clouds only.
-             */
-            int numObjects = 0;
-            cloudsMaterial = new SkyMaterial(assetManager, numObjects, numCloudLayers);
-            cloudsMaterial.initialize();
-            cloudsMaterial.getAdditionalRenderState().setDepthWrite(false);
-            cloudsMaterial.setClearColor(ColorRGBA.BlackNoAlpha);
-        } else {
-            cloudsMaterial = topMaterial;
-        }
-
-        /*
-         * Initialize the cloud layers.
-         */
-        for (int layerIndex = 0; layerIndex < numCloudLayers; layerIndex++) {
-            cloudLayers[layerIndex] = new CloudLayer(cloudsMaterial, layerIndex);
-        }
-        
-        if (bottomDomeFlag) {
-            bottomMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        } else {
-            bottomMaterial = null;
-        }
-
-        createSpatials(cloudFlattening);
-        if (starMotionFlag) {
-            /**
-             * star map asset path (or null for none), selected from a popup menu
-             * 
-             * "Textures/skies/star-maps" 4m
-             * "Textures/skies/star-maps/16m"
-             */
-            setStarMaps("Textures/skies/star-maps");
-        }
-        
-        setPhase(phase);
-        
-        /**
-         * sun color map asset path, selected from a popup menu
-         * "Textures/skies/t0neg0d/Sun_L.png"
-         * "Textures/skies/suns/chaotic.png"
-         * "Textures/skies/suns/disc.png"
-         * "Textures/skies/suns/hazy-disc.png"
-         * "Textures/skies/suns/rayed.png"
-         */
-        setSunStyle("Textures/skies/suns/hazy-disc.png");
-        
-        /**
-         * 云层
-         */
-        setCloudYOffset(0f);
-        setCloudiness(0.8f);
-        setCloudModulation(false);
-        setCloudRate(1f);
-        
-        sunAndStars.setObserverLatitude(0f);
-        setLunarDiameter(0.031f);
-        setSolarDiameter(0.031f);
-        sunAndStars.setSolarLongitude(0f);
-        setTopVerticalAngle(FastMath.HALF_PI);
-	}
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Clear the star maps.
-     */
-    public void clearStarMaps() {
-        if (!starMotionFlag) {
-            topMaterial.removeStars();
-            return;
-        }
-        /*
-         * Don't remove the north/south domes because, then how would you insert
-         * them back into the render queue ahead of the top dome?
-         * Instead, make the north/south domes fully transparent.
-         */
-        Material clear = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        clear.setColor("Color", ColorRGBA.BlackNoAlpha);
-        RenderState additional = clear.getAdditionalRenderState();
-        additional.setBlendMode(RenderState.BlendMode.Alpha);
-        additional.setDepthWrite(false);
-        
-        northDome.setMaterial(clear);
-        southDome.setMaterial(clear);
-    }
-
-    /**
-     * Access the indexed cloud layer.
-     *
-     * @param layerIndex (&lt;numCloudLayers, &ge;0)
-     * @return pre-existing instance
-     */
-    public CloudLayer getCloudLayer(int layerIndex) {
-        if (layerIndex < 0 || layerIndex >= numCloudLayers) {
-            logger.log(Level.SEVERE, "index={0}", layerIndex);
-            throw new IllegalArgumentException("index out of range");
-        }
-
-        CloudLayer layer = cloudLayers[layerIndex];
-
-        assert layer != null;
-        return layer;
-    }
-
     /**
      * Compute the contribution of the moon to the nighttime illumination mix
      * using its phase, assuming it is above the horizon.
@@ -475,15 +400,6 @@ public class SkyAppState extends BaseAppState {
         for (int layer = 0; layer < numCloudLayers; layer++) {
             cloudLayers[layer].setOpacity(newAlpha);
         }
-    }
-
-    /**
-     * Alter the speed or direction of cloud motion.
-     *
-     * @param newRate rate relative to the standard (may be negative)
-     */
-    public void setCloudRate(float newRate) {
-        cloudsRelativeSpeed = newRate;
     }
 
     /**
@@ -533,30 +449,6 @@ public class SkyAppState extends BaseAppState {
     }
 
     /**
-     * Alter the star maps.
-     *
-     * @param assetPath if starMotion is true: path to an asset folder
-     * containing "northern.png" and "southern.png" textures (not null)<br>
-     * if starMotion is false: path to a star dome texture asset (not null)
-     */
-    final public void setStarMaps(String assetPath) {
-        if (!starMotionFlag) {
-            topMaterial.addStars(assetPath);
-            return;
-        }
-
-        String northPath = String.format("%s/%sern.png", assetPath, northName);
-        Material north = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        north.setTexture("ColorMap", assetManager.loadTexture(northPath));
-        northDome.setMaterial(north);
-
-        String southPath = String.format("%s/%sern.png", assetPath, southName);
-        Material south = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        south.setTexture("ColorMap", assetManager.loadTexture(southPath));
-        southDome.setMaterial(south);
-    }
-
-    /**
      * Alter the vertical angle of the top dome, which is Pi/2 by default. If
      * the terrain's horizon lies below the horizontal, increase this angle (to
      * values greater than Pi/2) to avoid clipping the sun and moon when they
@@ -574,10 +466,9 @@ public class SkyAppState extends BaseAppState {
 
         topMesh.setVerticalAngle(newAngle);
         topDome.setMesh(topMesh);
-        if (bottomDomeFlag) {
-            bottomMesh.setVerticalAngle(FastMath.PI - newAngle);
-            bottomDome.setMesh(bottomMesh);
-        }
+        
+        bottomMesh.setVerticalAngle(FastMath.PI - newAngle);
+        bottomDome.setMesh(bottomMesh);
     }
     // *************************************************************************
     // protected methods
@@ -621,66 +512,6 @@ public class SkyAppState extends BaseAppState {
     }
     
     /**
-     * Create and initialize the sky node and all its dome geometries.
-     *
-     * @param cloudFlattening the oblateness (ellipticity) of the dome with the
-     * clouds (&ge; 0, &lt;1, 0 &rarr; no flattening (hemisphere), 1 &rarr;
-     * maximum flattening
-     */
-    private void createSpatials(float cloudFlattening) {
-        /*
-         * Attach geometries to the sky node from the outside in
-         * because they'll be rendered in that order.
-         */
-        if (starMotionFlag) {
-            DomeMesh hemisphere = new DomeMesh(rimSamples, quadrantSamples);
-            northDome = new Geometry(northName, hemisphere);
-            rootNode.attachChild(northDome);
-
-            southDome = new Geometry(southName, hemisphere);
-            rootNode.attachChild(southDome);
-        }
-
-        topMesh = new DomeMesh(rimSamples, quadrantSamples);
-        topDome = new Geometry("top", topMesh);
-        rootNode.attachChild(topDome);
-        topDome.setMaterial(topMaterial);
-
-        if (bottomDomeFlag) {
-            bottomMesh = new DomeMesh(rimSamples, 2);
-            bottomDome = new Geometry(bottomName, bottomMesh);
-            rootNode.attachChild(bottomDome);
-
-            Quaternion upsideDown = new Quaternion();
-            upsideDown.lookAt(Vector3f.UNIT_X, Vector3f.UNIT_Y.negate());
-            bottomDome.setLocalRotation(upsideDown);
-            bottomDome.setMaterial(bottomMaterial);
-        }
-
-        if (cloudsMaterial != topMaterial) {
-            assert cloudFlattening > 0f : cloudFlattening;
-            assert cloudFlattening < 1f : cloudFlattening;
-
-            cloudsMesh = new DomeMesh(rimSamples, quadrantSamples);
-            cloudsOnlyDome = new Geometry(cloudsName, cloudsMesh);
-            rootNode.attachChild(cloudsOnlyDome);
-            /*
-             * Flatten the clouds-only dome in order to foreshorten clouds
-             * near the horizon -- even if cloudYOffset=0.
-             */
-            float yScale = 1f - cloudFlattening;
-            cloudsOnlyDome.setLocalScale(1f, yScale, 1f);
-            cloudsOnlyDome.setMaterial(cloudsMaterial);
-        } else {
-            cloudsMesh = topMesh;
-        }
-        
-    }
-    
-    // *************************************************************************
-    // new methods exposed
-
-    /**
      * Compute the direction to the center of the moon.
      *
      * @return new unit vector in world (horizontal) coordinates
@@ -695,57 +526,12 @@ public class SkyAppState extends BaseAppState {
     }
 
     /**
-     * Access the orientations of the sun and stars.
-     *
-     * @return pre-existing instance
-     */
-    public SunAndStars getSunAndStars() {
-        return sunAndStars;
-    }
-
-    /**
-     * Access the updater.
-     *
-     * @return pre-existing instance
-     */
-    public Updater getUpdater() {
-        assert updater != null;
-        return updater;
-    }
-
-    /**
-     * Alter the cloud modulation flag.
-     *
-     * @param newValue true for clouds to modulate the main light, false for a
-     * steady main light
-     */
-    public void setCloudModulation(boolean newValue) {
-        cloudModulationFlag = newValue;
-    }
-
-    /**
-     * Alter the angular diameter of the moon.
-     *
-     * @param newDiameter (in radians, &lt;Pi, &gt;0)
-     */
-    public void setLunarDiameter(float newDiameter) {
-        if (!(newDiameter > 0f && newDiameter < FastMath.PI)) {
-            logger.log(Level.SEVERE, "diameter={0}", newDiameter);
-            throw new IllegalArgumentException(
-                    "diameter should be between 0 and Pi");
-        }
-
-        moonScale = newDiameter * topMesh.uvScale / FastMath.HALF_PI;
-    }
-
-    /**
      * Alter the phase of the moon to a pre-set value.
      *
      * @param newPreset (or null to hide the moon)
      */
     final public void setPhase(LunarPhase newPreset) {
         if (newPreset == LunarPhase.CUSTOM) {
-            setPhaseAngle(phaseAngle);
             return;
         }
 
@@ -758,46 +544,13 @@ public class SkyAppState extends BaseAppState {
     }
 
     /**
-     * Customize the phase angle of the moon for off-screen rendering.
-     *
-     * @param newAngle (in radians, &le;2*Pi, &ge;0)
+     * simulation time for cloud layer animations
      */
-    public void setPhaseAngle(float newAngle) {
-        if (!(newAngle >= 0f && newAngle <= FastMath.TWO_PI)) {
-            logger.log(Level.SEVERE, "angle={0}", newAngle);
-            throw new IllegalArgumentException(
-                    "angle should be between 0 and 2*Pi");
-        }
-        phase = LunarPhase.CUSTOM;
-        phaseAngle = newAngle;
-    }
-
+    private float cloudsAnimationTime = 0f;
     /**
-     * Alter the angular diameter of the sun.
-     *
-     * @param newDiameter (in radians, &lt;Pi, &gt;0)
+     * rate of motion for cloud layer animations (1 &rarr; standard)
      */
-    public void setSolarDiameter(float newDiameter) {
-        if (!(newDiameter > 0f && newDiameter < FastMath.PI)) {
-            logger.log(Level.SEVERE, "diameter={0}", newDiameter);
-            throw new IllegalArgumentException(
-                    "diameter should be between 0 and Pi");
-        }
-
-        sunScale = newDiameter * topMesh.uvScale
-                / (Constants.discDiameter * FastMath.HALF_PI);
-    }
-
-    /**
-     * Alter the sun's color map.
-     *
-     * @param assetPath to new color map (not null)
-     */
-    final public void setSunStyle(String assetPath) {
-        assert assetPath != null;
-        topMaterial.addObject(sunIndex, assetPath);
-    }
-
+    private float cloudsRelativeSpeed = 1f;
     /**
      * Update the cloud layers. (Invoked once per frame.)
      *
@@ -805,7 +558,6 @@ public class SkyAppState extends BaseAppState {
      */
     private void updateClouds(float elapsedTime) {
         assert elapsedTime >= 0f : elapsedTime;
-
         cloudsAnimationTime += elapsedTime * cloudsRelativeSpeed;
         for (int layer = 0; layer < numCloudLayers; layer++) {
             cloudLayers[layer].updateOffset(cloudsAnimationTime);
@@ -945,9 +697,8 @@ public class SkyAppState extends BaseAppState {
 
         Vector3f moonDirection = updateMoon();
         updateLighting(sunDirection, moonDirection);
-        if (starMotionFlag) {
-            sunAndStars.orientStarDomes(northDome, southDome);
-        }
+        
+        sunAndStars.orientStarDomes(northDome, southDome);
     }
 
     /**
@@ -1112,8 +863,7 @@ public class SkyAppState extends BaseAppState {
      * @param sineSolarAltitude (&le;1, &ge:-1)
      * @param sineLunarAltitude (&le;1, &ge:-1)
      */
-    private void updateObjectColors(float sineSolarAltitude,
-            float sineLunarAltitude) {
+    private void updateObjectColors(float sineSolarAltitude, float sineLunarAltitude) {
         assert sineSolarAltitude <= 1f : sineSolarAltitude;
         assert sineSolarAltitude >= -1f : sineSolarAltitude;
         assert sineLunarAltitude <= 1f : sineLunarAltitude;

@@ -72,7 +72,7 @@ public class SkyMaterial
     /**
      * asset path to the default cloud layer alpha map
      */
-    final private static String cloudsMapPath = "Textures/skies/clouds/fbm.png";
+    final private static String cloudsMapPath = "Textures/skies/clouds/fbm.png";//
     /**
      * asset path to the default alpha map for horizon haze
      */
@@ -80,8 +80,7 @@ public class SkyMaterial
     /**
      * asset path to the default starry night sky color map
      */
-    final private static String starsMapPath =
-            "Textures/skies/star-maps/wiltshire.png";
+    final private static String starsMapPath = "Textures/skies/star-maps/wiltshire.png";
     /**
      * asset path to the default color map for the sun
      */
@@ -123,10 +122,8 @@ public class SkyMaterial
      * @param maxObjects number of astronomical objects required (&ge;0)
      * @param maxCloudLayers number of cloud layers required (&ge;0)
      */
-    public SkyMaterial(AssetManager assetManager, int maxObjects,
-            int maxCloudLayers) {
-        super(assetManager, pickMatDefs(maxObjects, maxCloudLayers), maxObjects,
-                maxCloudLayers);
+    public SkyMaterial(AssetManager assetManager, int maxObjects, int maxCloudLayers) {
+        super(assetManager, pickMatDefs(maxObjects, maxCloudLayers), maxObjects, maxCloudLayers);
     }
 
     /**

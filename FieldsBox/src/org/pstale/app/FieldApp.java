@@ -18,7 +18,7 @@ public class FieldApp extends SimpleApplication {
 	public FieldApp() {
 		super(new LoadingAppState(),
 				new CursorState(),
-				new SkyAppState(false),
+				new SkyAppState(),
 				new StatsAppState(),
 				new FlyCamAppState(),
 				new ScreenshotAppState());

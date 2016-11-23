@@ -13,7 +13,7 @@ public class TestSkyAppState extends SimpleApplication {
 
 	@Override
 	public void simpleInitApp() {
-		stateManager.attach(new SkyAppState(false));
+		stateManager.attach(new SkyAppState());
 	}
 
 	public static void main(String[] args) {
