@@ -3,11 +3,6 @@ package jme3utilities.sky;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jme3utilities.MyAsset;
-import jme3utilities.MySpatial;
-import jme3utilities.TimeOfDay;
-import jme3utilities.math.MyMath;
-
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
@@ -15,6 +10,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -276,11 +272,9 @@ public class SkyAppState extends BaseAppState {
         ambientLight = new AmbientLight();
         ambientLight.setName("ambient");
 
-		updater.addViewPort(viewPort);
+		updater.setViewPort(viewPort);
 		updater.setAmbientLight(ambientLight);
-		updater.setAmbientMultiplier(1f);
 		updater.setMainLight(mainLight);
-		updater.setMainMultiplier(1f);
 		
 	    timeOfDay.setRate(50f);// 时间流逝速度为现实的50倍
 		getStateManager().attach(timeOfDay);
@@ -305,7 +299,7 @@ public class SkyAppState extends BaseAppState {
          * Translate the sky node to center the sky on the camera.
          */
         Vector3f cameraLocation = camera.getLocation();
-        MySpatial.setWorldLocation(rootNode, cameraLocation);
+        rootNode.setLocalTranslation(cameraLocation);
         /*
          * Scale the sky node so that its furthest geometries are midway
          * between the near and far planes of the view frustum.
@@ -313,13 +307,13 @@ public class SkyAppState extends BaseAppState {
         float far = camera.getFrustumFar();
         float near = camera.getFrustumNear();
         float radius = (near + far) / 2f;
-        MySpatial.setWorldScale(rootNode, radius);
+        rootNode.setLocalScale(radius);
 
         if (stabilizeFlag) {
             /*
              * Counteract rotation of the controlled node.
              */
-            MySpatial.setWorldOrientation(rootNode, Quaternion.IDENTITY);
+            rootNode.setLocalRotation(Quaternion.IDENTITY);
         }
         
         updateAll();
@@ -428,7 +422,12 @@ public class SkyAppState extends BaseAppState {
          * them back into the render queue ahead of the top dome?
          * Instead, make the north/south domes fully transparent.
          */
-        Material clear = MyAsset.createInvisibleMaterial(assetManager);
+        Material clear = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        clear.setColor("Color", ColorRGBA.BlackNoAlpha);
+        RenderState additional = clear.getAdditionalRenderState();
+        additional.setBlendMode(RenderState.BlendMode.Alpha);
+        additional.setDepthWrite(false);
+        
         northDome.setMaterial(clear);
         southDome.setMaterial(clear);
     }
@@ -547,13 +546,13 @@ public class SkyAppState extends BaseAppState {
         }
 
         String northPath = String.format("%s/%sern.png", assetPath, northName);
-        Material north =
-                MyAsset.createUnshadedMaterial(assetManager, northPath);
+        Material north = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        north.setTexture("ColorMap", assetManager.loadTexture(northPath));
         northDome.setMaterial(north);
 
         String southPath = String.format("%s/%sern.png", assetPath, southName);
-        Material south =
-                MyAsset.createUnshadedMaterial(assetManager, southPath);
+        Material south = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        south.setTexture("ColorMap", assetManager.loadTexture(southPath));
         southDome.setMaterial(south);
     }
 
@@ -675,6 +674,7 @@ public class SkyAppState extends BaseAppState {
         } else {
             cloudsMesh = topMesh;
         }
+        
     }
     
     // *************************************************************************
@@ -1067,22 +1067,8 @@ public class SkyAppState extends BaseAppState {
         float slack = 1f - MyMath.max(main.r, main.g, main.b);
         assert slack >= 0f : slack;
         ColorRGBA ambient = cloudsColor.mult(slack);
-        /*
-         * Compute the recommended shadow intensity as the fraction of
-         * the total light which is directional.
-         */
-        float mainAmount = main.r + main.g + main.b;
-        float ambientAmount = ambient.r + ambient.g + ambient.b;
-        float totalAmount = mainAmount + ambientAmount;
-        assert totalAmount > 0f : totalAmount;
-        float shadowIntensity = FastMath.saturate(mainAmount / totalAmount);
-        /*
-         * Determine the recommended bloom intensity using the sun's altitude.
-         */
-        float bloomIntensity = 6f * sineSolarAltitude;
-        bloomIntensity = FastMath.clamp(bloomIntensity, 0f, 1.7f);
-
-        updater.update(ambient, baseColor, main, bloomIntensity, shadowIntensity, mainDirection);
+        
+        updater.update(ambient, baseColor, main, mainDirection);
     }
     
     /**

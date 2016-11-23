@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -181,6 +182,10 @@ public class TestGridMesh extends JFrame {
 				}
 				File file = chooser.getSelectedFile();
 				String path = file.getAbsolutePath();
+				
+				Preferences pref = Preferences.userRoot().node("/org/pstale/test");  
+				pref.put("lastPath",file.getPath());
+				
 				initMesh(path);
 			}
 		});
@@ -240,7 +245,15 @@ public class TestGridMesh extends JFrame {
 	 */
 	private JFileChooser getFileChooser() {
 		if (chooser == null) {
-			chooser = new JFileChooser();
+			
+			Preferences pref = Preferences.userRoot().node("/org/pstale/test");  
+			String lastPath = pref.get("lastPath", "");
+			if(!lastPath.equals("")){
+				chooser = new JFileChooser(lastPath);
+			} else {
+				chooser = new JFileChooser();
+			}
+			
 			chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			chooser.setDialogTitle("打开地图文件");

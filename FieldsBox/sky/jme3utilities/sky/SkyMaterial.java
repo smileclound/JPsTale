@@ -31,7 +31,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Texture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyAsset;
 
 /**
  * Material for a dynamic sky dome using assets and techniques derived from
@@ -171,7 +170,7 @@ public class SkyMaterial
      * @param assetPath asset path to the alpha map (not null)
      */
     public void addHaze(String assetPath) {
-        Texture alphaMap = MyAsset.loadTexture(assetManager, assetPath);
+        Texture alphaMap = assetManager.loadTexture(assetPath);
         setTexture("HazeAlphaMap", alphaMap);
         setHazeColor(ColorRGBA.White);
     }
@@ -186,7 +185,7 @@ public class SkyMaterial
     public void addObject(int objectIndex, String assetPath) {
         validateObjectIndex(objectIndex);
 
-        Texture colorMap = MyAsset.loadTexture(assetManager, assetPath);
+        Texture colorMap = assetManager.loadTexture(assetPath);
         addObject(objectIndex, colorMap);
     }
 
@@ -203,7 +202,7 @@ public class SkyMaterial
      * @param assetPath (not null)
      */
     public void addStars(String assetPath) {
-        Texture colorMap = MyAsset.loadTexture(assetManager, assetPath);
+        Texture colorMap = assetManager.loadTexture(assetPath);
         setTexture("StarsColorMap", colorMap);
     }
 

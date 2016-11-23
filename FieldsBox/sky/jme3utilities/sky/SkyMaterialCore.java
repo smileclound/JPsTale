@@ -38,11 +38,10 @@ import com.jme3.math.Vector2f;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.image.ImageRaster;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyAsset;
-import jme3utilities.math.MyMath;
 
 /**
  * Core fields and methods of a material for a dynamic sky dome.
@@ -163,7 +162,7 @@ public class SkyMaterialCore
 
         boolean firstTime = (cloudsRaster[layerIndex] == null);
 
-        Texture alphaMap = MyAsset.loadTexture(assetManager, assetPath);
+        Texture alphaMap = assetManager.loadTexture(assetPath);
         alphaMap.setWrap(Texture.WrapMode.Repeat);
         String parameterName = String.format("Clouds%dAlphaMap", layerIndex);
         setTexture(parameterName, alphaMap);

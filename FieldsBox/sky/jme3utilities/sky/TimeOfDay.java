@@ -23,15 +23,13 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package jme3utilities;
+package jme3utilities.sky;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
-
-import jme3utilities.math.MyMath;
 
 /**
  * Simple app state to track the time of day in a game.

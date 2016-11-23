@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry excluding="org/pstale/launcher/Launcher.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="src" path="skycontrol"/>
+	<classpathentry kind="src" path="sky"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jme3-desktop"/>

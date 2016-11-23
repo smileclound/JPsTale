@@ -34,13 +34,12 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MySpatial;
-import jme3utilities.math.MyMath;
 
 /**
  * Component of SkyControl to model the orientations of the sun and stars
@@ -313,7 +312,7 @@ public class SunAndStars
         Quaternion zRotation = new Quaternion();
         zRotation.fromAngleNormalAxis(-observerLatitude, Vector3f.UNIT_Z);
         Quaternion orientation = xRotation.mult(zRotation);
-        MySpatial.setWorldOrientation(spatial, orientation);
+        spatial.setLocalRotation(orientation);
     }
 
     /**
@@ -334,7 +333,7 @@ public class SunAndStars
             float coLatitude = FastMath.HALF_PI - observerLatitude;
             zRotation.fromAngleNormalAxis(-coLatitude, Vector3f.UNIT_Z);
             Quaternion orientation = zRotation.mult(yRotation);
-            MySpatial.setWorldOrientation(northDome, orientation);
+            northDome.setLocalRotation(orientation);
         }
         if (southDome != null) {
             /*
@@ -344,7 +343,7 @@ public class SunAndStars
             float angle = FastMath.HALF_PI + observerLatitude;
             zRotation.fromAngleNormalAxis(angle, Vector3f.UNIT_Z);
             Quaternion orientation = zRotation.mult(yRotation);
-            MySpatial.setWorldOrientation(southDome, orientation);
+            southDome.setLocalRotation(orientation);
         }
     }
 
