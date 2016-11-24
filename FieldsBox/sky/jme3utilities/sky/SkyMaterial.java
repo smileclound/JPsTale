@@ -277,16 +277,16 @@ public class SkyMaterial
 
         int result;
         switch (assetPath) {
-            case "MatDefs/skies/dome20/dome20.j3md":
-            case "MatDefs/skies/dome60/dome60.j3md":
+            case "MatDefs/skies/dome20.j3md":
+            case "MatDefs/skies/dome60.j3md":
                 result = 0;
                 break;
-            case "MatDefs/skies/dome02/dome02.j3md":
-            case "MatDefs/skies/dome22/dome22.j3md":
+            case "MatDefs/skies/dome02.j3md":
+            case "MatDefs/skies/dome22.j3md":
                 result = 2;
                 break;
-            case "MatDefs/skies/dome06/dome06.j3md":
-            case "MatDefs/skies/dome66/dome66.j3md":
+            case "MatDefs/skies/dome06.j3md":
+            case "MatDefs/skies/dome66.j3md":
                 result = 6;
                 break;
             default:
@@ -306,16 +306,16 @@ public class SkyMaterial
 
         int result;
         switch (assetPath) {
-            case "MatDefs/skies/dome02/dome02.j3md":
-            case "MatDefs/skies/dome06/dome06.j3md":
+            case "MatDefs/skies/dome02.j3md":
+            case "MatDefs/skies/dome06.j3md":
                 result = 0;
                 break;
-            case "MatDefs/skies/dome20/dome20.j3md":
-            case "MatDefs/skies/dome22/dome22.j3md":
+            case "MatDefs/skies/dome20.j3md":
+            case "MatDefs/skies/dome22.j3md":
                 result = 2;
                 break;
-            case "MatDefs/skies/dome60/dome60.j3md":
-            case "MatDefs/skies/dome66/dome66.j3md":
+            case "MatDefs/skies/dome60.j3md":
+            case "MatDefs/skies/dome66.j3md":
                 result = 6;
                 break;
             default:
@@ -339,17 +339,17 @@ public class SkyMaterial
 
         String assetPath;
         if (numObjects == 0 && numCloudLayers <= 2) {
-            assetPath = "MatDefs/skies/dome02/dome02.j3md";
+            assetPath = "MatDefs/skies/dome02.j3md";
         } else if (numObjects <= 2 && numCloudLayers <= 0) {
-            assetPath = "MatDefs/skies/dome20/dome20.j3md";
+            assetPath = "MatDefs/skies/dome20.j3md";
         } else if (numObjects <= 2 && numCloudLayers <= 2) {
-            assetPath = "MatDefs/skies/dome22/dome22.j3md";
+            assetPath = "MatDefs/skies/dome22.j3md";
         } else if (numObjects == 0 && numCloudLayers <= 6) {
-            assetPath = "MatDefs/skies/dome06/dome06.j3md";
+            assetPath = "MatDefs/skies/dome06.j3md";
         } else if (numObjects <= 6 && numCloudLayers <= 0) {
-            assetPath = "MatDefs/skies/dome60/dome60.j3md";
+            assetPath = "MatDefs/skies/dome60.j3md";
         } else if (numObjects <= 6 && numCloudLayers <= 6) {
-            assetPath = "MatDefs/skies/dome66/dome66.j3md";
+            assetPath = "MatDefs/skies/dome66.j3md";
         } else if (numObjects > 6) {
             logger.log(Level.SEVERE, "numObjects={0}", numObjects);
             throw new IllegalArgumentException("too many objects");
