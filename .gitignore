@@ -1,0 +1,10 @@
+/.gradle/
+**/.settings/
+**/build/
+**/bin/
+**/logs/
+**/.classpath
+**/.project
+/app/*.dll
+/app/*.so
+/app/data/

@@ -1,0 +1,11 @@
+apply plugin: "java"
+
+def jme3 = [v:'3.1.0-stable', g:'org.jmonkeyengine']
+
+dependencies {
+
+    compile "${jme3.g}:jme3-core:${jme3.v}"
+
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'org.slf4j:slf4j-log4j12:1.7.21'
+}

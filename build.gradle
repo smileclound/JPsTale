@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "1.7"
+        targetCompatibility = "1.7"
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+// def jme3 = [v:'3.1.0-stable', g:'org.jmonkeyengine']
+// All modules:
+//    jme3-android-native
+//    jme3-android
+//    jme3-blender
+//    jme3-bullet-native-android
+//    jme3-bullet-native
+//    jme3-bullet
+//    jme3-core
+//    jme3-desktop
+//    jme3-effects
+//    jme3-examples
+//    jme3-ios
+//    jme3-jbullet
+//    jme3-jogg
+//    jme3-jogl
+//    jme3-lwjgl
+//    jme3-lwjgl3
+//    jme3-networking
+//    jme3-niftygui
+//    jme3-plugins
+//    jme3-terrain
