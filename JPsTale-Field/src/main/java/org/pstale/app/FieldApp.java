@@ -1,8 +1,8 @@
 package org.pstale.app;
 
-import jme3utilities.sky.SkyAppState;
-
 import org.pstale.gui.Style;
+import org.pstale.utils.FileLocator;
+import org.pstale.utils.ModelFactory;
 
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
@@ -10,8 +10,9 @@ import com.jme3.app.StatsAppState;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.scene.plugins.smd.FileLocator;
 import com.jme3.scene.plugins.smd.SmdLoader;
+
+import jme3utilities.sky.SkyAppState;
 
 public class FieldApp extends SimpleApplication {
 

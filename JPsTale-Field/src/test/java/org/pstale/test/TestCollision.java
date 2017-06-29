@@ -5,6 +5,8 @@ import static com.jme3.scene.plugins.smd.SMDTYPE.STAGE3D_VISUAL;
 
 import java.nio.FloatBuffer;
 
+import org.pstale.app.TestBase;
+
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;

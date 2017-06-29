@@ -3,8 +3,12 @@ apply plugin: "java"
 def jme3 = [v:'3.1.0-stable', g:'org.jmonkeyengine']
 
 dependencies {
-
     compile project(':JPsTale-AssetLoader')
+    compile project(':JPsTale-Core')
+    compile project(':JPsTale-Effects')
+    compile project(':JPsTale-Sky')
+
+    compile 'org.json:json:20170516'
 
     compile "${jme3.g}:jme3-core:${jme3.v}"
     compile "${jme3.g}:jme3-desktop:${jme3.v}"
@@ -13,7 +17,6 @@ dependencies {
     compile "${jme3.g}:jme3-terrain:${jme3.v}"
     compile "${jme3.g}:jme3-bullet:${jme3.v}"
     compile "${jme3.g}:jme3-bullet-native:${jme3.v}"
-    compile "${jme3.g}:jme3-effects:${jme3.v}"
 
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'org.slf4j:slf4j-log4j12:1.7.21'
@@ -22,6 +25,4 @@ dependencies {
     compile "com.simsilica:lemur-proto:1.9.1"
 
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
-
-
 }

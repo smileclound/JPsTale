@@ -17,6 +17,7 @@ import org.pstale.fields.StageObject;
 import org.pstale.fields.StartPoint;
 import org.pstale.fields.StgBoss;
 import org.pstale.fields.StgMonster;
+import org.pstale.utils.ModelFactory;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;

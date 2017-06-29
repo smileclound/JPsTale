@@ -10,6 +10,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.apache.log4j.Logger;
 import org.pstale.asset.struct.chars.CharMonsterInfo;
 import org.pstale.asset.struct.item.ItemInfo;
+import org.pstale.utils.ModelFactory;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;

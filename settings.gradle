@@ -5,6 +5,7 @@ include 'JPsTale-Effects'
 include 'JPsTale-Entity'
 include 'JPsTale-Field'
 include 'JPsTale-GUI'
+include 'JPsTale-Sky'
 include 'JPsTale-Tool'
 
 rootProject.name = 'JPsTale'
