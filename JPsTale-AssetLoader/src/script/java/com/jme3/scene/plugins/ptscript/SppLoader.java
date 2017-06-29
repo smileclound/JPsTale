@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd;
+package com.jme3.scene.plugins.ptscript;
 
 import java.io.IOException;
 import java.util.ArrayList;

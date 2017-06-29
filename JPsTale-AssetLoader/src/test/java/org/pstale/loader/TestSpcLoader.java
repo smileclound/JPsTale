@@ -8,7 +8,7 @@ import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
-import com.jme3.scene.plugins.smd.SpcLoader;
+import com.jme3.scene.plugins.ptscript.SpcLoader;
 
 public class TestSpcLoader {
 

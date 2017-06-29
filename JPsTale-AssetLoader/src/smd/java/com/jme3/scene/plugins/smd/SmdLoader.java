@@ -270,8 +270,10 @@ public class SmdLoader implements AssetLoader {
         Texture texture = null;
         try {
             TextureKey texKey = new TextureKey(key.getFolder() + name);
+            texKey.setGenerateMips(true);
             texture = manager.loadTexture(texKey);
             texture.setWrap(WrapMode.Repeat);
+            texture.setAnisotropicFilter(4);
         } catch (Exception ex) {
             texture = manager.loadTexture("Common/Textures/MissingTexture.png");
             texture.setWrap(WrapMode.EdgeClamp);
