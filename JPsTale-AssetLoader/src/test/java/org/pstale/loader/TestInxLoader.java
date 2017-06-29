@@ -1,14 +1,12 @@
 package org.pstale.loader;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 import org.pstale.asset.struct.chars.MODELINFO;
 import org.pstale.asset.struct.chars.MOTIONINFO;
-import org.pstale.utils.FileLocator;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
+import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
@@ -21,11 +19,7 @@ public class TestInxLoader {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
         assetManager.registerLoader(SmdLoader.class, "inx");
-        if (new File("I:/game/PTCN-RPT1.0").exists()) {
-            assetManager.registerLocator("I:/game/PTCN-RPT1.0", FileLocator.class);
-        } else {
-            assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
-        }
+        assetManager.registerLocator("/", ClasspathLocator.class);
 
         // 读取地图的smd文件
         // MODELINFO model = (MODELINFO) assetManager.loadAsset(new

@@ -2,10 +2,10 @@ package org.pstale.loader;
 
 import org.apache.log4j.Logger;
 import org.pstale.fields.RespawnList;
-import org.pstale.utils.FileLocator;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
+import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.scene.plugins.ptscript.SpmLoader;
 
 public class TestSpmLoader {
@@ -16,10 +16,10 @@ public class TestSpmLoader {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
         assetManager.registerLoader(SpmLoader.class, "spm");
-        assetManager.registerLocator("assets/server", FileLocator.class);
+        assetManager.registerLocator("/", ClasspathLocator.class);
 
         // 读取地图的spc文件
-        RespawnList respawn = (RespawnList) assetManager.loadAsset("Field/fore-3.ase.spm");
+        RespawnList respawn = (RespawnList) assetManager.loadAsset("server/Field/Fore-3.ase.spm");
 
         log.info("" + respawn.LimitMax);
         log.info("" + respawn.IntervalTime);

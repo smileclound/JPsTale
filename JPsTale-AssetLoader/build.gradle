@@ -11,6 +11,12 @@ sourceSets {
             srcDir 'src/script/java'
         }
     }
+    
+    test {
+        resources {
+        	srcDir rootProject.file('Assets');
+        }
+    }
 }
 
 dependencies {

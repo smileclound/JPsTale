@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
-import org.pstale.utils.FileLocator;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
+import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.scene.plugins.smd.SpcLoader;
 
 public class TestSpcLoader {
@@ -18,10 +18,10 @@ public class TestSpcLoader {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
         assetManager.registerLoader(SpcLoader.class, "spc");
-        assetManager.registerLocator("assets/server", FileLocator.class);
+        assetManager.registerLocator("/", ClasspathLocator.class);
 
         // 读取地图的spc文件
-        ArrayList<TRNAS_PLAYERINFO> npcs = (ArrayList<TRNAS_PLAYERINFO>) assetManager.loadAsset("Field/fore-3.ase.spc");
+        ArrayList<TRNAS_PLAYERINFO> npcs = (ArrayList<TRNAS_PLAYERINFO>) assetManager.loadAsset("server/Field/fore-3.ase.spc");
         for (TRNAS_PLAYERINFO npc : npcs) {
             log.info("" + npc.charInfo.szModelName);
             log.info("" + npc.charInfo.szModelName2);

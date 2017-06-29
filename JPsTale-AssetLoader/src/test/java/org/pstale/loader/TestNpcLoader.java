@@ -2,10 +2,10 @@ package org.pstale.loader;
 
 import org.apache.log4j.Logger;
 import org.pstale.asset.struct.chars.CharMonsterInfo;
-import org.pstale.utils.FileLocator;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
+import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.scene.plugins.ptscript.CharInfoLoader;
 
 public class TestNpcLoader {
@@ -16,9 +16,9 @@ public class TestNpcLoader {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
         assetManager.registerLoader(CharInfoLoader.class, "inf", "npc");
-        assetManager.registerLocator("D:/Priston Tale/0_素材/Server/精灵中国全服务端3060/3060", FileLocator.class);
+        assetManager.registerLocator("/", ClasspathLocator.class);
 
-        CharMonsterInfo charMon = (CharMonsterInfo) assetManager.loadAsset("gameserver/Monster/_14_H_Hobgoblin.inf");
+        CharMonsterInfo charMon = (CharMonsterInfo) assetManager.loadAsset("server/Monster/_14_H_Hobgoblin.inf");
         log.info(charMon.szName);
         log.info("模型:" + charMon.szModelName);
         log.info("等级:" + charMon.Level);
@@ -34,7 +34,7 @@ public class TestNpcLoader {
         log.info("移动速度:" + charMon.Move_Speed);
         log.info("视野:" + charMon.Sight);
 
-        assetManager.loadAsset("gameserver/NPC/Bcn01.npc");
+        assetManager.loadAsset("server/NPC/Bcn01.npc");
     }
 
 }
