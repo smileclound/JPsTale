@@ -48,17 +48,20 @@ import java.util.logging.Logger;
  * Three right-handed Cartesian coordinate systems are used: ecliptical,
  * equatorial, and world.
  * <p>
- * In ecliptical coordinates:<ul>
+ * In ecliptical coordinates:
+ * <ul>
  * <li>+X points to the vernal equinox
  * <li>+Y points to the celestial equator 90 degrees east of the vernal equinox
  * <li>+Z points to the north celestial pole
  * </ul>
- * In equatorial coordinates:<ul>
+ * In equatorial coordinates:
+ * <ul>
  * <li>+X points to the vernal equinox
  * <li>+Y points to the celestial equator 90 degrees east of the vernal equinox
  * <li>+Z points to the north celestial pole
  * </ul>
- * In world coordinates:<ul>
+ * In world coordinates:
+ * <ul>
  * <li>+X points to the north horizon,
  * <li>+Y points to the zenith
  * <li>+Z points to the east horizon
@@ -67,8 +70,7 @@ import java.util.logging.Logger;
  *
  * @author Stephen Gold <sgold@sonic.net>
  */
-public class SunAndStars
-        implements Cloneable, Savable {
+public class SunAndStars implements Cloneable, Savable {
     // *************************************************************************
     // constants
 
@@ -79,13 +81,11 @@ public class SunAndStars
     /**
      * Earth's rate of rotation (radians per sidereal hour)
      */
-    final private static float radiansPerHour =
-            FastMath.TWO_PI / Constants.hoursPerDay;
+    final private static float radiansPerHour = FastMath.TWO_PI / Constants.hoursPerDay;
     /**
      * message logger for this class
      */
-    final private static Logger logger =
-            Logger.getLogger(SunAndStars.class.getName());
+    final private static Logger logger = Logger.getLogger(SunAndStars.class.getName());
     // *************************************************************************
     // fields
     /**
@@ -112,23 +112,22 @@ public class SunAndStars
     /**
      * Convert ecliptical angles into an equatorial direction vector.
      *
-     * @param latitude celestial latitude (radians north of the ecliptic,
-     * &le;Pi/2, &ge;-Pi/2)
-     * @param longitude celestial longitude (radians east of the vernal equinox,
-     * &le;2*Pi, &ge;0)
+     * @param latitude
+     *            celestial latitude (radians north of the ecliptic, &le;Pi/2,
+     *            &ge;-Pi/2)
+     * @param longitude
+     *            celestial longitude (radians east of the vernal equinox,
+     *            &le;2*Pi, &ge;0)
      * @return new unit vector in equatorial coordinates
      */
-    public static Vector3f convertToEquatorial(float latitude,
-            float longitude) {
+    public static Vector3f convertToEquatorial(float latitude, float longitude) {
         if (!(latitude >= -FastMath.HALF_PI && latitude <= FastMath.HALF_PI)) {
             logger.log(Level.SEVERE, "latitude={0}", latitude);
-            throw new IllegalArgumentException(
-                    "latitude should be between -Pi/2 and Pi/2, inclusive");
+            throw new IllegalArgumentException("latitude should be between -Pi/2 and Pi/2, inclusive");
         }
         if (!(longitude >= 0f && longitude <= FastMath.TWO_PI)) {
             logger.log(Level.SEVERE, "longitude={0}", longitude);
-            throw new IllegalArgumentException(
-                    "longitude should be between 0 and 2*Pi, inclusive");
+            throw new IllegalArgumentException("longitude should be between 0 and 2*Pi, inclusive");
         }
         /*
          * Convert angles to Cartesian ecliptical coordinates.
@@ -137,8 +136,7 @@ public class SunAndStars
         float sinLat = FastMath.sin(latitude);
         float cosLon = FastMath.cos(longitude);
         float sinLon = FastMath.sin(longitude);
-        Vector3f ecliptical =
-                new Vector3f(cosLat * cosLon, cosLat * sinLon, sinLat);
+        Vector3f ecliptical = new Vector3f(cosLat * cosLon, cosLat * sinLon, sinLat);
         assert ecliptical.isUnitVector();
         /*
          * Convert to equatorial coordinates.
@@ -152,13 +150,14 @@ public class SunAndStars
     /**
      * Convert ecliptical coordinates to equatorial coordinates.
      *
-     * @param ecliptical coordinates (not null, unaffected)
+     * @param ecliptical
+     *            coordinates (not null, unaffected)
      * @return new vector in equatorial coordinates
      */
     public static Vector3f convertToEquatorial(Vector3f ecliptical) {
         /*
-         * The conversion consists of a rotation about the +X
-         * (vernal equinox) axis.
+         * The conversion consists of a rotation about the +X (vernal equinox)
+         * axis.
          */
         Quaternion rotate = new Quaternion();
         rotate.fromAngleNormalAxis(obliquity, Vector3f.UNIT_X);
@@ -170,22 +169,22 @@ public class SunAndStars
     /**
      * Convert ecliptical angles into a world direction vector.
      *
-     * @param latitude celestial latitude (radians north of the ecliptic,
-     * &le;Pi/2, &ge;-Pi/2)
-     * @param longitude celestial longitude (radians east of the vernal equinox,
-     * &le;2*Pi, &ge;0)
+     * @param latitude
+     *            celestial latitude (radians north of the ecliptic, &le;Pi/2,
+     *            &ge;-Pi/2)
+     * @param longitude
+     *            celestial longitude (radians east of the vernal equinox,
+     *            &le;2*Pi, &ge;0)
      * @return new unit vector in world (horizontal) coordinates
      */
     public Vector3f convertToWorld(float latitude, float longitude) {
         if (!(latitude >= -FastMath.HALF_PI && latitude <= FastMath.HALF_PI)) {
             logger.log(Level.SEVERE, "latitude={0}", latitude);
-            throw new IllegalArgumentException(
-                    "latitude should be between -Pi/2 and Pi/2, inclusive");
+            throw new IllegalArgumentException("latitude should be between -Pi/2 and Pi/2, inclusive");
         }
         if (!(longitude >= 0f && longitude <= FastMath.TWO_PI)) {
             logger.log(Level.SEVERE, "latitude={0}", latitude);
-            throw new IllegalArgumentException(
-                    "longitude should be between 0 and 2*Pi, inclusive");
+            throw new IllegalArgumentException("longitude should be between 0 and 2*Pi, inclusive");
         }
 
         Vector3f equatorial = convertToEquatorial(latitude, longitude);
@@ -198,7 +197,8 @@ public class SunAndStars
     /**
      * Convert equatorial coordinates to world (horizontal) coordinates.
      *
-     * @param equatorial coordinates (not null, unaffected)
+     * @param equatorial
+     *            coordinates (not null, unaffected)
      * @return new vector in a world coordinates
      */
     public Vector3f convertToWorld(Vector3f equatorial) {
@@ -301,7 +301,8 @@ public class SunAndStars
     /**
      * Update the orientation of an external sky.
      *
-     * @param spatial external sky (not null)
+     * @param spatial
+     *            external sky (not null)
      */
     public void orientExternalSky(Spatial spatial) {
 
@@ -318,8 +319,10 @@ public class SunAndStars
     /**
      * Update the orientations of north and south star domes.
      *
-     * @param northDome (ignored if null)
-     * @param southDome (ignored if null)
+     * @param northDome
+     *            (ignored if null)
+     * @param southDome
+     *            (ignored if null)
      */
     public void orientStarDomes(Spatial northDome, Spatial southDome) {
         float siderealAngle = getSiderealAngle();
@@ -350,13 +353,13 @@ public class SunAndStars
     /**
      * Alter the time of day.
      *
-     * @param newHour hours since midnight, solar time (&le;24, &ge;0)
+     * @param newHour
+     *            hours since midnight, solar time (&le;24, &ge;0)
      */
     public void setHour(float newHour) {
         if (!(newHour >= 0f && newHour <= Constants.hoursPerDay)) {
             logger.log(Level.SEVERE, "hour={0}", newHour);
-            throw new IllegalArgumentException(
-                    "hour should be between 0 and 24, inclusive");
+            throw new IllegalArgumentException("hour should be between 0 and 24, inclusive");
         }
 
         this.hour = newHour;
@@ -365,13 +368,13 @@ public class SunAndStars
     /**
      * Alter the observer's latitude.
      *
-     * @param latitude radians north of the equator (&le;Pi/2, &ge;-Pi/2)
+     * @param latitude
+     *            radians north of the equator (&le;Pi/2, &ge;-Pi/2)
      */
     public void setObserverLatitude(float latitude) {
         if (!(latitude >= -FastMath.HALF_PI && latitude <= FastMath.HALF_PI)) {
             logger.log(Level.SEVERE, "latitude={0}", latitude);
-            throw new IllegalArgumentException(
-                    "latitude should be between -Pi/2 and Pi/2, inclusive");
+            throw new IllegalArgumentException("latitude should be between -Pi/2 and Pi/2, inclusive");
         }
 
         this.observerLatitude = latitude;
@@ -380,13 +383,13 @@ public class SunAndStars
     /**
      * Alter the sun's celestial longitude directly.
      *
-     * @param longitude radians east of the vernal equinox (&le;2*Pi, &ge;0)
+     * @param longitude
+     *            radians east of the vernal equinox (&le;2*Pi, &ge;0)
      */
     public void setSolarLongitude(float longitude) {
         if (!(longitude >= 0f && longitude <= FastMath.TWO_PI)) {
             logger.log(Level.SEVERE, "longitude={0}", longitude);
-            throw new IllegalArgumentException(
-                    "longitude should be between 0 and 2*Pi");
+            throw new IllegalArgumentException("longitude should be between 0 and 2*Pi");
         }
 
         solarLongitude = longitude;
@@ -395,8 +398,7 @@ public class SunAndStars
          */
         Vector3f equatorial = convertToEquatorial(0f, longitude);
         float ra = -FastMath.atan2(equatorial.y, equatorial.x);
-        solarRaHours =
-                MyMath.modulo(ra / radiansPerHour, Constants.hoursPerDay);
+        solarRaHours = MyMath.modulo(ra / radiansPerHour, Constants.hoursPerDay);
         assert solarRaHours >= 0f : solarRaHours;
         assert solarRaHours < Constants.hoursPerDay : solarRaHours;
     }
@@ -411,20 +413,20 @@ public class SunAndStars
      * (Journal of the International Meteor Organization) 19-2, pages 31-34,
      * available from http://adsabs.harvard.edu/full/1991JIMO...19...31S
      *
-     * @param month zero-based month of the Gregorian year (&lt;12, &ge;0, 0
-     * &rarr; January)
-     * @param day day of the Gregorian month (&le;31, &ge;1)
+     * @param month
+     *            zero-based month of the Gregorian year (&lt;12, &ge;0, 0
+     *            &rarr; January)
+     * @param day
+     *            day of the Gregorian month (&le;31, &ge;1)
      */
     public void setSolarLongitude(int month, int day) {
         if (month < 0 || month >= 12) {
             logger.log(Level.SEVERE, "month={0}", month);
-            throw new IllegalArgumentException(
-                    "month should be between 0 and 11, inclusive");
+            throw new IllegalArgumentException("month should be between 0 and 11, inclusive");
         }
         if (day < 1 || day > 31) {
             logger.log(Level.SEVERE, "day={0}", day);
-            throw new IllegalArgumentException(
-                    "day should be between 1 and 31, inclusive");
+            throw new IllegalArgumentException("day should be between 1 and 31, inclusive");
         }
         /*
          * Convert month and day to day-of-the-year.
@@ -467,9 +469,8 @@ public class SunAndStars
     public String toString() {
         float latitudeDegrees = observerLatitude * FastMath.RAD_TO_DEG;
         float longitudeDegrees = solarLongitude * FastMath.RAD_TO_DEG;
-        String result = String.format(
-                "[hour=%f, lat=%f deg, long=%f deg, ra=%f]",
-                hour, latitudeDegrees, longitudeDegrees, solarRaHours);
+        String result = String.format("[hour=%f, lat=%f deg, long=%f deg, ra=%f]", hour, latitudeDegrees,
+                longitudeDegrees, solarRaHours);
 
         return result;
     }
@@ -479,18 +480,17 @@ public class SunAndStars
     /**
      * De-serialize this instance, for example when loading from a J3O file.
      *
-     * @param importer (not null)
+     * @param importer
+     *            (not null)
      */
     @Override
-    public void read(JmeImporter importer)
-            throws IOException {
+    public void read(JmeImporter importer) throws IOException {
         InputCapsule capsule = importer.getCapsule(this);
 
         float value = capsule.readFloat("hour", 0f);
         setHour(value);
 
-        value = capsule.readFloat("observerLatitude",
-                Constants.defaultLatitude);
+        value = capsule.readFloat("observerLatitude", Constants.defaultLatitude);
         setObserverLatitude(value);
 
         value = capsule.readFloat("solarLongitude", 0f);
@@ -500,16 +500,15 @@ public class SunAndStars
     /**
      * Serialize this instance, for example when saving to a J3O file.
      *
-     * @param exporter (not null)
+     * @param exporter
+     *            (not null)
      */
     @Override
-    public void write(JmeExporter exporter)
-            throws IOException {
+    public void write(JmeExporter exporter) throws IOException {
         OutputCapsule capsule = exporter.getCapsule(this);
 
         capsule.write(hour, "hour", 0f);
-        capsule.write(observerLatitude, "observerLatitude",
-                Constants.defaultLatitude);
+        capsule.write(observerLatitude, "observerLatitude", Constants.defaultLatitude);
         capsule.write(solarLongitude, "observerLatitude", 0f);
     }
     // *************************************************************************

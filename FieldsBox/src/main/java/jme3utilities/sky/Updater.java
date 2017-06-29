@@ -135,7 +135,8 @@ public class Updater {
      * has a non-null value, the control will continuously update the light's
      * color and intensity.
      *
-     * @param ambientLight the scene's main ambient light (or null for none)
+     * @param ambientLight
+     *            the scene's main ambient light (or null for none)
      */
     public void setAmbientLight(AmbientLight ambientLight) {
         this.ambientLight = ambientLight;
@@ -144,7 +145,8 @@ public class Updater {
     /**
      * Alter the multiplier for the ambient light intensity.
      *
-     * @param factor (&ge;0, 1 &rarr; default)
+     * @param factor
+     *            (&ge;0, 1 &rarr; default)
      */
     public void setAmbientMultiplier(float factor) {
         ambientMultiplier = factor;
@@ -155,7 +157,8 @@ public class Updater {
      * reference has a non-null value, the control will continuously update the
      * light's color, direction, and intensity.
      *
-     * @param mainLight the scene's main directional light (or null for none)
+     * @param mainLight
+     *            the scene's main directional light (or null for none)
      */
     public void setMainLight(DirectionalLight mainLight) {
         this.mainLight = mainLight;
@@ -164,7 +167,8 @@ public class Updater {
     /**
      * Alter the multiplier for the main light intensity.
      *
-     * @param factor (&ge;0, 1 &rarr; default)
+     * @param factor
+     *            (&ge;0, 1 &rarr; default)
      */
     public void setMainMultiplier(float factor) {
         mainMultiplier = factor;
@@ -174,28 +178,31 @@ public class Updater {
      * Add a viewport to the list of viewports whose background colors are
      * updated by the control. Note that the list is not serialized.
      *
-     * @param viewPort (not null)
+     * @param viewPort
+     *            (not null)
      */
     public void setViewPort(ViewPort viewPort) {
         this.viewPort = viewPort;
     }
-    
+
     /**
      * Update all the lights, shadows, and viewports.
      *
-     * @param ambientColor color and intensity of ambient light (not null,
-     * unaffected)
-     * @param backgroundColor color of viewport backgrounds (not null,
-     * unaffected)
-     * @param mainColor color and intensity of the main directional light (not
-     * null, unaffected)
-     * @param bloomIntensity intensity of bloom effect (&ge;0)
-     * @param shadowIntensity intensity of shadows (&lt;1, &ge;0)
-     * @param direction direction to the main light source (length=1,
-     * unaffected)
+     * @param ambientColor
+     *            color and intensity of ambient light (not null, unaffected)
+     * @param backgroundColor
+     *            color of viewport backgrounds (not null, unaffected)
+     * @param mainColor
+     *            color and intensity of the main directional light (not null,
+     *            unaffected)
+     * @param bloomIntensity
+     *            intensity of bloom effect (&ge;0)
+     * @param shadowIntensity
+     *            intensity of shadows (&lt;1, &ge;0)
+     * @param direction
+     *            direction to the main light source (length=1, unaffected)
      */
-    void update(ColorRGBA ambientColor, ColorRGBA backgroundColor,
-            ColorRGBA mainColor, Vector3f direction) {
+    void update(ColorRGBA ambientColor, ColorRGBA backgroundColor, ColorRGBA mainColor, Vector3f direction) {
         assert ambientColor != null;
         assert backgroundColor != null;
         assert mainColor != null;
@@ -230,8 +237,8 @@ public class Updater {
             mainLight.setColor(color);
             /*
              * The direction of the main light is the direction in which it
-             * propagates, which is the opposite of the direction to the
-             * light source.
+             * propagates, which is the opposite of the direction to the light
+             * source.
              */
             Vector3f propagationDirection = direction.negate();
             mainLight.setDirection(propagationDirection);

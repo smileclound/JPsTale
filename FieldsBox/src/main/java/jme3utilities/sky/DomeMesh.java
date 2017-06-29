@@ -46,11 +46,13 @@ import com.jme3.util.BufferUtils;
  * Custom mesh for a dome (or a pie-cut segment thereof) with radius=1, centered
  * at the origin, with its top at (0,1,0) and its equator in the XZ plane.
  * <p>
- * The key differences between this class and com.jme3.scene.shape.Dome are:<ol>
- * <li> the radius and center ARE NOT configurable,
- * <li> the texture coordinates, segment angle, and vertical angle ARE
+ * The key differences between this class and com.jme3.scene.shape.Dome are:
+ * <ol>
+ * <li>the radius and center ARE NOT configurable,
+ * <li>the texture coordinates, segment angle, and vertical angle ARE
  * configurable, and
- * <li> the normal vectors have the correct sign (issue #615).</ol>
+ * <li>the normal vectors have the correct sign (issue #615).
+ * </ol>
  * <p>
  * The projection to texture space is an "azimuthal equidistant projection". The
  * dome's equator maps to a circle of radius uvScale centered at (topU,topV).
@@ -58,8 +60,7 @@ import com.jme3.util.BufferUtils;
  *
  * @author Stephen Gold <sgold@sonic.net>
  */
-public class DomeMesh
-        extends Mesh {
+public class DomeMesh extends Mesh {
     // *************************************************************************
     // constants
 
@@ -70,8 +71,7 @@ public class DomeMesh
     /**
      * message logger for this class
      */
-    final private static Logger logger =
-            Logger.getLogger(DomeMesh.class.getName());
+    final private static Logger logger = Logger.getLogger(DomeMesh.class.getName());
     // *************************************************************************
     // fields
     /**
@@ -134,13 +134,13 @@ public class DomeMesh
      * of samples on each axis. Use this constructor to generate domes for
      * SkyMaterial.
      *
-     * @param rimSamples number of samples around the rim (&ge;3)
-     * @param quadrantSamples number of samples from top to rim, inclusive
-     * (&ge;2)
+     * @param rimSamples
+     *            number of samples around the rim (&ge;3)
+     * @param quadrantSamples
+     *            number of samples from top to rim, inclusive (&ge;2)
      */
     public DomeMesh(int rimSamples, int quadrantSamples) {
-        this(rimSamples, quadrantSamples, Constants.topU, Constants.topV,
-                Constants.uvScale, true);
+        this(rimSamples, quadrantSamples, Constants.topU, Constants.topV, Constants.uvScale, true);
     }
 
     /**
@@ -148,41 +148,42 @@ public class DomeMesh
      * each axis and a specified texture coordinate-system. This is the most
      * general form of the constructor.
      *
-     * @param rimSamples number of samples around the rim (&ge;3)
-     * @param quadrantSamples number of samples from top to rim, inclusive
-     * (&ge;2)
-     * @param topU U-coordinate of the top (&le;1, &ge;0)
-     * @param topV V-coordinate of the top (&le;1, &ge;0)
-     * @param uvScale UV distance from top to equator (&lt;0.5, &gt;0)
-     * @param inwardFacing if true, vertex normals point inward; if false, they
-     * point outward
+     * @param rimSamples
+     *            number of samples around the rim (&ge;3)
+     * @param quadrantSamples
+     *            number of samples from top to rim, inclusive (&ge;2)
+     * @param topU
+     *            U-coordinate of the top (&le;1, &ge;0)
+     * @param topV
+     *            V-coordinate of the top (&le;1, &ge;0)
+     * @param uvScale
+     *            UV distance from top to equator (&lt;0.5, &gt;0)
+     * @param inwardFacing
+     *            if true, vertex normals point inward; if false, they point
+     *            outward
      */
-    public DomeMesh(int rimSamples, int quadrantSamples, float topU, float topV,
-            float uvScale, boolean inwardFacing) {
+    public DomeMesh(int rimSamples, int quadrantSamples, float topU, float topV, float uvScale, boolean inwardFacing) {
         if (rimSamples < 3) {
             logger.log(Level.SEVERE, "rimSamples={0}", rimSamples);
-            throw new IllegalArgumentException(
-                    "need at least 3 samples on the rim");
+            throw new IllegalArgumentException("need at least 3 samples on the rim");
         }
         this.rimSamples = rimSamples;
 
         if (quadrantSamples < 2) {
             logger.log(Level.SEVERE, "quadrantSamples={0}", quadrantSamples);
-            throw new IllegalArgumentException(
-                    "need at least 2 samples per quadrant");
+            throw new IllegalArgumentException("need at least 2 samples per quadrant");
         }
         this.quadrantSamples = quadrantSamples;
 
-        assert topU >=0f && topU <= 1f;
+        assert topU >= 0f && topU <= 1f;
         this.topU = topU;
 
-        assert topV >=0f && topV <= 1f;
+        assert topV >= 0f && topV <= 1f;
         this.topV = topV;
 
         if (!(uvScale > 0f && uvScale < 0.5f)) {
             logger.log(Level.SEVERE, "uvScale={0}", uvScale);
-            throw new IllegalArgumentException(
-                    "uvScale should be between 0 and 0.5");
+            throw new IllegalArgumentException("uvScale should be between 0 and 0.5");
         }
         this.uvScale = uvScale;
 
@@ -201,15 +202,15 @@ public class DomeMesh
      * Compute the texture coordinate of a point on this mesh that's in the
      * specified direction from the center of the mesh.
      *
-     * @param direction (length=1, unaffected)
+     * @param direction
+     *            (length=1, unaffected)
      * @return new vector, or null if direction is too far below the equator
      */
     public Vector2f directionUV(Vector3f direction) {
         assert direction != null;
         if (!direction.isUnitVector()) {
             logger.log(Level.SEVERE, "direction={0}", direction);
-            throw new IllegalArgumentException(
-                    "direction should have length=1");
+            throw new IllegalArgumentException("direction should have length=1");
         }
 
         float angleFromTop = FastMath.acos(direction.y);
@@ -242,13 +243,15 @@ public class DomeMesh
      * Compute the elevation angle of a point on this mesh, given its texture
      * coordinates.
      *
-     * @param u 1st texture coordinate (&le;1, &ge;0)
-     * @param v 2nd texture coordinate (&le;1, &ge;0)
+     * @param u
+     *            1st texture coordinate (&le;1, &ge;0)
+     * @param v
+     *            2nd texture coordinate (&le;1, &ge;0)
      * @return angle in radians (&le;Pi/2)
      */
     public float elevationAngle(float u, float v) {
-        assert u >=0f && u <= 1f;
-        assert v >=0f && v <= 1f;
+        assert u >= 0f && u <= 1f;
+        assert v >= 0f && v <= 1f;
 
         double a = u - topU;
         double b = v - topV;
@@ -265,13 +268,13 @@ public class DomeMesh
      * Regenerate the mesh for a new segment angle: 2*Pi produces a complete
      * dome, and Pi results in a quarter of a dome, and so on.
      *
-     * @param newAngle (in radians, &le;2*Pi, &gt;0)
+     * @param newAngle
+     *            (in radians, &le;2*Pi, &gt;0)
      */
     public void setSegmentAngle(float newAngle) {
         if (!(newAngle > 0f && newAngle <= FastMath.TWO_PI)) {
             logger.log(Level.SEVERE, "angle={0}", newAngle);
-            throw new IllegalArgumentException(
-                    "angle should be between 0 and 2*Pi");
+            throw new IllegalArgumentException("angle should be between 0 and 2*Pi");
         }
         segmentAngle = newAngle;
 
@@ -282,13 +285,13 @@ public class DomeMesh
      * Regenerate the mesh for a new vertical angle: Pi/2 produces a hemisphere
      * and so on.
      *
-     * @param newAngle (in radians, &lt;Pi, &gt;0)
+     * @param newAngle
+     *            (in radians, &lt;Pi, &gt;0)
      */
     public void setVerticalAngle(float newAngle) {
         if (!(newAngle > 0f && newAngle < FastMath.PI)) {
             logger.log(Level.SEVERE, "angle={0}", newAngle);
-            throw new IllegalArgumentException(
-                    "angle should be between 0 and Pi");
+            throw new IllegalArgumentException("angle should be between 0 and Pi");
         }
         verticalAngle = newAngle;
 
@@ -300,11 +303,11 @@ public class DomeMesh
     /**
      * De-serialize this instance when loading.
      *
-     * @param importer (not null)
+     * @param importer
+     *            (not null)
      */
     @Override
-    public void read(JmeImporter importer)
-            throws IOException {
+    public void read(JmeImporter importer) throws IOException {
         super.read(importer);
 
         InputCapsule capsule = importer.getCapsule(this);
@@ -326,11 +329,11 @@ public class DomeMesh
     /**
      * Serialize this instance when saving.
      *
-     * @param exporter (not null)
+     * @param exporter
+     *            (not null)
      */
     @Override
-    public void write(JmeExporter exporter)
-            throws IOException {
+    public void write(JmeExporter exporter) throws IOException {
         super.write(exporter);
 
         OutputCapsule capsule = exporter.getCapsule(this);
@@ -381,25 +384,24 @@ public class DomeMesh
          */
         Vector2f[] texCoordArray = new Vector2f[vertexCount];
         /*
-         * Compute the non-polar vertices 1st. Vertices are arranged 1st
-         * by latitude (starting from the rim).
+         * Compute the non-polar vertices 1st. Vertices are arranged 1st by
+         * latitude (starting from the rim).
          */
         float quadHeight = verticalAngle / (quadrantSamples - 1); // radians
-        float quadWidth;  // radians
+        float quadWidth; // radians
         if (complete) {
             quadWidth = FastMath.TWO_PI / rimSamples;
         } else {
             quadWidth = segmentAngle / (rimSamples - 1);
         }
         for (int parallel = 0; parallel < quadrantSamples - 1; parallel++) {
-            float latitude = FastMath.HALF_PI - verticalAngle
-                    + quadHeight * parallel;
+            float latitude = FastMath.HALF_PI - verticalAngle + quadHeight * parallel;
             float y = FastMath.sin(latitude);
             float xzDistance = FastMath.cos(latitude);
             /*
              * Within each latitude, vertices are arranged by longitude
-             * (starting from the +X meridian and proceeding counterclockwise
-             * as seen from +Y).
+             * (starting from the +X meridian and proceeding counterclockwise as
+             * seen from +Y).
              */
             for (int meridian = 0; meridian < rimSamples; meridian++) {
                 float longitude = quadWidth * meridian;
@@ -440,13 +442,11 @@ public class DomeMesh
     private void updateDerivedProperties() {
         if (rimSamples < 3) {
             logger.log(Level.SEVERE, "rimSamples={0}", rimSamples);
-            throw new IllegalStateException(
-                    "need at least 3 samples on the rim");
+            throw new IllegalStateException("need at least 3 samples on the rim");
         }
         if (quadrantSamples < 2) {
             logger.log(Level.SEVERE, "quadrantSamples={0}", quadrantSamples);
-            throw new IllegalStateException("need at least "
-                    + "2 samples per longitudinal quadrant");
+            throw new IllegalStateException("need at least " + "2 samples per longitudinal quadrant");
         }
 
         complete = (segmentAngle > 1.999f * FastMath.PI);
@@ -480,16 +480,16 @@ public class DomeMesh
             numGores = rimSamples - 1;
         }
         /*
-         * Compute the quad triangles 1st. Quads are arranged 1st
-         * and foremost by latitude, starting at the rim.
+         * Compute the quad triangles 1st. Quads are arranged 1st and foremost
+         * by latitude, starting at the rim.
          */
         int quadsPerGore = quadrantSamples - 2;
         for (int parallel = 0; parallel < quadsPerGore; parallel++) {
             int nextParallel = parallel + 1;
             /*
              * Within each latitude band, quads are arranged by longitude,
-             * starting from the +X meridian and proceeding counterclockwise
-             * as seen from +Y.
+             * starting from the +X meridian and proceeding counterclockwise as
+             * seen from +Y.
              */
             for (int meridian = 0; meridian < numGores; meridian++) {
                 int nextMeridian = (meridian + 1) % rimSamples;
@@ -526,9 +526,9 @@ public class DomeMesh
             }
         }
         /*
-         * The remaining (non-quad) triangles near the top of the dome
-         * are arranged by longitude, starting from the +X meridian and
-         * proceeding counterclockwise as seen from +Y.
+         * The remaining (non-quad) triangles near the top of the dome are
+         * arranged by longitude, starting from the +X meridian and proceeding
+         * counterclockwise as seen from +Y.
          */
         int parallel = quadsPerGore;
         int topIndex = vertexCount - 1;

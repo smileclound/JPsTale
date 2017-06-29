@@ -48,16 +48,14 @@ import java.util.logging.Logger;
  *
  * @author Stephen Gold <sgold@sonic.net>
  */
-public class SkyMaterialCore
-        extends Material {
+public class SkyMaterialCore extends Material {
     // *************************************************************************
     // constants
 
     /**
      * message logger for this class
      */
-    final private static Logger logger =
-            Logger.getLogger(SkyMaterialCore.class.getName());
+    final private static Logger logger = Logger.getLogger(SkyMaterialCore.class.getName());
     /**
      * texture coordinate for hidden objects
      */
@@ -126,14 +124,17 @@ public class SkyMaterialCore
      * Instantiate sky material from a specified asset path. The 1st method
      * invoked should be initialize().
      *
-     * @param assetManager asset manager for loading textures and material
-     * definitions (not null)
-     * @param assetPath pathname to the material definitions asset (not null)
-     * @param maxObjects number of astronomical objects allowed (&ge;0)
-     * @param maxCloudLayers number of cloud layers allowed (&ge;0)
+     * @param assetManager
+     *            asset manager for loading textures and material definitions
+     *            (not null)
+     * @param assetPath
+     *            pathname to the material definitions asset (not null)
+     * @param maxObjects
+     *            number of astronomical objects allowed (&ge;0)
+     * @param maxCloudLayers
+     *            number of cloud layers allowed (&ge;0)
      */
-    public SkyMaterialCore(AssetManager assetManager, String assetPath,
-            int maxObjects, int maxCloudLayers) {
+    public SkyMaterialCore(AssetManager assetManager, String assetPath, int maxObjects, int maxCloudLayers) {
         super(assetManager, assetPath);
 
         this.assetManager = assetManager;
@@ -154,8 +155,10 @@ public class SkyMaterialCore
      * Add a cloud layer to this material using the specified alpha map asset
      * path.
      *
-     * @param layerIndex (&lt;maxCloudLayers, &ge;0)
-     * @param assetPath asset path to the alpha map (not null)
+     * @param layerIndex
+     *            (&lt;maxCloudLayers, &ge;0)
+     * @param assetPath
+     *            asset path to the alpha map (not null)
      */
     public void addClouds(int layerIndex, String assetPath) {
         validateLayerIndex(layerIndex);
@@ -183,8 +186,10 @@ public class SkyMaterialCore
      * Add an astronomical object to this material using the specified color
      * map.
      *
-     * @param objectIndex (&lt;maxObjects, &ge;0)
-     * @param colorMap color map to use (not null)
+     * @param objectIndex
+     *            (&lt;maxObjects, &ge;0)
+     * @param colorMap
+     *            color map to use (not null)
      */
     public void addObject(int objectIndex, Texture colorMap) {
         validateObjectIndex(objectIndex);
@@ -203,7 +208,8 @@ public class SkyMaterialCore
     /**
      * Estimate how much of an object's light is transmitted through the clouds.
      *
-     * @param objectIndex (&lt;maxObjects, &ge;0)
+     * @param objectIndex
+     *            (&lt;maxObjects, &ge;0)
      * @return fraction of light transmitted (&lt;1, &ge;0)
      */
     public float getTransmission(int objectIndex) {
@@ -222,7 +228,8 @@ public class SkyMaterialCore
      * Estimate how much light is transmitted through the clouds at the
      * specified texture coordinates.
      *
-     * @param skyCoordinates (unaffected, not null)
+     * @param skyCoordinates
+     *            (unaffected, not null)
      * @return fraction of light transmitted (&le;1, &ge;0)
      */
     public float getTransmission(Vector2f skyCoordinates) {
@@ -230,8 +237,7 @@ public class SkyMaterialCore
         float result = 1f;
         for (int layerIndex = 0; layerIndex < maxCloudLayers; layerIndex++) {
             if (cloudsRaster[layerIndex] != null) {
-                float transparency =
-                        getTransparency(layerIndex, skyCoordinates);
+                float transparency = getTransparency(layerIndex, skyCoordinates);
                 result *= transparency;
             }
         }
@@ -246,7 +252,8 @@ public class SkyMaterialCore
      * <p>
      * Use setObjectTransform() to reveal an object which has been hidden.
      *
-     * @param objectIndex (&lt;maxObjects, &ge;0)
+     * @param objectIndex
+     *            (&lt;maxObjects, &ge;0)
      */
     public void hideObject(int objectIndex) {
         validateObjectIndex(objectIndex);
@@ -254,8 +261,7 @@ public class SkyMaterialCore
             throw new IllegalStateException("object not yet added");
         }
 
-        String objectParameterName =
-                String.format("Object%dCenter", objectIndex);
+        String objectParameterName = String.format("Object%dCenter", objectIndex);
         setVector2(objectParameterName, hidden);
         objectCenters[objectIndex].set(hidden);
 
@@ -263,19 +269,19 @@ public class SkyMaterialCore
          * Scale down the object to occupies only a few pixels in texture space.
          */
         float scale = 1000f;
-        String transformUParameterName =
-                String.format("Object%dTransformU", objectIndex);
+        String transformUParameterName = String.format("Object%dTransformU", objectIndex);
         setVector2(transformUParameterName, new Vector2f(scale, scale));
-        String transformVParameterName =
-                String.format("Object%dTransformV", objectIndex);
+        String transformVParameterName = String.format("Object%dTransformV", objectIndex);
         setVector2(transformVParameterName, new Vector2f(scale, scale));
     }
 
     /**
      * Alter the color of a cloud layer.
      *
-     * @param layerIndex (&lt;maxCloudLayers, &ge;0)
-     * @param newColor (not null)
+     * @param layerIndex
+     *            (&lt;maxCloudLayers, &ge;0)
+     * @param newColor
+     *            (not null)
      */
     public void setCloudsColor(int layerIndex, ColorRGBA newColor) {
         validateLayerIndex(layerIndex);
@@ -291,8 +297,10 @@ public class SkyMaterialCore
     /**
      * Alter the glow color of a cloud layer.
      *
-     * @param layerIndex (&lt;maxCloudLayers, &ge;0)
-     * @param newColor (not null)
+     * @param layerIndex
+     *            (&lt;maxCloudLayers, &ge;0)
+     * @param newColor
+     *            (not null)
      */
     public void setCloudsGlow(int layerIndex, ColorRGBA newColor) {
         validateLayerIndex(layerIndex);
@@ -307,9 +315,12 @@ public class SkyMaterialCore
     /**
      * Alter the texture offset of a cloud layer.
      *
-     * @param layerIndex (&lt;maxCloudLayers, &ge;0)
-     * @param newU 1st component of the new offset
-     * @param newV 2nd component of the new offset
+     * @param layerIndex
+     *            (&lt;maxCloudLayers, &ge;0)
+     * @param newU
+     *            1st component of the new offset
+     * @param newV
+     *            2nd component of the new offset
      */
     public void setCloudsOffset(int layerIndex, float newU, float newV) {
         validateLayerIndex(layerIndex);
@@ -329,8 +340,10 @@ public class SkyMaterialCore
     /**
      * Alter the texture scale of a cloud layer.
      *
-     * @param layerIndex (&lt;maxCloudLayers, &ge;0)
-     * @param newScale (&gt;0)
+     * @param layerIndex
+     *            (&lt;maxCloudLayers, &ge;0)
+     * @param newScale
+     *            (&gt;0)
      */
     public void setCloudsScale(int layerIndex, float newScale) {
         validateLayerIndex(layerIndex);
@@ -346,8 +359,10 @@ public class SkyMaterialCore
     /**
      * Alter the color of an astronomical object.
      *
-     * @param objectIndex (&lt;maxObjects, &ge;0)
-     * @param newColor (not null)
+     * @param objectIndex
+     *            (&lt;maxObjects, &ge;0)
+     * @param newColor
+     *            (not null)
      */
     public void setObjectColor(int objectIndex, ColorRGBA newColor) {
         validateObjectIndex(objectIndex);
@@ -362,8 +377,10 @@ public class SkyMaterialCore
     /**
      * Alter the glow color of an astronomical object.
      *
-     * @param objectIndex (&lt;maxObjects, &ge;0)
-     * @param newColor (not null)
+     * @param objectIndex
+     *            (&lt;maxObjects, &ge;0)
+     * @param newColor
+     *            (not null)
      */
     public void setObjectGlow(int objectIndex, ColorRGBA newColor) {
         validateObjectIndex(objectIndex);
@@ -378,38 +395,39 @@ public class SkyMaterialCore
     /**
      * Alter the location and scaling of an astronomical object.
      *
-     * @param objectIndex (&lt;maxObjects, &ge;0)
-     * @param centerUV sky texture coordinates for the center of the object (not
-     * null, each component &le;1 and &ge;0, unaffected)
-     * @param newScale ratio of the sky's texture scale to that of the object
-     * (&ge;0, usually &lt;1)
-     * @param newRotate (cos, sin) of clockwise rotation angle (or null if
-     * rotation doesn't matter)
+     * @param objectIndex
+     *            (&lt;maxObjects, &ge;0)
+     * @param centerUV
+     *            sky texture coordinates for the center of the object (not
+     *            null, each component &le;1 and &ge;0, unaffected)
+     * @param newScale
+     *            ratio of the sky's texture scale to that of the object (&ge;0,
+     *            usually &lt;1)
+     * @param newRotate
+     *            (cos, sin) of clockwise rotation angle (or null if rotation
+     *            doesn't matter)
      */
-    public void setObjectTransform(int objectIndex, Vector2f centerUV,
-            float newScale, Vector2f newRotate) {
+    public void setObjectTransform(int objectIndex, Vector2f centerUV, float newScale, Vector2f newRotate) {
         validateObjectIndex(objectIndex);
         if (newRotate != null) {
             if (!MyMath.isUnitVector(newRotate)) {
                 logger.log(Level.SEVERE, "newRotate={0}", newRotate);
-                throw new IllegalArgumentException(
-                        "rotation should have length=1");
+                throw new IllegalArgumentException("rotation should have length=1");
             }
         }
         if (objectCenters[objectIndex] == null) {
             throw new IllegalStateException("object not yet added");
         }
 
-        String objectParameterName =
-                String.format("Object%dCenter", objectIndex);
+        String objectParameterName = String.format("Object%dCenter", objectIndex);
         setVector2(objectParameterName, centerUV);
         objectCenters[objectIndex].set(centerUV);
 
         Vector2f offset = centerUV.subtract(Constants.topUV);
         float topDist = offset.length();
         /*
-         * The texture coordinate transforms are broken into pairs of
-         * vectors because there is no Matrix2f class.
+         * The texture coordinate transforms are broken into pairs of vectors
+         * because there is no Matrix2f class.
          */
         Vector2f transformU = new Vector2f();
         Vector2f transformV = new Vector2f();
@@ -426,8 +444,7 @@ public class SkyMaterialCore
             tU.set(b, -a);
             tV.set(a, b);
 
-            float stretchFactor = 1f
-                    + Constants.stretchCoefficient * topDist * topDist;
+            float stretchFactor = 1f + Constants.stretchCoefficient * topDist * topDist;
             tU.divideLocal(stretchFactor);
 
             if (newRotate != null) {
@@ -455,10 +472,8 @@ public class SkyMaterialCore
             /*
              * Rotate by newRotate.
              */
-            transformU.set(tU.x * newRotate.x + tV.x * newRotate.y,
-                    tU.y * newRotate.x + tV.y * newRotate.y);
-            transformV.set(tV.x * newRotate.x - tU.x * newRotate.y,
-                    tV.y * newRotate.x - tU.y * newRotate.y);
+            transformU.set(tU.x * newRotate.x + tV.x * newRotate.y, tU.y * newRotate.x + tV.y * newRotate.y);
+            transformV.set(tV.x * newRotate.x - tU.x * newRotate.y, tV.y * newRotate.x - tU.y * newRotate.y);
         }
         /*
          * Scale by newScale.
@@ -466,12 +481,10 @@ public class SkyMaterialCore
         transformU.divideLocal(newScale);
         transformV.divideLocal(newScale);
 
-        String transformUParameterName =
-                String.format("Object%dTransformU", objectIndex);
+        String transformUParameterName = String.format("Object%dTransformU", objectIndex);
         setVector2(transformUParameterName, transformU);
 
-        String transformVParameterName =
-                String.format("Object%dTransformV", objectIndex);
+        String transformVParameterName = String.format("Object%dTransformV", objectIndex);
         setVector2(transformVParameterName, transformV);
     }
     // *************************************************************************
@@ -480,28 +493,29 @@ public class SkyMaterialCore
     /**
      * Validate a layer index.
      *
-     * @param layerIndex the index of a cloud layer
-     * @throws IllegalArgumentException if the index is out of range
+     * @param layerIndex
+     *            the index of a cloud layer
+     * @throws IllegalArgumentException
+     *             if the index is out of range
      */
     protected void validateLayerIndex(int layerIndex) {
         if (layerIndex < 0 || layerIndex >= maxCloudLayers) {
-            logger.log(Level.SEVERE, "layerIndex={0}, maxCloudLayers={1}",
-                    new Object[]{layerIndex, maxCloudLayers});
-            throw new IllegalArgumentException(
-                    "cloud layer index out of range");
+            logger.log(Level.SEVERE, "layerIndex={0}, maxCloudLayers={1}", new Object[] { layerIndex, maxCloudLayers });
+            throw new IllegalArgumentException("cloud layer index out of range");
         }
     }
 
     /**
      * Validate an object index.
      *
-     * @param objectIndex the index of an astronomical object
-     * @throws IllegalArgumentException if the index is out of range
+     * @param objectIndex
+     *            the index of an astronomical object
+     * @throws IllegalArgumentException
+     *             if the index is out of range
      */
     protected void validateObjectIndex(int objectIndex) {
         if (objectIndex < 0 || objectIndex >= maxObjects) {
-            logger.log(Level.SEVERE, "objectIndex={0}, maxObjects={1}",
-                    new Object[]{objectIndex, maxObjects});
+            logger.log(Level.SEVERE, "objectIndex={0}, maxObjects={1}", new Object[] { objectIndex, maxObjects });
             throw new IllegalArgumentException("object index out of range");
         }
     }
@@ -511,11 +525,11 @@ public class SkyMaterialCore
     /**
      * De-serialize this instance when loading.
      *
-     * @param importer (not null)
+     * @param importer
+     *            (not null)
      */
     @Override
-    public void read(JmeImporter importer)
-            throws IOException {
+    public void read(JmeImporter importer) throws IOException {
         super.read(importer);
 
         InputCapsule capsule = importer.getCapsule(this);
@@ -556,11 +570,11 @@ public class SkyMaterialCore
     /**
      * Serialize this instance when saving.
      *
-     * @param exporter (not null)
+     * @param exporter
+     *            (not null)
      */
     @Override
-    public void write(JmeExporter exporter)
-            throws IOException {
+    public void write(JmeExporter exporter) throws IOException {
         super.write(exporter);
 
         OutputCapsule capsule = exporter.getCapsule(this);
@@ -578,8 +592,10 @@ public class SkyMaterialCore
      * Estimate how much light is transmitted through an indexed cloud layer at
      * the specified texture coordinates.
      *
-     * @param layerIndex (&lt;maxCloudLayers, &ge;0)
-     * @param skyCoordinates (unaffected, not null)
+     * @param layerIndex
+     *            (&lt;maxCloudLayers, &ge;0)
+     * @param skyCoordinates
+     *            (unaffected, not null)
      * @return fraction of light transmitted (&le;1, &ge;0)
      */
     private float getTransparency(int layerIndex, Vector2f skyCoordinates) {
@@ -605,9 +621,11 @@ public class SkyMaterialCore
      * Sample the red component of a rasterized texture at the specified
      * coordinates.
      *
-     * @param colorImage the texture to sample (not null, unaffected)
-     * @param uv texture coordinates to sample (not null, each component &lt;1
-     * and &ge;0, unaffected)
+     * @param colorImage
+     *            the texture to sample (not null, unaffected)
+     * @param uv
+     *            texture coordinates to sample (not null, each component &lt;1
+     *            and &ge;0, unaffected)
      * @return red intensity (&le;1, &ge;0)
      */
     private float sampleRed(ImageRaster colorImage, Vector2f uv) {
@@ -643,9 +661,7 @@ public class SkyMaterialCore
         /*
          * Sample using bidirectional linear interpolation.
          */
-        float result = r00 * xFraction0 * yFraction0
-                + r01 * xFraction0 * yFraction1
-                + r10 * xFraction1 * yFraction0
+        float result = r00 * xFraction0 * yFraction0 + r01 * xFraction0 * yFraction1 + r10 * xFraction1 * yFraction0
                 + r11 * xFraction1 * yFraction1;
 
         assert result >= Constants.alphaMin : result;

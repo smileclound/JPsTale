@@ -15,30 +15,30 @@ import com.jme3.scene.shape.Box;
  */
 public class MonsterAppState extends SubAppState {
 
-	@Override
-	protected void initialize(Application app) {
-		// TODO Auto-generated method stub
+    @Override
+    protected void initialize(Application app) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void load(Vector3f... positions) {
-		//rootNode.detachAllChildren();
+    public void load(Vector3f... positions) {
+        // rootNode.detachAllChildren();
 
-		for (int i = 0; i < positions.length; i++) {
-			Vector3f pos = positions[i];
-			
-			Spatial model = null;
-			try {
-				model = ModelFactory.loadStageObj("char/flag/wow.smd", false);
-				model.scale(scale);
-			} catch (Exception e) {
-				Box box = new Box(1, 1, 1);
-				Geometry geom = new Geometry("MonsterFlag", box);
-				geom.setMaterial(getMaterial(ColorRGBA.Red));
-				model = geom;
-			}
-			model.setLocalTranslation(pos);
-			rootNode.attachChild(model);
-		}
-	}
+        for (int i = 0; i < positions.length; i++) {
+            Vector3f pos = positions[i];
+
+            Spatial model = null;
+            try {
+                model = ModelFactory.loadStageObj("char/flag/wow.smd", false);
+                model.scale(scale);
+            } catch (Exception e) {
+                Box box = new Box(1, 1, 1);
+                Geometry geom = new Geometry("MonsterFlag", box);
+                geom.setMaterial(getMaterial(ColorRGBA.Red));
+                model = geom;
+            }
+            model.setLocalTranslation(pos);
+            rootNode.attachChild(model);
+        }
+    }
 }

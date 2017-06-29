@@ -70,26 +70,26 @@ public enum LunarPhase {
     public String describe() {
         String result;
         switch (this) {
-            case CUSTOM:
-                result = "custom";
-                break;
-            case FULL:
-                result = "full";
-                break;
-            case WANING_CRESCENT:
-                result = "waning-crescent";
-                break;
-            case WANING_GIBBOUS:
-                result = "waning-gibbous";
-                break;
-            case WAXING_CRESCENT:
-                result = "waxing-crescent";
-                break;
-            case WAXING_GIBBOUS:
-                result = "waxing-gibbous";
-                break;
-            default:
-                result = String.format("ordinal=%d", ordinal());
+        case CUSTOM:
+            result = "custom";
+            break;
+        case FULL:
+            result = "full";
+            break;
+        case WANING_CRESCENT:
+            result = "waning-crescent";
+            break;
+        case WANING_GIBBOUS:
+            result = "waning-gibbous";
+            break;
+        case WAXING_CRESCENT:
+            result = "waxing-crescent";
+            break;
+        case WAXING_GIBBOUS:
+            result = "waxing-gibbous";
+            break;
+        default:
+            result = String.format("ordinal=%d", ordinal());
         }
         return result;
     }
@@ -97,7 +97,8 @@ public enum LunarPhase {
     /**
      * Find a phase based on its textual description.
      *
-     * @param description returned by describe()
+     * @param description
+     *            returned by describe()
      * @return phase, or null if the description does not match any value
      */
     public static LunarPhase fromDescription(String description) {
@@ -119,8 +120,7 @@ public enum LunarPhase {
             throw new IllegalStateException("custom phase has no color map");
         }
         String description = describe();
-        String assetPath =
-                String.format("Textures/skies/moon/%s.png", description);
+        String assetPath = String.format("Textures/skies/moon/%s.png", description);
         return assetPath;
     }
 
@@ -131,18 +131,18 @@ public enum LunarPhase {
      */
     public float longitudeDifference() {
         switch (this) {
-            case FULL:
-                return FastMath.PI;
-            case WANING_CRESCENT:
-                return 1.75f * FastMath.PI;
-            case WANING_GIBBOUS:
-                return 1.25f * FastMath.PI;
-            case WAXING_CRESCENT:
-                return 0.25f * FastMath.PI;
-            case WAXING_GIBBOUS:
-                return 0.75f * FastMath.PI;
-			default:
-				throw new IllegalStateException(this.describe());
+        case FULL:
+            return FastMath.PI;
+        case WANING_CRESCENT:
+            return 1.75f * FastMath.PI;
+        case WANING_GIBBOUS:
+            return 1.25f * FastMath.PI;
+        case WAXING_CRESCENT:
+            return 0.25f * FastMath.PI;
+        case WAXING_GIBBOUS:
+            return 0.75f * FastMath.PI;
+        default:
+            throw new IllegalStateException(this.describe());
         }
     }
 }

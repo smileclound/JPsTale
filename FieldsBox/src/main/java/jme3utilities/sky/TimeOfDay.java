@@ -63,8 +63,7 @@ public class TimeOfDay extends BaseAppState {
     /**
      * message logger for this class
      */
-    final private static Logger logger =
-            Logger.getLogger(TimeOfDay.class.getName());
+    final private static Logger logger = Logger.getLogger(TimeOfDay.class.getName());
     // *************************************************************************
     // fields
     /**
@@ -84,13 +83,13 @@ public class TimeOfDay extends BaseAppState {
     /**
      * Instantiate a new simulation clock, specifying the start time.
      *
-     * @param startHour hours since midnight (&lt;24, &ge;0)
+     * @param startHour
+     *            hours since midnight (&lt;24, &ge;0)
      */
     public TimeOfDay(float startHour) {
         if (!(startHour >= 0f && startHour < hoursPerDay)) {
             logger.log(Level.SEVERE, "startHour={0}", startHour);
-            throw new IllegalArgumentException(
-                    "hour should be between 0 and 24");
+            throw new IllegalArgumentException("hour should be between 0 and 24");
         }
 
         timeOfDay = startHour * secondsPerHour;
@@ -133,7 +132,8 @@ public class TimeOfDay extends BaseAppState {
     /**
      * Write the simulation rate.
      *
-     * @param newRate simulation rate relative to real time
+     * @param newRate
+     *            simulation rate relative to real time
      */
     public void setRate(float newRate) {
         rate = newRate;
@@ -161,7 +161,8 @@ public class TimeOfDay extends BaseAppState {
     /**
      * Callback to update the time of day.
      *
-     * @param interval elapsed since the previous update (in seconds, &ge;0)
+     * @param interval
+     *            elapsed since the previous update (in seconds, &ge;0)
      */
     @Override
     public void update(float interval) {
@@ -172,15 +173,19 @@ public class TimeOfDay extends BaseAppState {
         timeOfDay = MyMath.modulo(timeOfDay, secondsPerDay);
     }
 
-	@Override
-	protected void initialize(Application app) {}
+    @Override
+    protected void initialize(Application app) {
+    }
 
-	@Override
-	protected void cleanup(Application app) {}
+    @Override
+    protected void cleanup(Application app) {
+    }
 
-	@Override
-	protected void onEnable() {}
+    @Override
+    protected void onEnable() {
+    }
 
-	@Override
-	protected void onDisable() {}
+    @Override
+    protected void onDisable() {
+    }
 }

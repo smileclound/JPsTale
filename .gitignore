@@ -5,6 +5,5 @@
 **/logs/
 **/.classpath
 **/.project
-/app/*.dll
-/app/*.so
-/app/data/
+**/*.dll
+**/*.so

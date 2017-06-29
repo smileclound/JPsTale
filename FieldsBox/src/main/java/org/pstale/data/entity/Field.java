@@ -8,9 +8,9 @@ import org.pstale.fields.StgMonster;
 
 public class Field {
 
-	List<Gate> gates;
-	
-	// 怪物列表
-	List<StgMonster> monsterList = new ArrayList<StgMonster>();// 最多50种
+    List<Gate> gates;
+
+    // 怪物列表
+    List<StgMonster> monsterList = new ArrayList<StgMonster>();// 最多50种
 
 }

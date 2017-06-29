@@ -54,21 +54,18 @@ import java.util.logging.Logger;
  *
  * @author Stephen Gold <sgold@sonic.net>
  */
-public class SkyMaterial
-        extends SkyMaterialCore {
+public class SkyMaterial extends SkyMaterialCore {
     // *************************************************************************
     // constants
 
     /**
      * default color of clear sky: pale blue
      */
-    final private static ColorRGBA defaultClearColor =
-            new ColorRGBA(0.4f, 0.6f, 1f, Constants.alphaMax);
+    final private static ColorRGBA defaultClearColor = new ColorRGBA(0.4f, 0.6f, 1f, Constants.alphaMax);
     /**
      * message logger for this class
      */
-    final private static Logger logger =
-            Logger.getLogger(SkyMaterial.class.getName());
+    final private static Logger logger = Logger.getLogger(SkyMaterial.class.getName());
     /**
      * asset path to the default cloud layer alpha map
      */
@@ -92,8 +89,8 @@ public class SkyMaterial
      * Instantiate sky material from the default definitions. The 1st method
      * invoked should be initialize().
      *
-     * @param assetManager for loading textures and material definitions (not
-     * null)
+     * @param assetManager
+     *            for loading textures and material definitions (not null)
      */
     public SkyMaterial(AssetManager assetManager) {
         this(assetManager, 2, 2);
@@ -103,13 +100,13 @@ public class SkyMaterial
      * Instantiate sky material from a specified asset path. The 1st method
      * invoked should be initialize().
      *
-     * @param assetManager for loading textures and material definitions (not
-     * null)
-     * @param assetPath pathname to the material definitions asset (not null)
+     * @param assetManager
+     *            for loading textures and material definitions (not null)
+     * @param assetPath
+     *            pathname to the material definitions asset (not null)
      */
     public SkyMaterial(AssetManager assetManager, String assetPath) {
-        super(assetManager, assetPath, numObjects(assetPath),
-                numCloudLayers(assetPath));
+        super(assetManager, assetPath, numObjects(assetPath), numCloudLayers(assetPath));
     }
 
     /**
@@ -117,10 +114,12 @@ public class SkyMaterial
      * layers. Material definitions will be automatically selected. The 1st
      * method invoked should be initialize().
      *
-     * @param assetManager for loading textures and material definitions (not
-     * null)
-     * @param maxObjects number of astronomical objects required (&ge;0)
-     * @param maxCloudLayers number of cloud layers required (&ge;0)
+     * @param assetManager
+     *            for loading textures and material definitions (not null)
+     * @param maxObjects
+     *            number of astronomical objects required (&ge;0)
+     * @param maxCloudLayers
+     *            number of cloud layers required (&ge;0)
      */
     public SkyMaterial(AssetManager assetManager, int maxObjects, int maxCloudLayers) {
         super(assetManager, pickMatDefs(maxObjects, maxCloudLayers), maxObjects, maxCloudLayers);
@@ -130,14 +129,16 @@ public class SkyMaterial
      * Instantiate sky material from a specified asset path. The 1st method
      * invoked should be initialize().
      *
-     * @param assetManager for loading textures and material definitions (not
-     * null)
-     * @param assetPath pathname to the material definitions asset (not null)
-     * @param maxObjects number of astronomical objects allowed (&ge;0)
-     * @param maxCloudLayers number of cloud layers allowed (&ge;0)
+     * @param assetManager
+     *            for loading textures and material definitions (not null)
+     * @param assetPath
+     *            pathname to the material definitions asset (not null)
+     * @param maxObjects
+     *            number of astronomical objects allowed (&ge;0)
+     * @param maxCloudLayers
+     *            number of cloud layers allowed (&ge;0)
      */
-    public SkyMaterial(AssetManager assetManager, String assetPath,
-            int maxObjects, int maxCloudLayers) {
+    public SkyMaterial(AssetManager assetManager, String assetPath, int maxObjects, int maxCloudLayers) {
         super(assetManager, assetPath, maxObjects, maxCloudLayers);
     }
     // *************************************************************************
@@ -146,7 +147,8 @@ public class SkyMaterial
     /**
      * Add a cloud layer to this material using the default alpha map.
      *
-     * @param layerIndex (&lt;maxCloudLayers, &ge;0)
+     * @param layerIndex
+     *            (&lt;maxCloudLayers, &ge;0)
      */
     public void addClouds(int layerIndex) {
         validateLayerIndex(layerIndex);
@@ -164,7 +166,8 @@ public class SkyMaterial
      * Add horizon haze to this material using the specified alpha map asset
      * path.
      *
-     * @param assetPath asset path to the alpha map (not null)
+     * @param assetPath
+     *            asset path to the alpha map (not null)
      */
     public void addHaze(String assetPath) {
         Texture alphaMap = assetManager.loadTexture(assetPath);
@@ -176,8 +179,10 @@ public class SkyMaterial
      * Add an astronomical object to this material using the specified color map
      * asset.
      *
-     * @param objectIndex (&lt;maxObjects, &ge;0)
-     * @param assetPath asset path to the color map (not null)
+     * @param objectIndex
+     *            (&lt;maxObjects, &ge;0)
+     * @param assetPath
+     *            asset path to the color map (not null)
      */
     public void addObject(int objectIndex, String assetPath) {
         validateObjectIndex(objectIndex);
@@ -196,7 +201,8 @@ public class SkyMaterial
     /**
      * Add stars to this material using the specified color map asset.
      *
-     * @param assetPath (not null)
+     * @param assetPath
+     *            (not null)
      */
     public void addStars(String assetPath) {
         Texture colorMap = assetManager.loadTexture(assetPath);
@@ -224,7 +230,7 @@ public class SkyMaterial
         setClearColor(defaultClearColor);
         setVector2("TopCoord", Constants.topUV);
         /*
-         * The default blend mode is "off".  Since this material may have
+         * The default blend mode is "off". Since this material may have
          * translucent regions, specify "alpha" blending.
          */
         RenderState additional = getAdditionalRenderState();
@@ -241,7 +247,8 @@ public class SkyMaterial
     /**
      * Alter the color of clear sky.
      *
-     * @param newColor (not null)
+     * @param newColor
+     *            (not null)
      */
     public void setClearColor(ColorRGBA newColor) {
         setColor("ClearColor", newColor);
@@ -250,7 +257,8 @@ public class SkyMaterial
     /**
      * Alter the glow color of clear sky.
      *
-     * @param newColor (not null)
+     * @param newColor
+     *            (not null)
      */
     public void setClearGlow(ColorRGBA newColor) {
         setColor("ClearGlow", newColor);
@@ -259,7 +267,8 @@ public class SkyMaterial
     /**
      * Alter the color of the horizon haze.
      *
-     * @param newColor (not null)
+     * @param newColor
+     *            (not null)
      */
     public void setHazeColor(ColorRGBA newColor) {
         setColor("HazeColor", newColor);
@@ -270,28 +279,29 @@ public class SkyMaterial
     /**
      * Determine the number of cloud layers supported by a specified asset path.
      *
-     * @param assetPath path to material definitions (not null)
+     * @param assetPath
+     *            path to material definitions (not null)
      */
     private static int numCloudLayers(String assetPath) {
         assert assetPath != null;
 
         int result;
         switch (assetPath) {
-            case "MatDefs/skies/dome20.j3md":
-            case "MatDefs/skies/dome60.j3md":
-                result = 0;
-                break;
-            case "MatDefs/skies/dome02.j3md":
-            case "MatDefs/skies/dome22.j3md":
-                result = 2;
-                break;
-            case "MatDefs/skies/dome06.j3md":
-            case "MatDefs/skies/dome66.j3md":
-                result = 6;
-                break;
-            default:
-                logger.log(Level.SEVERE, "assetPath={0}", assetPath);
-                throw new IllegalArgumentException("unknown asset");
+        case "MatDefs/skies/dome20.j3md":
+        case "MatDefs/skies/dome60.j3md":
+            result = 0;
+            break;
+        case "MatDefs/skies/dome02.j3md":
+        case "MatDefs/skies/dome22.j3md":
+            result = 2;
+            break;
+        case "MatDefs/skies/dome06.j3md":
+        case "MatDefs/skies/dome66.j3md":
+            result = 6;
+            break;
+        default:
+            logger.log(Level.SEVERE, "assetPath={0}", assetPath);
+            throw new IllegalArgumentException("unknown asset");
         }
         return result;
     }
@@ -299,28 +309,29 @@ public class SkyMaterial
     /**
      * Determine the number of objects supported by a specified asset path.
      *
-     * @param assetPath path to material definitions (not null)
+     * @param assetPath
+     *            path to material definitions (not null)
      */
     private static int numObjects(String assetPath) {
         assert assetPath != null;
 
         int result;
         switch (assetPath) {
-            case "MatDefs/skies/dome02.j3md":
-            case "MatDefs/skies/dome06.j3md":
-                result = 0;
-                break;
-            case "MatDefs/skies/dome20.j3md":
-            case "MatDefs/skies/dome22.j3md":
-                result = 2;
-                break;
-            case "MatDefs/skies/dome60.j3md":
-            case "MatDefs/skies/dome66.j3md":
-                result = 6;
-                break;
-            default:
-                logger.log(Level.SEVERE, "assetPath={0}", assetPath);
-                throw new IllegalArgumentException("unknown asset");
+        case "MatDefs/skies/dome02.j3md":
+        case "MatDefs/skies/dome06.j3md":
+            result = 0;
+            break;
+        case "MatDefs/skies/dome20.j3md":
+        case "MatDefs/skies/dome22.j3md":
+            result = 2;
+            break;
+        case "MatDefs/skies/dome60.j3md":
+        case "MatDefs/skies/dome66.j3md":
+            result = 6;
+            break;
+        default:
+            logger.log(Level.SEVERE, "assetPath={0}", assetPath);
+            throw new IllegalArgumentException("unknown asset");
         }
         return result;
     }
@@ -329,8 +340,10 @@ public class SkyMaterial
      * Select a material definitions asset with at least the specified numbers
      * of objects and cloud layers.
      *
-     * @param numObjects (&le;6, &ge;0)
-     * @param numCloudLayers (&le;6, &ge;0)
+     * @param numObjects
+     *            (&le;6, &ge;0)
+     * @param numCloudLayers
+     *            (&le;6, &ge;0)
      * @return asset path
      */
     private static String pickMatDefs(int numObjects, int numCloudLayers) {

@@ -107,36 +107,30 @@ public class SkyAppState extends BaseAppState {
      * material of the top dome: set by constructor
      */
     protected SkyMaterial topMaterial;
-    
-    
+
     // *************************************************************************
     // constants
 
     /**
      * base color of the daytime sky: pale blue
      */
-    final private static ColorRGBA colorDay =
-            new ColorRGBA(0.4f, 0.6f, 1f, Constants.alphaMax);
+    final private static ColorRGBA colorDay = new ColorRGBA(0.4f, 0.6f, 1f, Constants.alphaMax);
     /**
      * light color and intensity for full moonlight: bluish gray
      */
-    final private static ColorRGBA moonLight =
-            new ColorRGBA(0.4f, 0.4f, 0.6f, Constants.alphaMax);
+    final private static ColorRGBA moonLight = new ColorRGBA(0.4f, 0.4f, 0.6f, Constants.alphaMax);
     /**
      * light color and intensity for moonless night: nearly black
      */
-    final private static ColorRGBA starLight =
-            new ColorRGBA(0.03f, 0.03f, 0.03f, Constants.alphaMax);
+    final private static ColorRGBA starLight = new ColorRGBA(0.03f, 0.03f, 0.03f, Constants.alphaMax);
     /**
      * light color and intensity for full sunlight: yellowish white
      */
-    final private static ColorRGBA sunLight =
-            new ColorRGBA(0.8f, 0.8f, 0.75f, Constants.alphaMax);
+    final private static ColorRGBA sunLight = new ColorRGBA(0.8f, 0.8f, 0.75f, Constants.alphaMax);
     /**
      * color blended in around sunrise and sunset: ruddy orange
      */
-    final private static ColorRGBA twilight =
-            new ColorRGBA(0.6f, 0.3f, 0.15f, Constants.alphaMax);
+    final private static ColorRGBA twilight = new ColorRGBA(0.6f, 0.3f, 0.15f, Constants.alphaMax);
     /**
      * extent of the twilight periods before sunrise and after sunset, expressed
      * as the sine of the sun's angle below the horizon (&le;1, &ge;0)
@@ -154,8 +148,7 @@ public class SkyAppState extends BaseAppState {
      * light direction for starlight: don't make this perfectly vertical because
      * that might cause shadow map aliasing
      */
-    final private static Vector3f starlightDirection =
-            new Vector3f(1f, 9f, 1f).normalizeLocal();
+    final private static Vector3f starlightDirection = new Vector3f(1f, 9f, 1f).normalizeLocal();
     // *************************************************************************
     // fields
     /**
@@ -187,7 +180,7 @@ public class SkyAppState extends BaseAppState {
      * lights, shadows, and viewports to update
      */
     final private Updater updater = new Updater();
-    
+
     /**
      * ambient light-source in the scene
      */
@@ -196,56 +189,55 @@ public class SkyAppState extends BaseAppState {
      * main light-source in the scene, which represents the sun or moon
      */
     private DirectionalLight mainLight = null;
-    
+
     private AssetManager assetManager;
     private Camera camera;
     private ViewPort viewPort;
-	private Node rootNode;
-	
-	/**
+    private Node rootNode;
+
+    /**
      * 初始为 6:00 a.m.
      */
-	final private TimeOfDay timeOfDay = new TimeOfDay(6.0f);
-	
-	public SkyAppState() {
-		rootNode = new Node("sky node");
-		rootNode.setQueueBucket(Bucket.Sky);
-		rootNode.setShadowMode(ShadowMode.Off);
-		
+    final private TimeOfDay timeOfDay = new TimeOfDay(6.0f);
+
+    public SkyAppState() {
+        rootNode = new Node("sky node");
+        rootNode.setQueueBucket(Bucket.Sky);
+        rootNode.setShadowMode(ShadowMode.Off);
+
         cloudLayers = new CloudLayer[numCloudLayers];
-	}
-	
-	@Override
-	protected void initialize(Application app) {
-		assetManager = app.getAssetManager();
-		camera = app.getCamera();
-		viewPort = app.getViewPort();
-		
+    }
+
+    @Override
+    protected void initialize(Application app) {
+        assetManager = app.getAssetManager();
+        camera = app.getCamera();
+        viewPort = app.getViewPort();
+
         /*
          * 北半球
          */
         DomeMesh hemisphere = new DomeMesh(rimSamples, quadrantSamples);
         Material north = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         north.setTexture("ColorMap", assetManager.loadTexture("Textures/skies/star-maps/northern.png"));
-        
+
         northDome = new Geometry("north", hemisphere);
         northDome.setMaterial(north);
-        
 
         /*
          * 南半球
          */
         Material south = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         south.setTexture("ColorMap", assetManager.loadTexture("Textures/skies/star-maps/southern.png"));
-        
+
         southDome = new Geometry("south", hemisphere);
         southDome.setMaterial(south);
-        
+
         /*
          * 顶层天球：太阳、月亮
          */
         topMesh = new DomeMesh(rimSamples, quadrantSamples);
-        
+
         topMaterial = new SkyMaterial(assetManager, 2, 0);
         topMaterial.initialize();
         topMaterial.addHaze();
@@ -259,14 +251,14 @@ public class SkyAppState extends BaseAppState {
         topMaterial.addObject(sunIndex, "Textures/skies/suns/hazy-disc.png");
         topDome = new Geometry("top", topMesh);
         topDome.setMaterial(topMaterial);
-        
+
         /*
          * 底层天球
          */
         bottomMesh = new DomeMesh(rimSamples, 2);
-        
+
         bottomMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        
+
         bottomDome = new Geometry("bottom", bottomMesh);
         bottomDome.setMaterial(bottomMaterial);
         Quaternion upsideDown = new Quaternion();
@@ -285,14 +277,14 @@ public class SkyAppState extends BaseAppState {
             cloudLayers[layerIndex] = new CloudLayer(cloudsMaterial, layerIndex);
         }
         setCloudiness(0.5f);
-        
+
         cloudsMesh = new DomeMesh(rimSamples, quadrantSamples);
-        
+
         cloudsOnlyDome = new Geometry("clouds", cloudsMesh);
         cloudsOnlyDome.setMaterial(cloudsMaterial);
         cloudsOnlyDome.setLocalScale(1f, 0.3f, 1f);// 云层的高度，使其更贴近观察者。
         cloudsOnlyDome.setLocalTranslation(0f, 0f, 0f);// 云层的位置
-        
+
         /*
          * 根据渲染循序，从外到内添加天体。
          */
@@ -301,7 +293,7 @@ public class SkyAppState extends BaseAppState {
         rootNode.attachChild(topDome);
         rootNode.attachChild(bottomDome);
         rootNode.attachChild(cloudsOnlyDome);
-        
+
         /*
          * Add a new filter post-processor.
          */
@@ -309,7 +301,7 @@ public class SkyAppState extends BaseAppState {
         viewPort.addProcessor(fpp);
         BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
         fpp.addFilter(bloom);
-        
+
         /*
          * 设置观察者的维度
          */
@@ -318,7 +310,7 @@ public class SkyAppState extends BaseAppState {
         sunScale = 0.031f * topMesh.uvScale / (Constants.discDiameter * FastMath.HALF_PI);
         sunAndStars.setSolarLongitude(0f);
         setTopVerticalAngle(FastMath.HALF_PI);
-		
+
         /*
          * 设置亮度
          */
@@ -328,28 +320,29 @@ public class SkyAppState extends BaseAppState {
         ambientLight = new AmbientLight();
         ambientLight.setName("ambient");
 
-		updater.setViewPort(viewPort);
-		updater.setAmbientLight(ambientLight);
-		updater.setMainLight(mainLight);
-		
-	    timeOfDay.setRate(1000f);// 时间流逝速度为现实的1000倍
-		getStateManager().attach(timeOfDay);
-	}
+        updater.setViewPort(viewPort);
+        updater.setAmbientLight(ambientLight);
+        updater.setMainLight(mainLight);
 
-	@Override
-	protected void cleanup(Application app) {}
+        timeOfDay.setRate(1000f);// 时间流逝速度为现实的1000倍
+        getStateManager().attach(timeOfDay);
+    }
 
-	@Override
-	protected void onEnable() {
-		((SimpleApplication)getApplication()).getRootNode().attachChild(rootNode);
-	}
+    @Override
+    protected void cleanup(Application app) {
+    }
 
-	@Override
-	protected void onDisable() {
-		rootNode.removeFromParent();
-	}
+    @Override
+    protected void onEnable() {
+        ((SimpleApplication) getApplication()).getRootNode().attachChild(rootNode);
+    }
 
-	public void update(float tpf) {
+    @Override
+    protected void onDisable() {
+        rootNode.removeFromParent();
+    }
+
+    public void update(float tpf) {
         updateClouds(tpf);
         /*
          * Translate the sky node to center the sky on the camera.
@@ -357,8 +350,8 @@ public class SkyAppState extends BaseAppState {
         Vector3f cameraLocation = camera.getLocation();
         rootNode.setLocalTranslation(cameraLocation);
         /*
-         * Scale the sky node so that its furthest geometries are midway
-         * between the near and far planes of the view frustum.
+         * Scale the sky node so that its furthest geometries are midway between
+         * the near and far planes of the view frustum.
          */
         float far = camera.getFrustumFar();
         float near = camera.getFrustumNear();
@@ -371,16 +364,16 @@ public class SkyAppState extends BaseAppState {
              */
             rootNode.setLocalRotation(Quaternion.IDENTITY);
         }
-        
+
         updateAll();
-	}
-	
+    }
+
     /**
      * Compute the contribution of the moon to the nighttime illumination mix
      * using its phase, assuming it is above the horizon.
      *
      * @return fraction (&le;1, &ge;0) 1 &rarr; full moon, 0 &rarr; no
-     * contribution
+     *         contribution
      */
     public float getMoonIllumination() {
         float fullAngle = FastMath.abs(phaseAngle - FastMath.PI);
@@ -394,7 +387,8 @@ public class SkyAppState extends BaseAppState {
     /**
      * Alter the opacity of all cloud layers.
      *
-     * @param newAlpha desired opacity of the cloud layers (&le;1, &ge;0)
+     * @param newAlpha
+     *            desired opacity of the cloud layers (&le;1, &ge;0)
      */
     public void setCloudiness(float newAlpha) {
         for (int layer = 0; layer < numCloudLayers; layer++) {
@@ -407,8 +401,9 @@ public class SkyAppState extends BaseAppState {
      * horizon lies below the astronomical horizon, it may help to depress the
      * clouds-only dome.
      *
-     * @param newYOffset desired vertical offset as a fraction of the dome
-     * height (&lt;1, &ge;0 when flattening&gt;0; 0 when flattening=0)
+     * @param newYOffset
+     *            desired vertical offset as a fraction of the dome height
+     *            (&lt;1, &ge;0 when flattening&gt;0; 0 when flattening=0)
      */
     public void setCloudYOffset(float newYOffset) {
         if (cloudsOnlyDome == null) {
@@ -420,8 +415,7 @@ public class SkyAppState extends BaseAppState {
         }
         if (!(newYOffset >= 0f && newYOffset < 1f)) {
             logger.log(Level.SEVERE, "offset={0}", newYOffset);
-            throw new IllegalArgumentException(
-                    "offset should be between 0 and 1");
+            throw new IllegalArgumentException("offset should be between 0 and 1");
         }
 
         float deltaY = -newYOffset * cloudsOnlyDome.getLocalScale().y;
@@ -431,8 +425,10 @@ public class SkyAppState extends BaseAppState {
     /**
      * Alter an object's color map texture.
      *
-     * @param objectIndex which object (&ge;0)
-     * @param newColorMap texture to apply (not null)
+     * @param objectIndex
+     *            which object (&ge;0)
+     * @param newColorMap
+     *            texture to apply (not null)
      */
     public void setObjectTexture(int objectIndex, Texture newColorMap) {
         topMaterial.addObject(objectIndex, newColorMap);
@@ -441,8 +437,9 @@ public class SkyAppState extends BaseAppState {
     /**
      * Alter the stabilize flag.
      *
-     * @param newState true to counteract rotation of the controlled node, false
-     * to allow rotation
+     * @param newState
+     *            true to counteract rotation of the controlled node, false to
+     *            allow rotation
      */
     public void setStabilizeFlag(boolean newState) {
         stabilizeFlag = newState;
@@ -454,19 +451,19 @@ public class SkyAppState extends BaseAppState {
      * values greater than Pi/2) to avoid clipping the sun and moon when they
      * are near the horizontal.
      *
-     * @param newAngle desired angle from the zenith to the rim of the top dome
-     * (in radians, &lt;1.785, &gt;0)
+     * @param newAngle
+     *            desired angle from the zenith to the rim of the top dome (in
+     *            radians, &lt;1.785, &gt;0)
      */
     public void setTopVerticalAngle(float newAngle) {
         if (!(newAngle > 0f && newAngle < 1.785f)) {
             logger.log(Level.SEVERE, "angle={0}", newAngle);
-            throw new IllegalArgumentException(
-                    "angle should be between 0 and 1.785");
+            throw new IllegalArgumentException("angle should be between 0 and 1.785");
         }
 
         topMesh.setVerticalAngle(newAngle);
         topDome.setMesh(topMesh);
-        
+
         bottomMesh.setVerticalAngle(FastMath.PI - newAngle);
         bottomDome.setMesh(bottomMesh);
     }
@@ -478,22 +475,24 @@ public class SkyAppState extends BaseAppState {
      * <p>
      * The return value is used in calculating ambient light intensity.
      *
-     * @param baseColor (not null, unaffected, alpha is ignored)
-     * @param sunUp true if sun is above the horizon, otherwise false
-     * @param moonUp true if moon is above the horizon, otherwise false
+     * @param baseColor
+     *            (not null, unaffected, alpha is ignored)
+     * @param sunUp
+     *            true if sun is above the horizon, otherwise false
+     * @param moonUp
+     *            true if moon is above the horizon, otherwise false
      * @return new instance (alpha is undefined)
      */
-    protected ColorRGBA updateCloudsColor(ColorRGBA baseColor, boolean sunUp,
-            boolean moonUp) {
+    protected ColorRGBA updateCloudsColor(ColorRGBA baseColor, boolean sunUp, boolean moonUp) {
 
-    	ColorRGBA cloudsColor;
+        ColorRGBA cloudsColor;
         float max = MyMath.max(baseColor.r, baseColor.g, baseColor.b);
         if (max <= 0f) {
-        	cloudsColor = new ColorRGBA(1f, 1f, 1f, baseColor.a);
+            cloudsColor = new ColorRGBA(1f, 1f, 1f, baseColor.a);
         } else {
-        	cloudsColor = baseColor.mult(1f / max);
+            cloudsColor = baseColor.mult(1f / max);
         }
-        
+
         if (!sunUp) {
             /*
              * At night, darken the clouds by 15%-75%.
@@ -510,7 +509,7 @@ public class SkyAppState extends BaseAppState {
 
         return cloudsColor;
     }
-    
+
     /**
      * Compute the direction to the center of the moon.
      *
@@ -528,7 +527,8 @@ public class SkyAppState extends BaseAppState {
     /**
      * Alter the phase of the moon to a pre-set value.
      *
-     * @param newPreset (or null to hide the moon)
+     * @param newPreset
+     *            (or null to hide the moon)
      */
     final public void setPhase(LunarPhase newPreset) {
         if (newPreset == LunarPhase.CUSTOM) {
@@ -551,10 +551,12 @@ public class SkyAppState extends BaseAppState {
      * rate of motion for cloud layer animations (1 &rarr; standard)
      */
     private float cloudsRelativeSpeed = 1f;
+
     /**
      * Update the cloud layers. (Invoked once per frame.)
      *
-     * @param elapsedTime since the previous update (in seconds, &ge;0)
+     * @param elapsedTime
+     *            since the previous update (in seconds, &ge;0)
      */
     private void updateClouds(float elapsedTime) {
         assert elapsedTime >= 0f : elapsedTime;
@@ -563,8 +565,7 @@ public class SkyAppState extends BaseAppState {
             cloudLayers[layer].updateOffset(cloudsAnimationTime);
         }
     }
-    
-    
+
     // *************************************************************************
     // private methods
 
@@ -572,7 +573,8 @@ public class SkyAppState extends BaseAppState {
      * Compute where mainDirection intersects the cloud dome in the dome's local
      * coordinates, accounting for the dome's flattening and vertical offset.
      *
-     * @param mainDirection (unit vector with non-negative y-component)
+     * @param mainDirection
+     *            (unit vector with non-negative y-component)
      * @return new unit vector
      */
     private Vector3f intersectCloudDome(Vector3f mainDirection) {
@@ -609,8 +611,8 @@ public class SkyAppState extends BaseAppState {
             semiMinorAxis = scale.y;
         }
         /*
-         * Solve for the most positive root of a quadratic equation
-         * in w = sqrt(x^2 + z^2).  Use double precision arithmetic.
+         * Solve for the most positive root of a quadratic equation in w =
+         * sqrt(x^2 + z^2). Use double precision arithmetic.
          */
         double cosAltitude = Math.sqrt(cosSquared);
         double tanAltitude = mainDirection.y / cosAltitude;
@@ -643,17 +645,19 @@ public class SkyAppState extends BaseAppState {
      * Compute the clockwise (left-handed) rotation of the moon's texture
      * relative to the sky's texture.
      *
-     * @param longitude the moon's celestial longitude (in radians)
-     * @param uvCenter texture coordinates of the moon's center (not null)
+     * @param longitude
+     *            the moon's celestial longitude (in radians)
+     * @param uvCenter
+     *            texture coordinates of the moon's center (not null)
      * @return new unit vector with its x-component equal to the cosine of the
-     * rotation angle and its y-component equal to the sine of the rotation
-     * angle
+     *         rotation angle and its y-component equal to the sine of the
+     *         rotation angle
      */
     private Vector2f lunarRotation(float longitude, Vector2f uvCenter) {
         assert uvCenter != null;
         /*
-         * Compute UV coordinates for 0.01 radians north of the center
-         * of the moon.
+         * Compute UV coordinates for 0.01 radians north of the center of the
+         * moon.
          */
         Vector3f north = sunAndStars.convertToWorld(1f, longitude);
         Vector2f uvNorth = topMesh.directionUV(north);
@@ -664,8 +668,8 @@ public class SkyAppState extends BaseAppState {
             return result;
         }
         /*
-         * Compute UV coordinates for 0.01 radians south of the center
-         * of the moon.
+         * Compute UV coordinates for 0.01 radians south of the center of the
+         * moon.
          */
         Vector3f south = sunAndStars.convertToWorld(-1f, longitude);
         Vector2f uvSouth = topMesh.directionUV(south);
@@ -683,13 +687,13 @@ public class SkyAppState extends BaseAppState {
      * Update astronomical objects, sky color, lighting, and stars.
      */
     private void updateAll() {
-		sunAndStars.setHour(timeOfDay.getHour());
-		
+        sunAndStars.setHour(timeOfDay.getHour());
+
         Vector3f sunDirection = updateSun();
         /*
-         * Daytime sky texture is phased in during the twilight periods
-         * before sunrise and after sunset. Update the sky material's
-         * clear color accordingly.
+         * Daytime sky texture is phased in during the twilight periods before
+         * sunrise and after sunset. Update the sky material's clear color
+         * accordingly.
          */
         ColorRGBA clearColor = colorDay.clone();
         clearColor.a = FastMath.saturate(1f + sunDirection.y / limitOfTwilight);
@@ -697,7 +701,7 @@ public class SkyAppState extends BaseAppState {
 
         Vector3f moonDirection = updateMoon();
         updateLighting(sunDirection, moonDirection);
-        
+
         sunAndStars.orientStarDomes(northDome, southDome);
     }
 
@@ -705,8 +709,10 @@ public class SkyAppState extends BaseAppState {
      * Update background colors, cloud colors, haze color, sun color, lights,
      * and shadows.
      *
-     * @param sunDirection world direction to the sun (length=1)
-     * @param moonDirection world direction to the moon (length=1 or null)
+     * @param sunDirection
+     *            world direction to the sun (length=1)
+     * @param moonDirection
+     *            world direction to the moon (length=1 or null)
      */
     private void updateLighting(Vector3f sunDirection, Vector3f moonDirection) {
         assert sunDirection != null;
@@ -742,11 +748,9 @@ public class SkyAppState extends BaseAppState {
         assert mainDirection.y >= 0f : mainDirection;
         /*
          * Determine the base color (applied to horizon haze, bottom dome, and
-         * viewport backgrounds) using the sun's altitude:
-         *  + sunlight when ssa >= 0.25,
-         *  + twilight when ssa = 0,
-         *  + blend of moonlight and starlight when ssa <= -0.04,
-         * with linearly interpolated transitions.
+         * viewport backgrounds) using the sun's altitude: + sunlight when ssa
+         * >= 0.25, + twilight when ssa = 0, + blend of moonlight and starlight
+         * when ssa <= -0.04, with linearly interpolated transitions.
          */
         ColorRGBA baseColor = new ColorRGBA();
         if (sunUp) {
@@ -789,8 +793,8 @@ public class SkyAppState extends BaseAppState {
         ColorRGBA main = new ColorRGBA();
         if (sunUp) {
             /*
-             * By day, the main light has the base color, modulated by
-             * clouds and the cube root of the sine of the sun's altitude.
+             * By day, the main light has the base color, modulated by clouds
+             * and the cube root of the sine of the sun's altitude.
              */
             float magnitude = FastMath.abs(sineSolarAltitude);
             float exponent = FastMath.ONE_THIRD;
@@ -811,22 +815,22 @@ public class SkyAppState extends BaseAppState {
             main = starLight.clone();
         }
         /*
-         * The ambient light color is based on the clouds color;
-         * its intensity is modulated by the "slack" left by
-         * strongest component of the main light.
+         * The ambient light color is based on the clouds color; its intensity
+         * is modulated by the "slack" left by strongest component of the main
+         * light.
          */
         float slack = 1f - MyMath.max(main.r, main.g, main.b);
         assert slack >= 0f : slack;
         ColorRGBA ambient = cloudsColor.mult(slack);
-        
+
         updater.update(ambient, baseColor, main, mainDirection);
     }
-    
+
     /**
      * Update the moon's position and size.
      *
      * @return world direction to the moon (new unit vector) or null if the moon
-     * is hidden
+     *         is hidden
      */
     private Vector3f updateMoon() {
         if (phase == null) {
@@ -838,7 +842,7 @@ public class SkyAppState extends BaseAppState {
          */
         float solarLongitude = sunAndStars.getSolarLongitude();
         float celestialLongitude = solarLongitude + phaseAngle;
-        
+
         celestialLongitude = (celestialLongitude % FastMath.TWO_PI + FastMath.TWO_PI) % FastMath.TWO_PI;
         Vector3f worldDirection = sunAndStars.convertToWorld(0f, celestialLongitude);
         Vector2f uvCenter = topMesh.directionUV(worldDirection);
@@ -848,8 +852,7 @@ public class SkyAppState extends BaseAppState {
             /*
              * Reveal the object and update its texture transform.
              */
-            topMaterial.setObjectTransform(moonIndex, uvCenter, moonScale,
-                    rotation);
+            topMaterial.setObjectTransform(moonIndex, uvCenter, moonScale, rotation);
         } else {
             topMaterial.hideObject(moonIndex);
         }
@@ -860,8 +863,10 @@ public class SkyAppState extends BaseAppState {
     /**
      * Update the colors of the sun and moon based on their altitudes.
      *
-     * @param sineSolarAltitude (&le;1, &ge:-1)
-     * @param sineLunarAltitude (&le;1, &ge:-1)
+     * @param sineSolarAltitude
+     *            (&le;1, &ge:-1)
+     * @param sineLunarAltitude
+     *            (&le;1, &ge:-1)
      */
     private void updateObjectColors(float sineSolarAltitude, float sineLunarAltitude) {
         assert sineSolarAltitude <= 1f : sineSolarAltitude;
@@ -881,8 +886,7 @@ public class SkyAppState extends BaseAppState {
          */
         green = FastMath.saturate(2f * sineLunarAltitude + 0.6f);
         blue = FastMath.saturate(5f * sineLunarAltitude + 0.1f);
-        ColorRGBA moonColor =
-                new ColorRGBA(1f, green, blue, Constants.alphaMax);
+        ColorRGBA moonColor = new ColorRGBA(1f, green, blue, Constants.alphaMax);
         topMaterial.setObjectColor(moonIndex, moonColor);
     }
 

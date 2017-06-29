@@ -22,7 +22,9 @@ public class JSONException extends RuntimeException {
 
     /**
      * Constructs a new JSONException with the specified cause.
-     * @param cause The cause.
+     * 
+     * @param cause
+     *            The cause.
      */
     public JSONException(Throwable cause) {
         super(cause.getMessage());
@@ -34,7 +36,7 @@ public class JSONException extends RuntimeException {
      * or unknown.
      *
      * @return the cause of this exception or null if the cause is nonexistent
-     *          or unknown.
+     *         or unknown.
      */
     @Override
     public Throwable getCause() {

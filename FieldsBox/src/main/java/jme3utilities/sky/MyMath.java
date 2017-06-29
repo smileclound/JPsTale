@@ -47,8 +47,7 @@ public class MyMath {
     /**
      * message logger for this class
      */
-    final private static Logger logger =
-            Logger.getLogger(MyMath.class.getName());
+    final private static Logger logger = Logger.getLogger(MyMath.class.getName());
     // *************************************************************************
     // constructors
 
@@ -63,15 +62,15 @@ public class MyMath {
     /**
      * Compute the circle function sqrt(1 - x^2) for a double-precision value.
      *
-     * @param abscissa input (&le;1, &ge;-1)
+     * @param abscissa
+     *            input (&le;1, &ge;-1)
      * @return positive ordinate of the unit circle at the abscissa (&le;1,
-     * &ge;0)
+     *         &ge;0)
      */
     public static double circle(double abscissa) {
         if (!(abscissa >= -1.0 && abscissa <= 1.0)) {
             logger.log(Level.SEVERE, "abscissa={0}", abscissa);
-            throw new IllegalArgumentException(
-                    "abscissa should be between -1 and 1, inclusive");
+            throw new IllegalArgumentException("abscissa should be between -1 and 1, inclusive");
         }
 
         double y = Math.sqrt(1.0 - abscissa * abscissa);
@@ -85,15 +84,15 @@ public class MyMath {
      * Compute the circle function sqrt(1 - x^2) for a single-precision value.
      * Double precision arithmetic is used to reduce the risk of overflow.
      *
-     * @param abscissa input (&le;1, &ge;-1)
+     * @param abscissa
+     *            input (&le;1, &ge;-1)
      * @return positive ordinate of the unit circle at the abscissa (&le;1,
-     * &ge;0)
+     *         &ge;0)
      */
     public static float circle(float abscissa) {
         if (!(abscissa >= -1f && abscissa <= 1f)) {
             logger.log(Level.SEVERE, "abscissa={0}", abscissa);
-            throw new IllegalArgumentException(
-                    "abscissa should be between -1 and 1, inclusive");
+            throw new IllegalArgumentException("abscissa should be between -1 and 1, inclusive");
         }
 
         double x = (double) abscissa;
@@ -107,10 +106,12 @@ public class MyMath {
     /**
      * Clamp the magnitude of a single-precision value.
      *
-     * @param fValue input value to be clamped
-     * @param maxMagnitude limit of the clamp (&ge;0)
+     * @param fValue
+     *            input value to be clamped
+     * @param maxMagnitude
+     *            limit of the clamp (&ge;0)
      * @return value between -maxMagnitude and +maxMagnitude inclusive which is
-     * closest to fValue
+     *         closest to fValue
      * @see FastMath#clamp(float,float,float)
      */
     public static float clamp(float fValue, float maxMagnitude) {
@@ -120,7 +121,8 @@ public class MyMath {
     /**
      * Cube a single-precision value.
      *
-     * @param fValue input value to be cubed
+     * @param fValue
+     *            input value to be cubed
      * @return fValue raised to the third power
      * @see #cubeRoot(float)
      */
@@ -132,7 +134,8 @@ public class MyMath {
      * Extract the cube root of a single-precision value. Unlike FastMath.pow(),
      * this method works on negative values.
      *
-     * @param fValue input cube to be extracted (may be negative)
+     * @param fValue
+     *            input cube to be extracted (may be negative)
      * @return cube root of fValue
      * @see #cube(float)
      * @see FastMath#pow(float,float)
@@ -151,9 +154,12 @@ public class MyMath {
      * Compute the discriminant (b^2 - 4*a*c) of a quadratic equation in
      * standard form: (a*x^2 + b*x + c).
      *
-     * @param a coefficient of the square term
-     * @param b coefficient of the linear term
-     * @param c constant term
+     * @param a
+     *            coefficient of the square term
+     * @param b
+     *            coefficient of the linear term
+     * @param c
+     *            constant term
      * @return discriminant
      */
     public static double discriminant(double a, double b, double c) {
@@ -165,7 +171,8 @@ public class MyMath {
      * Fade polynomial for Perlin noise. Double precision arithmetic is used to
      * reduce rounding error.
      *
-     * @param t input value (&le;1, &ge;0)
+     * @param t
+     *            input value (&le;1, &ge;0)
      * @return 6*t^5 - 15*t^4 + 10*t^3 (&le;1, &ge;0)
      */
     public static float fade(float t) {
@@ -182,8 +189,10 @@ public class MyMath {
      * Compute the hypotenuse of a right triangle using the Pythagorean Theorem.
      * This method accepts negative arguments.
      *
-     * @param legA length of the 1st leg (may be negative)
-     * @param legB length of the 2nd leg (may be negative)
+     * @param legA
+     *            length of the 1st leg (may be negative)
+     * @param legB
+     *            length of the 2nd leg (may be negative)
      * @return length of the hypotenuse (&ge;0)
      * @see #sumOfSquares(float,float)
      */
@@ -198,7 +207,8 @@ public class MyMath {
     /**
      * Test whether an integer value is odd.
      *
-     * @param iValue input value to be tested
+     * @param iValue
+     *            input value to be tested
      * @return true if x is odd, false if it's even
      */
     public static boolean isOdd(int iValue) {
@@ -209,7 +219,8 @@ public class MyMath {
     /**
      * Test whether a vector's length is within 1% of unity.
      *
-     * @param vector (not null)
+     * @param vector
+     *            (not null)
      * @return true if within 1%, else false
      */
     public static boolean isUnitVector(Vector2f vector) {
@@ -220,9 +231,12 @@ public class MyMath {
     /**
      * Find the max of three single-precision values.
      *
-     * @param a 1st input value
-     * @param b 2nd input value
-     * @param c 3rd input value
+     * @param a
+     *            1st input value
+     * @param b
+     *            2nd input value
+     * @param c
+     *            3rd input value
      * @return greatest of the three values
      */
     public static float max(float a, float b, float c) {
@@ -241,8 +255,10 @@ public class MyMath {
      * negative values of the first argument. For instance, modulo(-1, 4) == 3,
      * while -1 % 4 == -1.
      *
-     * @param iValue input value
-     * @param modulus (&gt;0)
+     * @param iValue
+     *            input value
+     * @param modulus
+     *            (&gt;0)
      * @return iValue MOD modulus (&lt;modulus, &ge;0)
      */
     public static int modulo(int iValue, int modulus) {
@@ -259,8 +275,10 @@ public class MyMath {
      * remainder for negative values of the first argument. For instance,
      * modulo(-1f, 4f) == 3f, while -1f % 4f == -1f.
      *
-     * @param fValue input value
-     * @param modulus (&gt;0)
+     * @param fValue
+     *            input value
+     * @param modulus
+     *            (&gt;0)
      * @return fValue MOD modulus (&lt;modulus, &ge;0)
      */
     public static float modulo(float fValue, float modulus) {
@@ -275,8 +293,10 @@ public class MyMath {
      * Compute the least non-negative value congruent with a double-precision
      * value with respect to the specified modulus.
      *
-     * @param dValue input value
-     * @param modulus (&gt;0)
+     * @param dValue
+     *            input value
+     * @param modulus
+     *            (&gt;0)
      * @return x MOD modulus (&lt;modulus, &ge;0)
      */
     public static double modulo(double dValue, double modulus) {
@@ -295,7 +315,8 @@ public class MyMath {
     /**
      * Standardize a rotation angle to the range [-Pi, Pi).
      *
-     * @param angle input (in radians)
+     * @param angle
+     *            input (in radians)
      * @return standardized angle (in radians, &lt;Pi, &ge;-Pi)
      */
     public static float standardizeAngle(float angle) {
@@ -313,8 +334,10 @@ public class MyMath {
      * Compute the sum-of-squares of two single-precision values. Double
      * precision arithmetic is used to reduce the risk of overflow.
      *
-     * @param firstValue 1st input value
-     * @param secondValue 2nd input value
+     * @param firstValue
+     *            1st input value
+     * @param secondValue
+     *            2nd input value
      * @return sum of squares (&ge;0)
      */
     public static double sumOfSquares(float firstValue, float secondValue) {
@@ -339,9 +362,7 @@ public class MyMath {
         float h = hypotenuse(3f, 4f);
         System.out.printf("hypot(3,4)=%f%n", h);
 
-        float[] floatCases = new float[]{
-            -3f, 0f, 1f, 8f, Float.MAX_VALUE / 2f, Float.MAX_VALUE, -1f
-        };
+        float[] floatCases = new float[] { -3f, 0f, 1f, 8f, Float.MAX_VALUE / 2f, Float.MAX_VALUE, -1f };
         for (float x : floatCases) {
             float c = cube(x);
             float cr = cubeRoot(x);
@@ -350,10 +371,8 @@ public class MyMath {
             h = hypotenuse(x, x);
             System.out.printf("x=%e  hypot(x,x)=%e%n", x, h);
             System.out.printf("  cube(x)=%e  cubeRoot(x)=%e%n", c, cr);
-            System.out.printf("  cube(cubeRoot(x))=%e  cubeRoot(cube(x))=%e%n",
-                    cube(cr), cubeRoot(c));
-            System.out.printf("  x %% 4=%f  x mod 4=%f%n",
-                    x % 4f, modulo(x, 4f));
+            System.out.printf("  cube(cubeRoot(x))=%e  cubeRoot(cube(x))=%e%n", cube(cr), cubeRoot(c));
+            System.out.printf("  x %% 4=%f  x mod 4=%f%n", x % 4f, modulo(x, 4f));
         }
         System.out.println();
     }

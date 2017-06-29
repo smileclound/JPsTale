@@ -39,8 +39,7 @@ import com.jme3.math.ColorRGBA;
  *
  * @author Stephen Gold <sgold@sonic.net>
  */
-public class CloudLayer
-        implements Savable {
+public class CloudLayer implements Savable {
     // *************************************************************************
     // constants
 
@@ -95,8 +94,10 @@ public class CloudLayer
     /**
      * Instantiate a layer with a specified index for a specified material.
      *
-     * @param material (not null)
-     * @param layerIndex (&ge;0)
+     * @param material
+     *            (not null)
+     * @param layerIndex
+     *            (&ge;0)
      */
     public CloudLayer(SkyMaterial material, int layerIndex) {
         assert material != null;
@@ -106,10 +107,10 @@ public class CloudLayer
         this.layerIndex = layerIndex;
         this.material = material;
         /*
-         * Default initial offset and standard movement rates.
-         * Since the Earth turns westward on its axis, clouds tend to
-         * move in a easterly direction, so the V-component of the
-         * texture offset should increase with time.
+         * Default initial offset and standard movement rates. Since the Earth
+         * turns westward on its axis, clouds tend to move in a easterly
+         * direction, so the V-component of the texture offset should increase
+         * with time.
          */
         if ((layerIndex % 2) != 0) {// is Odd
             u0 = 0f;
@@ -143,7 +144,8 @@ public class CloudLayer
     /**
      * Alter the color of this layer.
      *
-     * @param newColor (not null, unaffected, alpha is ignored)
+     * @param newColor
+     *            (not null, unaffected, alpha is ignored)
      */
     public void setColor(ColorRGBA newColor) {
         ColorRGBA layerColor = newColor.clone();
@@ -155,10 +157,14 @@ public class CloudLayer
     /**
      * Alter the motion of this layer.
      *
-     * @param u0 U-component of the initial offset
-     * @param uRate U-component of the standard motion (cycles per second)
-     * @param v0 V-component of the initial offset
-     * @param vRate V-component of the standard motion (cycles per second)
+     * @param u0
+     *            U-component of the initial offset
+     * @param uRate
+     *            U-component of the standard motion (cycles per second)
+     * @param v0
+     *            V-component of the initial offset
+     * @param vRate
+     *            V-component of the standard motion (cycles per second)
      */
     public void setMotion(float u0, float uRate, float v0, float vRate) {
         this.u0 = u0;
@@ -170,7 +176,8 @@ public class CloudLayer
     /**
      * Alter the opacity of this layer.
      *
-     * @param newAlpha desired opacity of the layer (&le;1, &ge;0)
+     * @param newAlpha
+     *            desired opacity of the layer (&le;1, &ge;0)
      */
     public void setOpacity(float newAlpha) {
         assert newAlpha >= 0f && newAlpha <= 1f;
@@ -181,12 +188,14 @@ public class CloudLayer
     /**
      * Change the texture and scale of this layer.
      *
-     * @param assetPath asset path to the new alpha map texture (not null)
-     * @param scale texture scaling factor (&gt;0, typically &le;2)
+     * @param assetPath
+     *            asset path to the new alpha map texture (not null)
+     * @param scale
+     *            texture scaling factor (&gt;0, typically &le;2)
      */
     public void setTexture(String assetPath, float scale) {
-    	assert assetPath != null;
-    	assert scale > 0;
+        assert assetPath != null;
+        assert scale > 0;
 
         material.addClouds(layerIndex, assetPath);
         material.setCloudsScale(layerIndex, scale);
@@ -195,7 +204,8 @@ public class CloudLayer
     /**
      * Update this layer's texture offset in the material.
      *
-     * @param time (in seconds)
+     * @param time
+     *            (in seconds)
      */
     void updateOffset(float time) {
         float u = u0 + time * uRate;
@@ -208,11 +218,11 @@ public class CloudLayer
     /**
      * De-serialize this instance when loading.
      *
-     * @param importer (not null)
+     * @param importer
+     *            (not null)
      */
     @Override
-    public void read(JmeImporter importer)
-            throws IOException {
+    public void read(JmeImporter importer) throws IOException {
         InputCapsule capsule = importer.getCapsule(this);
 
         layerIndex = capsule.readInt("layerIndex", 0);
@@ -227,11 +237,11 @@ public class CloudLayer
     /**
      * Serialize this instance when saving.
      *
-     * @param exporter (not null)
+     * @param exporter
+     *            (not null)
      */
     @Override
-    public void write(JmeExporter exporter)
-            throws IOException {
+    public void write(JmeExporter exporter) throws IOException {
         OutputCapsule capsule = exporter.getCapsule(this);
 
         capsule.write(layerIndex, "layerIndex", 0);

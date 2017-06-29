@@ -78,8 +78,7 @@ public interface Constants {
      * coefficient used to compute the stretchFactor for objects projected onto
      * a DomeMesh
      */
-    final public static float stretchCoefficient =
-            (FastMath.HALF_PI - uvMax) / (uvScale * uvScale);
+    final public static float stretchCoefficient = (FastMath.HALF_PI - uvMax) / (uvScale * uvScale);
     /**
      * the duration of a full day (in hours)
      */
