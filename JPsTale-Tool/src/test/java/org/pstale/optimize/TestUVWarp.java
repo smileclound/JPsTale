@@ -1,4 +1,4 @@
-package org.pstale.loader;
+package org.pstale.optimize;
 
 import static org.pstale.utils.GridMesh.MAP_SIZE;
 
