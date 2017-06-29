@@ -5,7 +5,7 @@ import java.util.Random;
 public class Aging {
 
 	// 锻造石
-	private String[][] SheltomName = {
+	String[][] SheltomName = {
 			{ "星遗石", "lucidy" }, 
 			{ "流云石", "sereneo" },
 			{ "海精石", "fadeo" },
@@ -23,7 +23,7 @@ public class Aging {
 			{ "蓝晶石", "sapphire" }};
 
 	// 锻造升级配方
-	private int[][] AgingLevelSheltom = { { 3, 3, 4, 4, 5, 0, 0, 0, 0, 0, 0, 0 },
+	int[][] AgingLevelSheltom = { { 3, 3, 4, 4, 5, 0, 0, 0, 0, 0, 0, 0 },
 			{ 3, 3, 4, 4, 5, 5, 0, 0, 0, 0, 0, 0 },
 			{ 3, 3, 4, 4, 5, 5, 6, 0, 0, 0, 0, 0 },
 			{ 3, 3, 4, 4, 5, 5, 6, 6, 0, 0, 0, 0 },
@@ -46,19 +46,19 @@ public class Aging {
 
 	/********************** 锻造升级所需的条件 **********************/
 	// 升级所需攻击次数
-	private int[] AgingLevelAttack = { 100, 130, 169, 219, 284, 369, 479, 622, 808,
+	int[] AgingLevelAttack = { 100, 130, 169, 219, 284, 369, 479, 622, 808,
 			1049, 1362, 1769, 2297, 2983, 3874, 5031, 6534, 8486, 11021, 14313 };
 
 	// 升级所需必杀次数
-	private int[] AgingLevelCritical = { 12, 16, 21, 27, 35, 45, 58, 75, 97, 126, 164,
+	int[] AgingLevelCritical = { 12, 16, 21, 27, 35, 45, 58, 75, 97, 126, 164,
 			213, 277, 360, 468, 608, 790, 1026, 1332, 1730 };
 
 	// 升级所需格挡次数
-	private int[] AgingLevelBlock = { 15, 19, 25, 32, 42, 55, 71, 92, 119, 155, 201,
+	int[] AgingLevelBlock = { 15, 19, 25, 32, 42, 55, 71, 92, 119, 155, 201,
 			261, 339, 440, 571, 742, 964, 1252, 1626, 2112 };
 
 	// 升级所需命中次数
-	private int[] AgingLevelHit = { 45, 58, 75, 97, 126, 164, 213, 277, 360, 468, 608,
+	int[] AgingLevelHit = { 45, 58, 75, 97, 126, 164, 213, 277, 360, 468, 608,
 			790, 1026, 1332, 1730, 2247, 2918, 3790, 4922, 6392 };
 
 	/********************** 锻造几率 **********************/
@@ -158,7 +158,7 @@ public class Aging {
 	public void simulator() {
 		int n = 0;
 		int s = 0;
-		int money;
+		int money = 0;
 		int add = 0;// 额外锻造几率
 		int price = 350000;
 		int agingLvl = 0;
@@ -203,7 +203,10 @@ public class Aging {
 			}
 		}
 		
-		System.out.println("使用+" + add + "%几率锻造石，共消耗" + (n+1) +"件装备, 锻造" + s + "次。");
+		// TODO 计算锻造费用
+		money += price;
+		
+		System.out.println("使用+" + add + "%几率锻造石，共消耗" + (n+1) +"件装备, 锻造" + s + "次。" + " 价格：" + money);
 	}
 	/**
 	 * @param args

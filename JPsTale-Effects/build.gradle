@@ -2,25 +2,13 @@ apply plugin: "java"
 
 def jme3 = [v:'3.1.0-stable', g:'org.jmonkeyengine']
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/ase/java'
-            srcDir 'src/inx/java'
-            srcDir 'src/smd/java'
-            srcDir 'src/script/java'
-        }
-    }
-}
-
 dependencies {
+
     compile "${jme3.g}:jme3-core:${jme3.v}"
+    compile "${jme3.g}:jme3-effects:${jme3.v}"
     compile "${jme3.g}:jme3-desktop:${jme3.v}"
     compile "${jme3.g}:jme3-lwjgl:${jme3.v}"
 
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'org.slf4j:slf4j-log4j12:1.7.21'
-    
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.codehaus.groovy:groovy-all:2.4.10'
 }

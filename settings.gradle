@@ -1,9 +1,10 @@
 include 'Assets'
-include 'DataEntity'
-include 'FieldsBox'
-include 'GUI'
 include 'JPsTale-AssetLoader'
 include 'JPsTale-Core'
+include 'JPsTale-Effects'
+include 'JPsTale-Entity'
+include 'JPsTale-Field'
+include 'JPsTale-GUI'
 include 'JPsTale-Tool'
 
 rootProject.name = 'JPsTale'
