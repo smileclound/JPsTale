@@ -1,11 +1,9 @@
-include 'Aging'
 include 'Assets'
 include 'DataEntity'
 include 'FieldsBox'
 include 'GUI'
-include 'ImageDecoder'
 include 'JPsTale-AssetLoader'
+include 'JPsTale-Core'
 include 'JPsTale-Tool'
-include 'NewSmdLoader'
 
 rootProject.name = 'JPsTale'
