@@ -6,7 +6,6 @@ sourceSets {
     main {
         java {
             srcDir 'src/ase/java'
-            srcDir 'src/inx/java'
             srcDir 'src/smd/java'
             srcDir 'src/script/java'
         }
