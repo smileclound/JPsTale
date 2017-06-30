@@ -2,7 +2,8 @@ package com.jme3.scene.plugins.smd.scene;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
+import org.pstale.assets.Flyweight;
+
 import com.jme3.scene.plugins.smd.material.TEXLINK;
 import com.jme3.util.LittleEndien;
 
@@ -10,7 +11,7 @@ import com.jme3.util.LittleEndien;
  * size = 28
  * 
  */
-public class STAGE_FACE extends Flyweight {
+public class StageFace extends Flyweight {
     int sum;
     int CalcSum;
     public int v[] = new int[4];// a, b, c, mat_id;

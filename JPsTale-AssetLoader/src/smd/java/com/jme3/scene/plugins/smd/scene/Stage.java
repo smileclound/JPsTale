@@ -2,11 +2,12 @@ package com.jme3.scene.plugins.smd.scene;
 
 import java.io.IOException;
 
+import org.pstale.assets.Flyweight;
+
 import com.jme3.math.Vector3f;
-import com.jme3.scene.plugins.smd.FILE_HEADER;
-import com.jme3.scene.plugins.smd.Flyweight;
-import com.jme3.scene.plugins.smd.material.MATERIAL;
-import com.jme3.scene.plugins.smd.material.MATERIAL_GROUP;
+import com.jme3.scene.plugins.smd.SmdFileHeader;
+import com.jme3.scene.plugins.smd.material._Material;
+import com.jme3.scene.plugins.smd.material.MaterialGroup;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
 import com.jme3.util.LittleEndien;
 
@@ -14,7 +15,7 @@ import com.jme3.util.LittleEndien;
  * Stage3D对象的属性，存储了一个完整的smSTAGE3D对象。 size = 262260
  * 其中的关键数据是nVertex/nFace/nTexLink/nLight这些。
  */
-public class STAGE3D extends Flyweight {
+public class Stage extends Flyweight {
     // DWORD Head; 无用的头文件指针，4字节
     int[][] StageArea;// WORD *StageArea[MAP_SIZE][MAP_SIZE];256 *
                       // 256个指针，共262144字节
@@ -26,13 +27,13 @@ public class STAGE3D extends Flyweight {
     int SumCount;
     int CalcSumCount;
 
-    public STAGE_VERTEX[] Vertex;
-    public STAGE_FACE[] Face;
+    public StageVertex[] Vertex;
+    public StageFace[] Face;
     public TEXLINK[] TexLink;
-    public LIGHT3D[] Light;
-    public MATERIAL_GROUP materialGroup;// sizeof(smMaterialGroup) = 88
+    public Light3D[] Light;
+    public MaterialGroup materialGroup;// sizeof(smMaterialGroup) = 88
     // smSTAGE_OBJECT *StageObject;
-    public MATERIAL[] materials;
+    public _Material[] materials;
 
     public int nVertex = 0;// offset = 88 + = 262752
     public int nFace = 0;
@@ -114,7 +115,7 @@ public class STAGE3D extends Flyweight {
      * @return
      */
     public void loadFile(LittleEndien in) throws IOException {
-        FILE_HEADER header = new FILE_HEADER();
+        SmdFileHeader header = new SmdFileHeader();
         header.loadData(in);
 
         this.loadData(in);
@@ -122,22 +123,22 @@ public class STAGE3D extends Flyweight {
         // 读取MaterialGroup
         if (header.matCounter > 0) {
             // 读取MaterialGroup对象
-            materialGroup = new MATERIAL_GROUP();
+            materialGroup = new MaterialGroup();
             materialGroup.loadData(in);
             materials = materialGroup.materials;
         }
 
         // 读取Vertex
-        Vertex = new STAGE_VERTEX[nVertex];
+        Vertex = new StageVertex[nVertex];
         for (int i = 0; i < nVertex; i++) {
-            Vertex[i] = new STAGE_VERTEX();
+            Vertex[i] = new StageVertex();
             Vertex[i].loadData(in);
         }
 
         // 读取Face
-        Face = new STAGE_FACE[nFace];
+        Face = new StageFace[nFace];
         for (int i = 0; i < nFace; i++) {
-            Face[i] = new STAGE_FACE();
+            Face[i] = new StageFace();
             Face[i].loadData(in);
         }
 
@@ -150,9 +151,9 @@ public class STAGE3D extends Flyweight {
 
         // 读取灯光
         if (nLight > 0) {
-            Light = new LIGHT3D[nLight];
+            Light = new Light3D[nLight];
             for (int i = 0; i < nLight; i++) {
-                Light[i] = new LIGHT3D();
+                Light[i] = new Light3D();
                 Light[i].loadData(in);
             }
         }

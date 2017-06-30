@@ -8,7 +8,7 @@ import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
-import com.jme3.script.plugins.character.MODELINFO;
+import com.jme3.script.plugins.character.ModelInfo;
 import com.jme3.script.plugins.character.MOTIONINFO;
 
 public class TestInxLoader {
@@ -24,7 +24,7 @@ public class TestInxLoader {
         // 读取地图的smd文件
         // MODELINFO model = (MODELINFO) assetManager.loadAsset(new
         // SmdKey("char/npc/arad/arad.inx", SMDTYPE.INX));
-        MODELINFO model = (MODELINFO) assetManager
+        ModelInfo model = (ModelInfo) assetManager
                 .loadAsset(new SmdKey("char/monster/death_knight/death_knight.inx", SMDTYPE.MODELINFO));
 
         log.debug(model.modelFile);

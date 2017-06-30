@@ -48,8 +48,8 @@ import com.jme3.asset.DesktopAssetManager;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
-import com.jme3.scene.plugins.smd.scene.STAGE3D;
-import com.jme3.scene.plugins.smd.scene.STAGE_FACE;
+import com.jme3.scene.plugins.smd.scene.Stage;
+import com.jme3.scene.plugins.smd.scene.StageFace;
 
 @SuppressWarnings("serial")
 public class TestUVWarp extends JFrame {
@@ -78,7 +78,7 @@ public class TestUVWarp extends JFrame {
     private AssetManager assetManager;
     private SmdLoader loader;
 
-    private STAGE3D mesh;// 网格
+    private Stage mesh;// 网格
 
     public TestUVWarp() {
 
@@ -115,7 +115,7 @@ public class TestUVWarp extends JFrame {
         File file = new File(fileName);
         MyAssetInfo info = new MyAssetInfo(assetManager, key, file);
         try {
-            mesh = (STAGE3D) loader.load(info);
+            mesh = (Stage) loader.load(info);
 
             drawBackground();
         } catch (IOException e) {
@@ -284,7 +284,7 @@ public class TestUVWarp extends JFrame {
         for (int i = 0; i < fCount; i++) {
             // 连续添加3个点，构建一个三角形。
             drawTri = new Polygon();
-            STAGE_FACE f = mesh.Face[i];
+            StageFace f = mesh.Face[i];
 
             int matId = f.v[3];
 

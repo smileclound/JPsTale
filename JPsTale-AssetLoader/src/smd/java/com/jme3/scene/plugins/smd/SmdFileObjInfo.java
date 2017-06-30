@@ -2,12 +2,14 @@ package com.jme3.scene.plugins.smd;
 
 import java.io.IOException;
 
+import org.pstale.assets.Flyweight;
+
 import com.jme3.util.LittleEndien;
 
 /**
  * size = 40
  */
-public class FILE_OBJINFO extends Flyweight {
+public class SmdFileObjInfo extends Flyweight {
     /**
      * 物体的名称
      */

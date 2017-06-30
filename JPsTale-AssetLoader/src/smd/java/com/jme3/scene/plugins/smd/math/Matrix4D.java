@@ -1,19 +1,21 @@
-package com.jme3.scene.plugins.smd;
+package com.jme3.scene.plugins.smd.math;
 
 import java.io.IOException;
+
+import org.pstale.assets.Flyweight;
 
 import com.jme3.util.LittleEndien;
 
 /**
  * size = 64
  */
-public class MATRIX extends Flyweight {
+public class Matrix4D extends Flyweight {
     public int _11, _12, _13, _14;
     public int _21, _22, _23, _24;
     public int _31, _32, _33, _34;
     public int _41, _42, _43, _44;
 
-    public MATRIX() {
+    public Matrix4D() {
         _11 = 1;
         _12 = 0;
         _13 = 0;

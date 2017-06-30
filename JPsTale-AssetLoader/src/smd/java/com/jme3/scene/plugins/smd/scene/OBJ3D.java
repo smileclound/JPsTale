@@ -2,15 +2,17 @@ package com.jme3.scene.plugins.smd.scene;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.FMATRIX;
-import com.jme3.scene.plugins.smd.Flyweight;
-import com.jme3.scene.plugins.smd.MATRIX;
+import org.pstale.assets.Flyweight;
+
 import com.jme3.scene.plugins.smd.animation.FRAME_POS;
 import com.jme3.scene.plugins.smd.animation.PAT3D;
-import com.jme3.scene.plugins.smd.animation.TM_POS;
-import com.jme3.scene.plugins.smd.animation.TM_ROT;
-import com.jme3.scene.plugins.smd.animation.TM_SCALE;
+import com.jme3.scene.plugins.smd.animation.TransPosition;
+import com.jme3.scene.plugins.smd.animation.TransRotation;
+import com.jme3.scene.plugins.smd.animation.TransScale;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
+import com.jme3.scene.plugins.smd.math.Matrix4F;
+import com.jme3.scene.plugins.smd.math.Matrix4D;
+import com.jme3.scene.plugins.smd.math.Vector3D;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -18,13 +20,13 @@ import com.jme3.util.LittleEndien;
  */
 public class OBJ3D extends Flyweight {
     // DWORD Head;
-    public VERTEX[] Vertex;// 顶点
-    public FACE[] Face;// 面
+    public Vertex[] Vertex;// 顶点
+    public Face[] Face;// 面
     public TEXLINK[] TexLink;// 纹理坐标
 
     public OBJ3D[] Physique; // 各顶点的骨骼
 
-    VERTEX ZeroVertex; // 坷宏璃飘 吝居 滚咆胶 蔼
+    Vertex ZeroVertex; // 坷宏璃飘 吝居 滚咆胶 蔼
 
     public int maxZ, minZ;
     public int maxY, minY;
@@ -44,9 +46,9 @@ public class OBJ3D extends Flyweight {
     int ColorEffect; // 祸惑瓤苞 荤侩 蜡公
     int ClipStates; // 努府俏 付胶农 ( 阿 努府俏喊 荤侩 蜡公 )
 
-    POINT3D Posi;
-    POINT3D CameraPosi;
-    POINT3D Angle;
+    Vector3D Posi;
+    Vector3D CameraPosi;
+    Vector3D Angle;
     int[] Trig = new int[8];
 
     // 局聪皋捞记 包访
@@ -54,13 +56,13 @@ public class OBJ3D extends Flyweight {
     public String NodeParent;// [32]; // 何葛 坷宏璃飘狼 捞抚
     public OBJ3D pParent; // 何葛 坷宏璃飘 器牢磐
 
-    MATRIX Tm; // 扁夯 TM 青纺
-    public MATRIX TmInvert; // 逆矩阵
-    FMATRIX TmResult; // 局聪皋捞记 青纺
-    MATRIX TmRotate; // 扁夯利 雀傈 青纺
+    Matrix4D Tm; // 扁夯 TM 青纺
+    public Matrix4D TmInvert; // 逆矩阵
+    Matrix4F TmResult; // 局聪皋捞记 青纺
+    Matrix4D TmRotate; // 扁夯利 雀傈 青纺
 
-    MATRIX mWorld; // 岿靛谅钎 函券 青纺
-    MATRIX mLocal; // 肺漠谅钎 函券 青纺
+    Matrix4D mWorld; // 岿靛谅钎 函券 青纺
+    Matrix4D mLocal; // 肺漠谅钎 函券 青纺
 
     int lFrame;// 没有实际作用
 
@@ -68,11 +70,11 @@ public class OBJ3D extends Flyweight {
     public float sx, sy, sz; // 胶纳老 谅钎
     public float px, py, pz; // 器瘤记 谅钎
 
-    public TM_ROT[] TmRot; // 橇饭烙喊 雀傈 局聪皋捞记
-    public TM_POS[] TmPos; // 橇饭烙喊 器瘤记 局聪皋捞记
-    public TM_SCALE[] TmScale; // 橇饭烙喊 胶纳老 局聪皋捞记
+    public TransRotation[] TmRot; // 橇饭烙喊 雀傈 局聪皋捞记
+    public TransPosition[] TmPos; // 橇饭烙喊 器瘤记 局聪皋捞记
+    public TransScale[] TmScale; // 橇饭烙喊 胶纳老 局聪皋捞记
 
-    FMATRIX[] TmPrevRot; // 帧的动画矩阵
+    Matrix4F[] TmPrevRot; // 帧的动画矩阵
 
     public int TmRotCnt;
     public int TmPosCnt;
@@ -93,7 +95,7 @@ public class OBJ3D extends Flyweight {
     public OBJ3D() {
         NodeName = null;
         NodeParent = null;
-        Tm = new MATRIX();
+        Tm = new Matrix4D();
         pParent = null;
         TmRot = null;
         TmPos = null;
@@ -115,7 +117,7 @@ public class OBJ3D extends Flyweight {
         lpOldTexLink = in.readInt();// smTEXLINK *TexLink;
         lpPhysuque = in.readInt();// smOBJ3D **Physique;
 
-        ZeroVertex = new VERTEX();
+        ZeroVertex = new Vertex();
         ZeroVertex.loadData(in);
 
         maxZ = in.readInt();
@@ -139,13 +141,13 @@ public class OBJ3D extends Flyweight {
         ColorEffect = in.readInt();
         ClipStates = in.readInt();
 
-        Posi = new POINT3D();
+        Posi = new Vector3D();
         Posi.loadData(in);
 
-        CameraPosi = new POINT3D();
+        CameraPosi = new Vector3D();
         CameraPosi.loadData(in);
 
-        Angle = new POINT3D();
+        Angle = new Vector3D();
         Angle.loadData(in);
 
         Trig = new int[8];
@@ -158,22 +160,22 @@ public class OBJ3D extends Flyweight {
         NodeParent = getString(in, 32);
         in.readInt();// OBJ3D *pParent;
 
-        Tm = new MATRIX();
+        Tm = new Matrix4D();
         Tm.loadData(in);
 
-        TmInvert = new MATRIX();
+        TmInvert = new Matrix4D();
         TmInvert.loadData(in);
 
-        TmResult = new FMATRIX();
+        TmResult = new Matrix4F();
         TmResult.loadData(in);
 
-        TmRotate = new MATRIX();
+        TmRotate = new Matrix4D();
         TmRotate.loadData(in);
 
-        mWorld = new MATRIX();
+        mWorld = new Matrix4D();
         mWorld.loadData(in);
 
-        mLocal = new MATRIX();
+        mLocal = new Matrix4D();
         mLocal.loadData(in);
 
         lFrame = in.readInt();
@@ -221,15 +223,15 @@ public class OBJ3D extends Flyweight {
      */
     public void loadFile(LittleEndien in, PAT3D PatPhysique) throws IOException {
 
-        Vertex = new VERTEX[nVertex];
+        Vertex = new Vertex[nVertex];
         for (int i = 0; i < nVertex; i++) {
-            Vertex[i] = new VERTEX();
+            Vertex[i] = new Vertex();
             Vertex[i].loadData(in);
         }
 
-        Face = new FACE[nFace];
+        Face = new Face[nFace];
         for (int i = 0; i < nFace; i++) {
-            Face[i] = new FACE();
+            Face[i] = new Face();
             Face[i].loadData(in);
         }
 
@@ -239,27 +241,27 @@ public class OBJ3D extends Flyweight {
             TexLink[i].loadData(in);
         }
 
-        TmRot = new TM_ROT[TmRotCnt];
+        TmRot = new TransRotation[TmRotCnt];
         for (int i = 0; i < TmRotCnt; i++) {
-            TmRot[i] = new TM_ROT();
+            TmRot[i] = new TransRotation();
             TmRot[i].loadData(in);
         }
 
-        TmPos = new TM_POS[TmPosCnt];
+        TmPos = new TransPosition[TmPosCnt];
         for (int i = 0; i < TmPosCnt; i++) {
-            TmPos[i] = new TM_POS();
+            TmPos[i] = new TransPosition();
             TmPos[i].loadData(in);
         }
 
-        TmScale = new TM_SCALE[TmScaleCnt];
+        TmScale = new TransScale[TmScaleCnt];
         for (int i = 0; i < TmScaleCnt; i++) {
-            TmScale[i] = new TM_SCALE();
+            TmScale[i] = new TransScale();
             TmScale[i].loadData(in);
         }
 
-        TmPrevRot = new FMATRIX[TmRotCnt];
+        TmPrevRot = new Matrix4F[TmRotCnt];
         for (int i = 0; i < TmRotCnt; i++) {
-            TmPrevRot[i] = new FMATRIX();
+            TmPrevRot[i] = new Matrix4F();
             TmPrevRot[i].loadData(in);
         }
 

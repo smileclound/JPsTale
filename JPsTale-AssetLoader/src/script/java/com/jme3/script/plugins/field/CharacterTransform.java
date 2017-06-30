@@ -2,7 +2,8 @@ package com.jme3.script.plugins.field;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
+import org.pstale.assets.Flyweight;
+
 import com.jme3.script.plugins.character.Character;
 import com.jme3.util.LittleEndien;
 

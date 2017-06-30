@@ -2,12 +2,13 @@ package com.jme3.scene.plugins.smd.animation;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.FILE_HEADER;
-import com.jme3.scene.plugins.smd.FILE_OBJINFO;
-import com.jme3.scene.plugins.smd.Flyweight;
-import com.jme3.scene.plugins.smd.material.MATERIAL_GROUP;
+import org.pstale.assets.Flyweight;
+
+import com.jme3.scene.plugins.smd.SmdFileHeader;
+import com.jme3.scene.plugins.smd.SmdFileObjInfo;
+import com.jme3.scene.plugins.smd.material.MaterialGroup;
+import com.jme3.scene.plugins.smd.math.Vector3D;
 import com.jme3.scene.plugins.smd.scene.OBJ3D;
-import com.jme3.scene.plugins.smd.scene.POINT3D;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -20,7 +21,7 @@ public class PAT3D extends Flyweight {
 
     public PAT3D TmParent;
 
-    public MATERIAL_GROUP smMaterialGroup;// 材质组
+    public MaterialGroup smMaterialGroup;// 材质组
 
     int MaxFrame;
     int Frame;
@@ -30,9 +31,9 @@ public class PAT3D extends Flyweight {
     public int nObj3d;
     // LPDIRECT3DTEXTURE2 *hD3DTexture;
 
-    POINT3D Posi;
-    POINT3D Angle;
-    POINT3D CameraPosi;
+    Vector3D Posi;
+    Vector3D Angle;
+    Vector3D CameraPosi;
 
     int dBound;
     int Bound;
@@ -41,7 +42,7 @@ public class PAT3D extends Flyweight {
     int TmFrameCnt;
 
     int TmLastFrame;
-    POINT3D TmLastAngle;
+    Vector3D TmLastAngle;
 
     public PAT3D() {
         nObj3d = 0;
@@ -61,7 +62,7 @@ public class PAT3D extends Flyweight {
 
         TmLastFrame = -1;
 
-        TmLastAngle = new POINT3D();
+        TmLastAngle = new Vector3D();
         TmLastAngle.x = -1;
         TmLastAngle.y = -1;
         TmLastAngle.z = -1;
@@ -94,11 +95,11 @@ public class PAT3D extends Flyweight {
         nObj3d = in.readInt();
         in.readInt();// LPDIRECT3DTEXTURE2 *hD3DTexture;
 
-        Posi = new POINT3D();
+        Posi = new Vector3D();
         Posi.loadData(in);
-        Angle = new POINT3D();
+        Angle = new Vector3D();
         Angle.loadData(in);
-        CameraPosi = new POINT3D();
+        CameraPosi = new Vector3D();
         CameraPosi.loadData(in);
 
         dBound = in.readInt();
@@ -111,20 +112,20 @@ public class PAT3D extends Flyweight {
         TmFrameCnt = in.readInt();
 
         TmLastFrame = in.readInt();
-        TmLastAngle = new POINT3D();
+        TmLastAngle = new Vector3D();
         TmLastAngle.loadData(in);
 
     }
 
     public void loadFile(LittleEndien in, String NodeName, PAT3D BipPat) throws IOException {
 
-        FILE_HEADER header = new FILE_HEADER();
+        SmdFileHeader header = new SmdFileHeader();
         header.loadData(in);
 
         // 读取Obj3D物体信息
-        FILE_OBJINFO[] FileObjInfo = new FILE_OBJINFO[header.objCounter];
+        SmdFileObjInfo[] FileObjInfo = new SmdFileObjInfo[header.objCounter];
         for (int i = 0; i < header.objCounter; i++) {
-            FileObjInfo[i] = new FILE_OBJINFO();
+            FileObjInfo[i] = new SmdFileObjInfo();
             FileObjInfo[i].loadData(in);
         }
 
@@ -137,7 +138,7 @@ public class PAT3D extends Flyweight {
         // 读取材质
         // 骨骼文件(.smb)中不包含材质，因此可能没有这一段数据。
         if (header.matCounter > 0) {
-            smMaterialGroup = new MATERIAL_GROUP();
+            smMaterialGroup = new MaterialGroup();
             smMaterialGroup.loadData(in);
         }
 

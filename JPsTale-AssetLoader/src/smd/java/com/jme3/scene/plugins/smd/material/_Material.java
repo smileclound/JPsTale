@@ -2,7 +2,9 @@ package com.jme3.scene.plugins.smd.material;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
+import org.pstale.assets.Flyweight;
+
+import com.jme3.scene.plugins.smd.math.ColorRGB3F;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -11,7 +13,7 @@ import com.jme3.util.LittleEndien;
  * @author yanmaoyuan
  * 
  */
-public class MATERIAL extends Flyweight {
+public class _Material extends Flyweight {
     /**
      * 判断这个面是否被使用。 实际上smd文件中存储的材质都是被用到的材质，否则是不会存储的。 因此判断这个变量并没有实际意义。
      */
@@ -71,7 +73,7 @@ public class MATERIAL extends Flyweight {
     /**
      * 材质的颜色
      */
-    public FCOLOR Diffuse;
+    public ColorRGB3F Diffuse;
     /**
      * 透明度，取值范围(0~1f)。若材质的透明度大于0.2，则这个模型不需要进行碰撞检测。
      */
@@ -159,7 +161,7 @@ public class MATERIAL extends Flyweight {
         TwoSide = in.readInt();
         SerialNum = in.readInt();
 
-        Diffuse = new FCOLOR();
+        Diffuse = new ColorRGB3F();
         Diffuse.loadData(in);
 
         Transparency = in.readFloat();

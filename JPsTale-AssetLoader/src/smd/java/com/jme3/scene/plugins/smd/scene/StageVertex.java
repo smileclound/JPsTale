@@ -2,15 +2,16 @@ package com.jme3.scene.plugins.smd.scene;
 
 import java.io.IOException;
 
+import org.pstale.assets.Flyweight;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.plugins.smd.Flyweight;
 import com.jme3.util.LittleEndien;
 
 /**
  * size = 28
  */
-public class STAGE_VERTEX extends Flyweight {
+public class StageVertex extends Flyweight {
     int sum;
     // smRENDVERTEX *lpRendVertex;
     public Vector3f v;

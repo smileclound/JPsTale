@@ -2,7 +2,8 @@ package com.jme3.script.plugins.character;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
+import org.pstale.assets.Flyweight;
+
 import com.jme3.util.LittleEndien;
 
 /**
@@ -11,7 +12,7 @@ import com.jme3.util.LittleEndien;
  * @author yanmaoyuan
  *
  */
-public class MODELGROUP extends Flyweight {
+public class ModelGroup extends Flyweight {
     public int ModelNameCnt;
     public String[] szModelName = new String[4];// 每个String长度为16
 

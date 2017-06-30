@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd;
+package org.pstale.assets;
 
 import java.io.IOException;
 

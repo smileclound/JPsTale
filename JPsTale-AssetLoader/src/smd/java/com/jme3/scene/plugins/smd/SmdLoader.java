@@ -33,16 +33,18 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.plugins.smd.animation.Keyframe;
 import com.jme3.scene.plugins.smd.animation.PAT3D;
-import com.jme3.scene.plugins.smd.animation.TM_POS;
-import com.jme3.scene.plugins.smd.animation.TM_ROT;
-import com.jme3.scene.plugins.smd.animation.TM_SCALE;
-import com.jme3.scene.plugins.smd.material.MATERIAL;
+import com.jme3.scene.plugins.smd.animation.TransPosition;
+import com.jme3.scene.plugins.smd.animation.TransRotation;
+import com.jme3.scene.plugins.smd.animation.TransScale;
+import com.jme3.scene.plugins.smd.material._Material;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
+import com.jme3.scene.plugins.smd.math.Matrix4D;
 import com.jme3.scene.plugins.smd.scene.OBJ3D;
-import com.jme3.scene.plugins.smd.scene.STAGE3D;
-import com.jme3.scene.plugins.smd.scene.STAGE_FACE;
-import com.jme3.script.plugins.character.MODELINFO;
+import com.jme3.scene.plugins.smd.scene.Stage;
+import com.jme3.scene.plugins.smd.scene.StageFace;
+import com.jme3.script.plugins.character.ModelInfo;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
@@ -112,24 +114,24 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
         }
 
         this.key = (SmdKey) assetInfo.getKey();
-        manager = assetInfo.getManager();
+        this.manager = assetInfo.getManager();
 
         /**
          * 若用户使用了SmdKey，就根据type来决定采用哪种方式来加载模型。
          */
         switch (key.type) {
         case STAGE3D: {// 直接返回STAGE3D对象
-            STAGE3D stage3D = new STAGE3D();
+            Stage stage3D = new Stage();
             stage3D.loadFile(new LittleEndien(assetInfo.openStream()));
             return stage3D;
         }
         case STAGE3D_VISUAL: {// 返回STAGE3D的可视部分
-            STAGE3D stage3D = new STAGE3D();
+            Stage stage3D = new Stage();
             stage3D.loadFile(new LittleEndien(assetInfo.openStream()));
             return buildNode(stage3D);
         }
         case STAGE3D_COLLISION: {// 返回STAGE3D中参加碰撞检测的网格
-            STAGE3D stage3D = new STAGE3D();
+            Stage stage3D = new Stage();
             stage3D.loadFile(new LittleEndien(assetInfo.openStream()));
             return buildCollisionMesh(stage3D);
         }
@@ -158,20 +160,20 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
         }
         case MODELINFO: {
             LittleEndien in = new LittleEndien(assetInfo.openStream());
-            MODELINFO modelInfo = new MODELINFO();
+            ModelInfo modelInfo = new ModelInfo();
             modelInfo.loadData(in);
             return modelInfo;
         }
         case MODELINFO_ANIMATION: {
             LittleEndien in = new LittleEndien(assetInfo.openStream());
-            MODELINFO modelInfo = new MODELINFO();
+            ModelInfo modelInfo = new ModelInfo();
             modelInfo.loadData(in);
 
             // 有共享数据?
             String linkFile = modelInfo.linkFile;
             if (linkFile.length() > 0) {
                 SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
-                MODELINFO mi = (MODELINFO) manager.loadAsset(linkFileKey);
+                ModelInfo mi = (ModelInfo) manager.loadAsset(linkFileKey);
                 modelInfo.animationFile = mi.animationFile;
             }
 
@@ -195,14 +197,14 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
         }
         case MODELINFO_MODEL: {
             LittleEndien in = new LittleEndien(assetInfo.openStream());
-            MODELINFO modelInfo = new MODELINFO();
+            ModelInfo modelInfo = new ModelInfo();
             modelInfo.loadData(in);
 
             // 有共享数据?
             String linkFile = modelInfo.linkFile;
             if (linkFile.length() > 0) {
                 SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
-                MODELINFO mi = (MODELINFO) manager.loadAsset(linkFileKey);
+                ModelInfo mi = (ModelInfo) manager.loadAsset(linkFileKey);
                 modelInfo.animationFile = mi.animationFile;
             }
 
@@ -292,7 +294,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * @param m
      * @return
      */
-    private Material createLightMaterial(MATERIAL m) {
+    private Material createLightMaterial(_Material m) {
         Material mat = new Material(manager, "Common/MatDefs/Light/Lighting.j3md");
         mat.setColor("Diffuse", new ColorRGBA(m.Diffuse.r, m.Diffuse.g, m.Diffuse.b, 1));
         mat.setColor("Ambient", new ColorRGBA(1f, 1f, 1f, 1f));
@@ -317,7 +319,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * @param m
      * @return
      */
-    private Material createMiscMaterial(MATERIAL m) {
+    private Material createMiscMaterial(_Material m) {
         Material mat = new Material(manager, "Common/MatDefs/Misc/Unshaded.j3md");
         // mat.setColor("Color", new ColorRGBA(m.Diffuse.r, m.Diffuse.g,
         // m.Diffuse.b, 1));
@@ -341,7 +343,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * @param m
      * @return
      */
-    private Material createShiftMaterial(MATERIAL m) {
+    private Material createShiftMaterial(_Material m) {
         Material mat = new Material(manager, "Shader/Misc/Shift.j3md");
 
         // 画面的切换时间间隔
@@ -364,7 +366,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * @param m
      * @return
      */
-    private Material createScrollMaterial(MATERIAL m) {
+    private Material createScrollMaterial(_Material m) {
         Material mat = new Material(manager, "Shader/Misc/Scroll.j3md");
 
         // 画面的卷动速度
@@ -400,7 +402,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * @param m
      * @return
      */
-    private Material createRoundMaterial(MATERIAL m) {
+    private Material createRoundMaterial(_Material m) {
         Material mat = new Material(manager, "Shader/Misc/Round.j3md");
 
         // 设置贴图
@@ -421,7 +423,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * @param m
      * @param mat
      */
-    private void setRenderState(MATERIAL m, Material mat) {
+    private void setRenderState(_Material m, Material mat) {
         RenderState rs = mat.getAdditionalRenderState();
 
         switch (m.BlendType) {
@@ -610,7 +612,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * @param res3
      * @param tm
      */
-    private Vector3f mult(long res1, long res2, long res3, MATRIX tm) {
+    private Vector3f mult(long res1, long res2, long res3, Matrix4D tm) {
         long v1 = -((res2 * tm._33 * tm._21 - res2 * tm._23 * tm._31 - res1 * tm._33 * tm._22 + res1 * tm._23 * tm._32
                 - res3 * tm._21 * tm._32 + res3 * tm._31 * tm._22 + tm._43 * tm._21 * tm._32 - tm._43 * tm._31 * tm._22
                 - tm._33 * tm._21 * tm._42 + tm._33 * tm._41 * tm._22 + tm._23 * tm._31 * tm._42
@@ -756,7 +758,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
              */
             TreeMap<Integer, Keyframe> keyframes = new TreeMap<Integer, Keyframe>();
             for (int j = 0; j < obj.TmPosCnt; j++) {
-                TM_POS pos = obj.TmPos[j];
+                TransPosition pos = obj.TmPos[j];
                 Keyframe k = getOrMakeKeyframe(keyframes, pos.frame);
                 if (OPEN_GL_AXIS) {
                     k.translation = new Vector3f(-pos.y, pos.z, -pos.x);
@@ -766,7 +768,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
             }
 
             for (int j = 0; j < obj.TmRotCnt; j++) {
-                TM_ROT rot = obj.TmRot[j];
+                TransRotation rot = obj.TmRot[j];
                 Keyframe k = getOrMakeKeyframe(keyframes, rot.frame);
                 if (OPEN_GL_AXIS) {
                     k.rotation = new Quaternion(-rot.y, rot.z, -rot.x, -rot.w);
@@ -785,7 +787,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
             }
 
             for (int j = 0; j < obj.TmScaleCnt; j++) {
-                TM_SCALE scale = obj.TmScale[j];
+                TransScale scale = obj.TmScale[j];
                 Keyframe k = getOrMakeKeyframe(keyframes, scale.frame);
                 if (OPEN_GL_AXIS) {
                     k.scale = new Vector3f(scale.z, scale.y, scale.x);
@@ -918,7 +920,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
                     Mesh mesh = buildMesh(obj, mat_id, ske);
 
                     // 创建材质
-                    MATERIAL m = pat.smMaterialGroup.materials[mat_id];
+                    _Material m = pat.smMaterialGroup.materials[mat_id];
                     Material mat;
                     if (USE_LIGHT) {
                         mat = createLightMaterial(m);
@@ -965,7 +967,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * 
      * @return
      */
-    private Node buildNode(STAGE3D stage) {
+    private Node buildNode(Stage stage) {
         Node rootNode = new Node("STAGE3D:" + key.getName());
 
         Vector3f[] orginNormal = null;
@@ -978,7 +980,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
 
         // 创建材质
         for (int mat_id = 0; mat_id < materialCount; mat_id++) {
-            MATERIAL m = stage.materials[mat_id];
+            _Material m = stage.materials[mat_id];
 
             // 该材质没有使用，不需要显示。
             if (m.InUse == 0) {
@@ -1102,7 +1104,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * 
      * @return
      */
-    private Vector3f[] computeOrginNormals(STAGE3D stage) {
+    private Vector3f[] computeOrginNormals(Stage stage) {
         TempVars tmp = TempVars.get();
 
         Vector3f A;// 三角形的第1个点
@@ -1165,7 +1167,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      *            法线
      * @return
      */
-    private Mesh buildMesh(STAGE3D stage, int size, int mat_id, Vector3f[] orginNormal) {
+    private Mesh buildMesh(Stage stage, int size, int mat_id, Vector3f[] orginNormal) {
 
         Vector3f[] position = new Vector3f[size * 3];
         int[] f = new int[size * 3];
@@ -1239,14 +1241,14 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
      * 
      * @return
      */
-    private Mesh buildCollisionMesh(STAGE3D stage) {
+    private Mesh buildCollisionMesh(Stage stage) {
         Mesh mesh = new Mesh();
 
         int materialCount = stage.materialGroup.materialCount;
         /**
          * 根据材质的特诊来筛选参加碰撞检测的物体， 将被忽略的材质设置成null，作为一种标记。
          */
-        MATERIAL m;// 临时变量
+        _Material m;// 临时变量
         for (int mat_id = 0; mat_id < materialCount; mat_id++) {
             m = stage.materials[mat_id];
 
@@ -1265,7 +1267,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
 
         int fSize = 0;
         for (int i = 0; i < stage.nFace; i++) {
-            STAGE_FACE face = stage.Face[i];
+            StageFace face = stage.Face[i];
             if (stage.materials[face.v[3]] != null) {
                 loc[face.v[0]] = face.v[0];
                 loc[face.v[1]] = face.v[1];
@@ -1297,7 +1299,7 @@ public class SmdLoader extends SceneConstants implements AssetLoader {
         int[] f = new int[fSize * 3];
         fSize = 0;
         for (int i = 0; i < stage.nFace; i++) {
-            STAGE_FACE face = stage.Face[i];
+            StageFace face = stage.Face[i];
             if (stage.materials[face.v[3]] != null) {
                 f[fSize * 3] = loc[face.v[0]];
                 f[fSize * 3 + 1] = loc[face.v[1]];

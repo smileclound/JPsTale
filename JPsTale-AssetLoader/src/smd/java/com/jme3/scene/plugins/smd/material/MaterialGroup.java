@@ -2,15 +2,16 @@ package com.jme3.scene.plugins.smd.material;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
+import org.pstale.assets.Flyweight;
+
 import com.jme3.util.LittleEndien;
 
 /**
  * 若文件头中的mat>0，说明有材质。 接下来第三部分应该是一个完整的smMATERIAL_GROUP对象。 size = 88。
  */
-public class MATERIAL_GROUP extends Flyweight {
+public class MaterialGroup extends Flyweight {
     // DWORD Head
-    public MATERIAL[] materials;
+    public _Material[] materials;
     public int materialCount;
     int reformTexture;
     int maxMaterial;
@@ -39,10 +40,10 @@ public class MATERIAL_GROUP extends Flyweight {
 
         // size += 88;
 
-        materials = new MATERIAL[materialCount];
+        materials = new _Material[materialCount];
 
         for (int i = 0; i < materialCount; i++) {
-            materials[i] = new MATERIAL();
+            materials[i] = new _Material();
             materials[i].loadData(in);
             // size += 320;
 

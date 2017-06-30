@@ -2,18 +2,19 @@ package com.jme3.script.plugins.character;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
+import org.pstale.assets.Flyweight;
+
 import com.jme3.util.LittleEndien;
 
-public class MODELINFO extends Flyweight {
+public class ModelInfo extends Flyweight {
 
     public String modelFile;
     public String animationFile;
     public String subModelFile;
 
-    public MODELGROUP HighModel;
-    public MODELGROUP DefaultModel;
-    public MODELGROUP LowModel;
+    public ModelGroup HighModel;
+    public ModelGroup DefaultModel;
+    public ModelGroup LowModel;
 
     public MOTIONINFO[] MotionInfo = new MOTIONINFO[MOTION_INFO_MAX];
     public int MotionCount;
@@ -51,13 +52,13 @@ public class MODELINFO extends Flyweight {
         animationFile = getString(in, 64);
         subModelFile = getString(in, 64);
 
-        HighModel = new MODELGROUP();
+        HighModel = new ModelGroup();
         HighModel.loadData(in);
 
-        DefaultModel = new MODELGROUP();
+        DefaultModel = new ModelGroup();
         DefaultModel.loadData(in);
 
-        LowModel = new MODELGROUP();
+        LowModel = new ModelGroup();
         LowModel.loadData(in);
 
         for (int i = 0; i < MOTION_INFO_MAX; i++) {

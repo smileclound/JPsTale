@@ -10,7 +10,7 @@ import org.pstale.entity.field.StgMonster;
 import com.jme3.script.plugins.PTScriptLoader;
 
 /**
- * 解析并加载服务端每个Field的生态信息
+ * 解析每个Field的刷怪规则
  * 
  * @author yanmaoyuan
  *

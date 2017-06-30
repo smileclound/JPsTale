@@ -1,15 +1,16 @@
-package com.jme3.scene.plugins.smd.scene;
+package com.jme3.scene.plugins.smd.math;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
+import org.pstale.assets.Flyweight;
+
 import com.jme3.util.LittleEndien;
 
 // size = 12
-public class POINT3D extends Flyweight {
+public class Vector3D extends Flyweight {
     public int x, y, z;
 
-    public POINT3D() {
+    public Vector3D() {
         x = y = z = 0;
     }
 

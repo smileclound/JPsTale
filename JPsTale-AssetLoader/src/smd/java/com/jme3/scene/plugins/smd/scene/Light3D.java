@@ -2,15 +2,16 @@ package com.jme3.scene.plugins.smd.scene;
 
 import java.io.IOException;
 
+import org.pstale.assets.Flyweight;
+
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.plugins.smd.Flyweight;
 import com.jme3.util.LittleEndien;
 
 /**
  * size = 22
  */
-public class LIGHT3D extends Flyweight {
+public class Light3D extends Flyweight {
     /**
      * <pre>
      * #define	smLIGHT_TYPE_NIGHT		0x00001

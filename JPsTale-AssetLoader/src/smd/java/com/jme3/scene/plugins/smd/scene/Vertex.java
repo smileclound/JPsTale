@@ -2,15 +2,16 @@ package com.jme3.scene.plugins.smd.scene;
 
 import java.io.IOException;
 
+import org.pstale.assets.Flyweight;
+
 import com.jme3.math.Vector3f;
-import com.jme3.scene.plugins.smd.Flyweight;
 import com.jme3.util.LittleEndien;
 
 /**
  * size = 24
  * 
  */
-public class VERTEX extends Flyweight {
+public class Vertex extends Flyweight {
     public long x, y, z;
     public Vector3f v;// 坐标
     public Vector3f n;// normals 法向量

@@ -2,13 +2,15 @@ package com.jme3.scene.plugins.smd;
 
 import java.io.IOException;
 
+import org.pstale.assets.Flyweight;
+
 import com.jme3.scene.plugins.smd.animation.FRAME_POS;
 import com.jme3.util.LittleEndien;
 
 /**
  * SMD文件头 size = 556;
  */
-public class FILE_HEADER extends Flyweight {
+public class SmdFileHeader extends Flyweight {
     public String header;// 24字节
     public int objCounter;
     public int matCounter;

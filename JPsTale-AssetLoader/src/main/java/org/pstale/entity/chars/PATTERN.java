@@ -1,6 +1,6 @@
 package org.pstale.entity.chars;
 
-import com.jme3.scene.plugins.smd.animation.DPAT;
+import com.jme3.script.plugins.character.DPAT;
 
 public class PATTERN {
     public final static int DPAT_MAX = 2048;

@@ -1,9 +1,10 @@
-package com.jme3.scene.plugins.smd.animation;
+package com.jme3.script.plugins.character;
 
 import java.io.IOException;
 
-import com.jme3.scene.plugins.smd.Flyweight;
-import com.jme3.script.plugins.character.MODELINFO;
+import org.pstale.assets.Flyweight;
+
+import com.jme3.scene.plugins.smd.animation.PAT3D;
 import com.jme3.util.LittleEndien;
 
 public class DPAT extends Flyweight {
@@ -17,7 +18,7 @@ public class DPAT extends Flyweight {
     int UseCount;
     int dwSpeedFindSum;
 
-    MODELINFO lpModelInfo;
+    ModelInfo lpModelInfo;
 
     int LastUsedTime;
 
