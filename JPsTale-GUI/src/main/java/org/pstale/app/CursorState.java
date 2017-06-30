@@ -57,14 +57,14 @@ public class CursorState extends BaseAppState {
         inputManager.setMouseCursor(jmeCursor);
 
         // 从精灵客户端文件夹中读取光标文件
-        cursorsTex.add(assetManager.loadTexture("Cursor/DefaultCursor.tga"));
-        cursorsTex.add(assetManager.loadTexture("Cursor/Attack_Cursor.tga"));
-        cursorsTex.add(assetManager.loadTexture("Cursor/GetItem_Cursor1.tga"));
-        cursorsTex.add(assetManager.loadTexture("Cursor/GetItem_Cursor2.tga"));
-        cursorsTex.add(assetManager.loadTexture("Cursor/Talk_Cursor.tga"));
-        cursorsTex.add(assetManager.loadTexture("Cursor/BuyCursor.tga"));
-        cursorsTex.add(assetManager.loadTexture("Cursor/SellCursor.tga"));
-        cursorsTex.add(assetManager.loadTexture("Cursor/RepairCursor.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/DefaultCursor.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/Attack_Cursor.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/GetItem_Cursor1.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/GetItem_Cursor2.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/Talk_Cursor.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/BuyCursor.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/SellCursor.tga"));
+        cursorsTex.add(assetManager.loadTexture("Textures/Cursors/RepairCursor.tga"));
 
         cursor = new Geometry("cursor", new Quad(32, 32));
         cursor.setQueueBucket(Bucket.Gui);
