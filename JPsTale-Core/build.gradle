@@ -1,6 +1,8 @@
 apply plugin: "java"
 
 dependencies {
+    compile project(':JPsTale-Entity')
+
     compile 'org.jmonkeyengine:jme3-core:3.1.0-stable'
     
     compile 'org.slf4j:slf4j-api:1.7.21'

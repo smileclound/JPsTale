@@ -1,7 +1,5 @@
 package org.pstale.app;
 
-import org.pstale.utils.Constants;
-
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
@@ -16,7 +14,7 @@ import com.jme3.scene.Node;
  * @author yanmaoyuan
  *
  */
-public abstract class SubAppState extends BaseAppState implements Constants{
+public abstract class SubAppState extends BaseAppState{
 
     protected Node rootNode;
     protected Node guiNode;

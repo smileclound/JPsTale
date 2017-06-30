@@ -1,5 +1,6 @@
 include 'Assets'
 include 'JPsTale-AssetLoader'
+include 'JPsTale-Audio'
 include 'JPsTale-Core'
 include 'JPsTale-Effects'
 include 'JPsTale-Entity'

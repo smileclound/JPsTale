@@ -1,4 +1,5 @@
 package org.pstale.app;
+import static org.pstale.constants.SceneConstants.scale;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -8,8 +9,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.chars.CharMonsterInfo;
-import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
 import org.pstale.fields.Field;
 import org.pstale.fields.Music;
 import org.pstale.fields.RespawnList;
@@ -37,6 +36,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.debug.SkeletonDebugger;
+import com.jme3.script.plugins.character.Monster;
+import com.jme3.script.plugins.field.CharacterTransform;
 import com.jme3.texture.Texture;
 
 /**
@@ -408,7 +409,7 @@ public class LoaderAppState extends SubAppState {
     private void setupNpc(final Field field) {
         final HudState hud = getStateManager().getState(HudState.class);
 
-        ArrayList<TRNAS_PLAYERINFO> npcs = ModelFactory.loadSpc(field.getName());
+        ArrayList<CharacterTransform> npcs = ModelFactory.loadSpc(field.getName());
         if (npcs == null) {
             hud.setNpc(null);
             return;
@@ -417,7 +418,7 @@ public class LoaderAppState extends SubAppState {
         int len = npcs.size();
         final ArrayList<String> npcList = new ArrayList<String>(len);
         for (int i = 0; i < len; i++) {
-            TRNAS_PLAYERINFO npc = npcs.get(i);
+            CharacterTransform npc = npcs.get(i);
             Vector3f pos = new Vector3f(npc.x, npc.y, npc.z);
             pos.multLocal(scale);
 
@@ -452,7 +453,7 @@ public class LoaderAppState extends SubAppState {
                 }
             });
 
-            CharMonsterInfo cmNPC = ModelFactory.loadNpcScript(npc.charInfo.szModelName2);
+            Monster cmNPC = ModelFactory.loadNpcScript(npc.charInfo.szModelName2);
             if (cmNPC != null) {
                 npcList.add(cmNPC.szName);
             } else {

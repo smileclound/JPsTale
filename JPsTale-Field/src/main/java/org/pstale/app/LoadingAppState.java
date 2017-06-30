@@ -8,8 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.chars.CharMonsterInfo;
-import org.pstale.asset.struct.item.ItemInfo;
+import org.pstale.entity.item.ItemInfo;
 import org.pstale.utils.ModelFactory;
 
 import com.jme3.app.Application;
@@ -17,6 +16,7 @@ import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.script.plugins.character.Monster;
 import com.simsilica.lemur.ProgressBar;
 
 /**
@@ -149,8 +149,8 @@ public class LoadingAppState extends SubAppState {
      */
     private class Data {
         public String serverRoot = "";
-        public List<CharMonsterInfo> allMonster;
-        public List<CharMonsterInfo> allNpc;
+        public List<Monster> allMonster;
+        public List<Monster> allNpc;
         public List<ItemInfo> allItem;
     }
 
@@ -179,10 +179,10 @@ public class LoadingAppState extends SubAppState {
                 File folder = new File(SERVER_ROOT + "/" + MONSTER_DIR);
                 String[] files = folder.list();
                 int len = files.length;
-                data.allMonster = new ArrayList<CharMonsterInfo>(len);
+                data.allMonster = new ArrayList<Monster>(len);
                 for (int i = 0; i < len; i++) {
                     String name = files[i];
-                    CharMonsterInfo m = ModelFactory.loadMonsterScript(name);
+                    Monster m = ModelFactory.loadMonsterScript(name);
                     if (m != null) {
                         data.allMonster.add(m);
                     }

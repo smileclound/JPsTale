@@ -1,4 +1,5 @@
 package org.pstale.app;
+import static org.pstale.constants.SceneConstants.scale;
 
 import org.pstale.fields.FieldGate;
 

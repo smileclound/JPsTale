@@ -5,16 +5,14 @@ import static com.jme3.scene.plugins.smd.SMDTYPE.PAT3D_BIP;
 import static com.jme3.scene.plugins.smd.SMDTYPE.PAT3D_VISUAL;
 import static com.jme3.scene.plugins.smd.SMDTYPE.STAGE3D_COLLISION;
 import static com.jme3.scene.plugins.smd.SMDTYPE.STAGE3D_VISUAL;
+import static org.pstale.constants.SceneConstants.scale;
 
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.chars.CharMonsterInfo;
-import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
-import org.pstale.asset.struct.item.ItemInfo;
+import org.pstale.entity.item.ItemInfo;
 import org.pstale.fields.RespawnList;
 import org.pstale.fields.StartPoint;
-import org.pstale.utils.FileLocator;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.plugins.WAVLoader;
@@ -26,15 +24,17 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.plugins.ptscript.CharInfoLoader;
-import com.jme3.scene.plugins.ptscript.ItemLoader;
-import com.jme3.scene.plugins.ptscript.SpcLoader;
-import com.jme3.scene.plugins.ptscript.SpmLoader;
-import com.jme3.scene.plugins.ptscript.SppLoader;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
+import com.jme3.script.plugins.character.CharInfoLoader;
+import com.jme3.script.plugins.character.Monster;
+import com.jme3.script.plugins.field.CharacterTransform;
+import com.jme3.script.plugins.field.SpcLoader;
+import com.jme3.script.plugins.field.SpmLoader;
+import com.jme3.script.plugins.field.SppLoader;
+import com.jme3.script.plugins.item.ItemLoader;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 
@@ -44,10 +44,10 @@ import com.jme3.texture.Texture.WrapMode;
  * @author yanmaoyuan
  *
  */
-public class ModelFactory implements Constants {
+public class ModelFactory {
 
     static Logger log = Logger.getLogger(ModelFactory.class);
-    
+
     static AssetManager assetManager;
 
     public static void setAssetManager(final AssetManager manager) {
@@ -160,10 +160,10 @@ public class ModelFactory implements Constants {
         }
     }
 
-    public static ArrayList<TRNAS_PLAYERINFO> loadSpc(final String name) {
+    public static ArrayList<CharacterTransform> loadSpc(final String name) {
         String path = String.format("GameServer/Field/%s.ase.spc", getSimpleName(name));
         try {
-            ArrayList<TRNAS_PLAYERINFO> npcs = (ArrayList<TRNAS_PLAYERINFO>) assetManager.loadAsset(path);
+            ArrayList<CharacterTransform> npcs = (ArrayList<CharacterTransform>) assetManager.loadAsset(path);
             return npcs;
         } catch (Exception e) {
             return null;
@@ -176,11 +176,11 @@ public class ModelFactory implements Constants {
      * @param name
      * @return
      */
-    public static CharMonsterInfo loadNpcScript(final String name) {
+    public static Monster loadNpcScript(final String name) {
         String path = String.format("GameServer/NPC/%s.npc", getSimpleName(name));
 
         try {
-            CharMonsterInfo info = (CharMonsterInfo) assetManager.loadAsset(path);
+            Monster info = (Monster) assetManager.loadAsset(path);
             return info;
         } catch (Exception e) {
             return null;
@@ -193,11 +193,11 @@ public class ModelFactory implements Constants {
      * @param name
      * @return
      */
-    public static CharMonsterInfo loadMonsterScript(final String name) {
+    public static Monster loadMonsterScript(final String name) {
         String path = String.format("GameServer/Monster/%s.inf", getSimpleName(name));
 
         try {
-            CharMonsterInfo info = (CharMonsterInfo) assetManager.loadAsset(path);
+            Monster info = (Monster) assetManager.loadAsset(path);
             return info;
         } catch (Exception e) {
             return null;

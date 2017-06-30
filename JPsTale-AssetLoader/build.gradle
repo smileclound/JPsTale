@@ -22,6 +22,7 @@ sourceSets {
 dependencies {
 
     compile project(':JPsTale-Core')
+    compile project(':JPsTale-Audio')
 
     compile 'org.json:json:20170516'
     

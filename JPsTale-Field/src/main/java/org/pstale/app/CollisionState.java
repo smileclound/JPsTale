@@ -24,7 +24,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Mesh;
 
-import static org.pstale.app.SubAppState.scale;
+import static org.pstale.constants.SceneConstants.scale;
 
 /**
  * 碰撞检测模块

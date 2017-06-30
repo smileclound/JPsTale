@@ -3,12 +3,12 @@ package org.pstale.loader;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.chars.TRNAS_PLAYERINFO;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
-import com.jme3.scene.plugins.ptscript.SpcLoader;
+import com.jme3.script.plugins.field.CharacterTransform;
+import com.jme3.script.plugins.field.SpcLoader;
 
 public class TestSpcLoader {
 
@@ -21,8 +21,8 @@ public class TestSpcLoader {
         assetManager.registerLocator("/", ClasspathLocator.class);
 
         // 读取地图的spc文件
-        ArrayList<TRNAS_PLAYERINFO> npcs = (ArrayList<TRNAS_PLAYERINFO>) assetManager.loadAsset("server/Field/fore-3.ase.spc");
-        for (TRNAS_PLAYERINFO npc : npcs) {
+        ArrayList<CharacterTransform> npcs = (ArrayList<CharacterTransform>) assetManager.loadAsset("server/Field/fore-3.ase.spc");
+        for (CharacterTransform npc : npcs) {
             log.info("" + npc.charInfo.szModelName);
             log.info("" + npc.charInfo.szModelName2);
             log.info("Lv:" + npc.charInfo.Level);

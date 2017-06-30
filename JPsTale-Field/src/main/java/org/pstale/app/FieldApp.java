@@ -1,5 +1,6 @@
 package org.pstale.app;
 
+import org.pstale.constants.SceneConstants;
 import org.pstale.gui.Style;
 import org.pstale.utils.FileLocator;
 import org.pstale.utils.ModelFactory;
@@ -10,7 +11,6 @@ import com.jme3.app.StatsAppState;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.scene.plugins.smd.SmdLoader;
 
 import jme3utilities.sky.SkyAppState;
 
@@ -47,7 +47,7 @@ public class FieldApp extends SimpleApplication {
          * 是否使用灯光、法线
          */
         boolean useLight = settings.getBoolean("UseLight");
-        SmdLoader.USE_LIGHT = useLight;
+        SceneConstants.USE_LIGHT = useLight;
         LightState.USE_LIGHT = useLight;
 
         /**

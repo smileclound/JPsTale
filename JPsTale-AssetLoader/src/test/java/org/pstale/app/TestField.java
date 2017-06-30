@@ -5,7 +5,6 @@ import org.pstale.utils.ModelFactory;
 import com.jme3.scene.Node;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
-import com.jme3.scene.plugins.smd.SmdLoader;
 
 /**
  * 测试加载地图
@@ -17,8 +16,6 @@ public class TestField extends TestBase {
 
     @Override
     public void init() {
-        // 使用无光材质
-        SmdLoader.USE_LIGHT = false;
 
         // 设置模型工厂
         String smd = ModelFactory.changeName("Field/forest/fore-1.ASE", "smd");

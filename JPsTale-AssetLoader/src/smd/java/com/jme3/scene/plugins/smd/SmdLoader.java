@@ -6,8 +6,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.*;
-import org.pstale.asset.struct.chars.MODELINFO;
+import org.pstale.constants.SceneConstants;
 import org.pstale.control.WindAnimationControl;
 
 import com.jme3.animation.AnimControl;
@@ -34,6 +33,16 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.plugins.smd.animation.PAT3D;
+import com.jme3.scene.plugins.smd.animation.TM_POS;
+import com.jme3.scene.plugins.smd.animation.TM_ROT;
+import com.jme3.scene.plugins.smd.animation.TM_SCALE;
+import com.jme3.scene.plugins.smd.material.MATERIAL;
+import com.jme3.scene.plugins.smd.material.TEXLINK;
+import com.jme3.scene.plugins.smd.scene.OBJ3D;
+import com.jme3.scene.plugins.smd.scene.STAGE3D;
+import com.jme3.scene.plugins.smd.scene.STAGE_FACE;
+import com.jme3.script.plugins.character.MODELINFO;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
@@ -46,7 +55,7 @@ import com.jme3.util.TempVars;
  * @author yanmaoyuan
  * 
  */
-public class SmdLoader implements AssetLoader {
+public class SmdLoader extends SceneConstants implements AssetLoader {
 
     static Logger log = Logger.getLogger(SmdLoader.class);
     /**
@@ -57,10 +66,6 @@ public class SmdLoader implements AssetLoader {
      */
     float framePerSecond = 4800f;
 
-    public static boolean USE_LIGHT = false;
-
-    // 是否使用OPENGL坐标系
-    public static boolean OPEN_GL_AXIS = true;
     // 是否打印动画日志
     public static boolean LOG_ANIMATION = false;
 

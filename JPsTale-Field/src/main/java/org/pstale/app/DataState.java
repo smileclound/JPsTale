@@ -3,13 +3,13 @@ package org.pstale.app;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.chars.CharMonsterInfo;
-import org.pstale.asset.struct.item.ItemInfo;
+import org.pstale.entity.item.ItemInfo;
 import org.pstale.fields.Field;
 import org.pstale.loader.FieldLoader;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.script.plugins.character.Monster;
 
 /**
  * 这个状态机仅用于维持地区数据
@@ -22,8 +22,8 @@ public class DataState extends BaseAppState {
     static Logger log = Logger.getLogger(DataState.class);
 
     private String serverRoot;
-    private List<CharMonsterInfo> allMonster;
-    private List<CharMonsterInfo> allNpc;
+    private List<Monster> allMonster;
+    private List<Monster> allNpc;
     private List<ItemInfo> allItem;
 
     private Field[] fields;
@@ -38,7 +38,7 @@ public class DataState extends BaseAppState {
      * @param clientRoot
      * @param fields
      */
-    public DataState(String serverRoot, List<CharMonsterInfo> allMonster, List<CharMonsterInfo> allNpc,
+    public DataState(String serverRoot, List<Monster> allMonster, List<Monster> allNpc,
             List<ItemInfo> allItem) {
         this.serverRoot = serverRoot;
         this.allMonster = allMonster;
@@ -88,7 +88,7 @@ public class DataState extends BaseAppState {
      * @param file
      * @return
      */
-    public CharMonsterInfo findNPC(String file) {
+    public Monster findNPC(String file) {
         if (file == null || file.trim().length() == 0) {
             return null;
         }
@@ -106,7 +106,7 @@ public class DataState extends BaseAppState {
 
         int len = allNpc.size();
         for (int i = 0; i < len; i++) {
-            CharMonsterInfo npc = allNpc.get(i);
+            Monster npc = allNpc.get(i);
             if (npc.File.equalsIgnoreCase(file)) {
                 log.info("找到了:" + npc.szName);
                 return npc;
@@ -123,7 +123,7 @@ public class DataState extends BaseAppState {
      * @param file
      * @return
      */
-    public CharMonsterInfo findMonsterByName(String name) {
+    public Monster findMonsterByName(String name) {
         if (allMonster == null || allMonster.size() == 0) {
             return null;
         }
@@ -132,7 +132,7 @@ public class DataState extends BaseAppState {
 
         int len = allMonster.size();
         for (int i = 0; i < len; i++) {
-            CharMonsterInfo monster = allMonster.get(i);
+            Monster monster = allMonster.get(i);
             if (monster.szName.equalsIgnoreCase(name)) {
                 log.info("找到了:" + monster.szModelName);
                 return monster;

@@ -1,8 +1,6 @@
 package org.pstale.loader;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.chars.MODELINFO;
-import org.pstale.asset.struct.chars.MOTIONINFO;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
@@ -10,6 +8,8 @@ import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
+import com.jme3.script.plugins.character.MODELINFO;
+import com.jme3.script.plugins.character.MOTIONINFO;
 
 public class TestInxLoader {
 

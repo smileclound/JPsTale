@@ -40,8 +40,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.STAGE3D;
-import org.pstale.asset.struct.STAGE_FACE;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoadException;
@@ -50,6 +48,8 @@ import com.jme3.asset.DesktopAssetManager;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
+import com.jme3.scene.plugins.smd.scene.STAGE3D;
+import com.jme3.scene.plugins.smd.scene.STAGE_FACE;
 
 @SuppressWarnings("serial")
 public class TestUVWarp extends JFrame {

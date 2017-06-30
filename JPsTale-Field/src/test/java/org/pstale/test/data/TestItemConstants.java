@@ -1,13 +1,13 @@
 package org.pstale.test.data;
 
-import static org.pstale.asset.struct.item.ItemConstant.itemDataBase;
+import static org.pstale.entity.item.ItemConstant.itemDataBase;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.item.Item;
+import org.pstale.entity.item.Item;
 
 public class TestItemConstants {
 

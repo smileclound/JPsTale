@@ -1,12 +1,12 @@
 package org.pstale.loader;
 
 import org.apache.log4j.Logger;
-import org.pstale.asset.struct.chars.CharMonsterInfo;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
-import com.jme3.scene.plugins.ptscript.CharInfoLoader;
+import com.jme3.script.plugins.character.CharInfoLoader;
+import com.jme3.script.plugins.character.Monster;
 
 public class TestNpcLoader {
 
@@ -18,7 +18,7 @@ public class TestNpcLoader {
         assetManager.registerLoader(CharInfoLoader.class, "inf", "npc");
         assetManager.registerLocator("/", ClasspathLocator.class);
 
-        CharMonsterInfo charMon = (CharMonsterInfo) assetManager.loadAsset("server/Monster/_14_H_Hobgoblin.inf");
+        Monster charMon = (Monster) assetManager.loadAsset("server/Monster/_14_H_Hobgoblin.inf");
         log.info(charMon.szName);
         log.info("模型:" + charMon.szModelName);
         log.info("等级:" + charMon.Level);

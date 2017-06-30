@@ -1,12 +1,11 @@
 package com.jme3.scene.plugins.smd;
 
-import org.pstale.asset.struct.PAT3D;
-
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetProcessor;
 import com.jme3.asset.CloneableAssetProcessor;
 import com.jme3.asset.cache.AssetCache;
 import com.jme3.asset.cache.WeakRefAssetCache;
+import com.jme3.scene.plugins.smd.animation.PAT3D;
 
 public class SmdKey extends AssetKey<Object> {
 

@@ -8,7 +8,7 @@ import org.pstale.fields.StartPoint;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
-import com.jme3.scene.plugins.ptscript.SppLoader;
+import com.jme3.script.plugins.field.SppLoader;
 
 public class TestSppLoader {
 

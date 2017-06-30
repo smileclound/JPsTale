@@ -22,7 +22,6 @@ public class TestSkeleton extends TestBase {
 
     @Override
     public void init() {
-        SmdLoader.USE_LIGHT = false;
         SmdLoader.LOG_ANIMATION = false;
 
         float scale = 0.1f;
