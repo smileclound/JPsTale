@@ -1,6 +1,6 @@
 package org.pstale.app;
 
-import org.pstale.utils.ModelFactory;
+import org.pstale.assets.ModelFactory;
 
 import com.jme3.scene.Node;
 import com.jme3.scene.plugins.smd.SMDTYPE;

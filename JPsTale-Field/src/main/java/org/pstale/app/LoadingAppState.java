@@ -8,8 +8,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
+import org.pstale.assets.ModelFactory;
 import org.pstale.entity.item.ItemInfo;
-import org.pstale.utils.ModelFactory;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;

@@ -1,4 +1,4 @@
-package org.pstale.utils;
+package org.pstale.assets;
 
 import static com.jme3.scene.plugins.smd.SMDTYPE.MODELINFO_MODEL;
 import static com.jme3.scene.plugins.smd.SMDTYPE.PAT3D_BIP;
@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.pstale.entity.item.ItemInfo;
 import org.pstale.fields.RespawnList;
 import org.pstale.fields.StartPoint;
+import org.pstale.utils.FileLocator;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.plugins.WAVLoader;

@@ -2,8 +2,8 @@ package org.pstale.app;
 
 import java.io.File;
 
+import org.pstale.assets.ModelFactory;
 import org.pstale.utils.FileLocator;
-import org.pstale.utils.ModelFactory;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.plugins.WAVLoader;

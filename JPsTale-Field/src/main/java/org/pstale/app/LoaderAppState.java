@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
+import org.pstale.assets.ModelFactory;
 import org.pstale.fields.Field;
 import org.pstale.fields.Music;
 import org.pstale.fields.RespawnList;
@@ -16,7 +17,6 @@ import org.pstale.fields.StageObject;
 import org.pstale.fields.StartPoint;
 import org.pstale.fields.StgBoss;
 import org.pstale.fields.StgMonster;
-import org.pstale.utils.ModelFactory;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;

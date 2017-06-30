@@ -20,7 +20,7 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
-import org.pstale.utils.ImageDecoder;
+import org.pstale.assets.ImageDecoder;
 import org.pstale.utils.WavDecoder;
 
 /**

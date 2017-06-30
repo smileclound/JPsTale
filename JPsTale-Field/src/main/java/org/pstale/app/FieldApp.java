@@ -1,9 +1,9 @@
 package org.pstale.app;
 
+import org.pstale.assets.ModelFactory;
 import org.pstale.constants.SceneConstants;
 import org.pstale.gui.Style;
 import org.pstale.utils.FileLocator;
-import org.pstale.utils.ModelFactory;
 
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;

@@ -1,4 +1,4 @@
-package org.pstale.utils;
+package org.pstale.assets;
 
 import java.io.File;
 import java.io.FilenameFilter;

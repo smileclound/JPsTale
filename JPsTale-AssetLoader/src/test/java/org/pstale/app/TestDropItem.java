@@ -2,8 +2,8 @@ package org.pstale.app;
 
 import static org.pstale.entity.item.ItemConstant.itemDataBase;
 
+import org.pstale.assets.ModelFactory;
 import org.pstale.entity.item.Item;
-import org.pstale.utils.ModelFactory;
 
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.renderer.RenderManager;
