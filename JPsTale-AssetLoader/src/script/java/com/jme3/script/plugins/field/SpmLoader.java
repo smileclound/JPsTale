@@ -3,9 +3,9 @@ package com.jme3.script.plugins.field;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.pstale.fields.RespawnList;
-import org.pstale.fields.StgBoss;
-import org.pstale.fields.StgMonster;
+import org.pstale.entity.field.RespawnList;
+import org.pstale.entity.field.StgBoss;
+import org.pstale.entity.field.StgMonster;
 
 import com.jme3.script.plugins.PTScriptLoader;
 

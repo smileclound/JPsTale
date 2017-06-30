@@ -1,14 +1,5 @@
 package org.pstale.entity;
 
-import org.pstale.components.Attack;
-import org.pstale.components.Defense;
-import org.pstale.components.Health;
-import org.pstale.components.Increase;
-import org.pstale.components.Level;
-import org.pstale.components.Mana;
-import org.pstale.components.Regen;
-import org.pstale.components.State;
-
 import com.jme3.util.IntMap;
 
 public class Player {

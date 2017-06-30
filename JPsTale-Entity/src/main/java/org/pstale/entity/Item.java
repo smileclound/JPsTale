@@ -1,12 +1,5 @@
 package org.pstale.entity;
 
-import org.pstale.components.Attack;
-import org.pstale.components.Increase;
-import org.pstale.components.MoveSpeed;
-import org.pstale.components.Regen;
-import org.pstale.components.Require;
-import org.pstale.components.Resistance;
-
 public class Item {
 	/**
 	 * 武器的攻击方式

@@ -3,7 +3,7 @@ package org.pstale.loader;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
-import org.pstale.fields.StartPoint;
+import org.pstale.entity.field.StartPoint;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;

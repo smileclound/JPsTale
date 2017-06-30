@@ -3,8 +3,8 @@ package org.pstale.app;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.pstale.entity.field.Field;
 import org.pstale.entity.item.ItemInfo;
-import org.pstale.fields.Field;
 import org.pstale.loader.FieldLoader;
 
 import com.jme3.app.Application;

@@ -2,7 +2,7 @@ package org.pstale.app;
 
 import static org.pstale.constants.SceneConstants.scale;
 
-import org.pstale.fields.AmbientPos;
+import org.pstale.entity.field.AmbientPos;
 
 import com.jme3.app.Application;
 import com.jme3.math.ColorRGBA;

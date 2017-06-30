@@ -9,11 +9,11 @@ import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.pstale.fields.AmbientPos;
-import org.pstale.fields.Field;
-import org.pstale.fields.FieldGate;
-import org.pstale.fields.StageObject;
-import org.pstale.fields.WarpGate;
+import org.pstale.entity.field.AmbientPos;
+import org.pstale.entity.field.Field;
+import org.pstale.entity.field.FieldGate;
+import org.pstale.entity.field.StageObject;
+import org.pstale.entity.field.WarpGate;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;

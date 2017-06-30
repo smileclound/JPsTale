@@ -3,7 +3,7 @@ package org.pstale.app;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.pstale.fields.Field;
+import org.pstale.entity.field.Field;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;

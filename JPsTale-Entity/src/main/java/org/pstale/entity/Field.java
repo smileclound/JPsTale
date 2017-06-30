@@ -3,8 +3,7 @@ package org.pstale.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pstale.components.Gate;
-import org.pstale.components.StgMonster;
+import org.pstale.entity.field.StgMonster;
 
 public class Field {
 

@@ -10,13 +10,13 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
 import org.pstale.assets.ModelFactory;
-import org.pstale.fields.Field;
-import org.pstale.fields.Music;
-import org.pstale.fields.RespawnList;
-import org.pstale.fields.StageObject;
-import org.pstale.fields.StartPoint;
-import org.pstale.fields.StgBoss;
-import org.pstale.fields.StgMonster;
+import org.pstale.entity.field.Field;
+import org.pstale.entity.field.Music;
+import org.pstale.entity.field.RespawnList;
+import org.pstale.entity.field.StageObject;
+import org.pstale.entity.field.StartPoint;
+import org.pstale.entity.field.StgBoss;
+import org.pstale.entity.field.StgMonster;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;

@@ -3,7 +3,7 @@ package com.jme3.script.plugins.field;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.pstale.fields.StartPoint;
+import org.pstale.entity.field.StartPoint;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;

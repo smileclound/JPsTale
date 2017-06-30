@@ -1,13 +1,5 @@
 package org.pstale.entity;
 
-import org.pstale.components.Attack;
-import org.pstale.components.Defense;
-import org.pstale.components.HealBehavior;
-import org.pstale.components.Health;
-import org.pstale.components.Level;
-import org.pstale.components.Regen;
-import org.pstale.components.SkillBehavior;
-
 public class Monster {
 	Level lv;// 等级和经验
 

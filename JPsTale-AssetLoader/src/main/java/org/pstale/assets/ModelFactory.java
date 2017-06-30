@@ -10,9 +10,9 @@ import static org.pstale.constants.SceneConstants.scale;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.pstale.entity.field.RespawnList;
+import org.pstale.entity.field.StartPoint;
 import org.pstale.entity.item.ItemInfo;
-import org.pstale.fields.RespawnList;
-import org.pstale.fields.StartPoint;
 import org.pstale.utils.FileLocator;
 
 import com.jme3.asset.AssetManager;

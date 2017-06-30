@@ -1,6 +1,6 @@
 package org.pstale.utils;
 
-import org.pstale.fields.Field;
+import org.pstale.entity.field.Field;
 import org.pstale.loader.FieldLoader;
 
 /**

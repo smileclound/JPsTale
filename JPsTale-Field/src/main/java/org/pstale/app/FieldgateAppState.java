@@ -1,7 +1,7 @@
 package org.pstale.app;
 import static org.pstale.constants.SceneConstants.scale;
 
-import org.pstale.fields.FieldGate;
+import org.pstale.entity.field.FieldGate;
 
 import com.jme3.app.Application;
 import com.jme3.math.ColorRGBA;

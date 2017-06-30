@@ -1,7 +1,7 @@
 package org.pstale.loader;
 
 import org.apache.log4j.Logger;
-import org.pstale.fields.RespawnList;
+import org.pstale.entity.field.RespawnList;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
