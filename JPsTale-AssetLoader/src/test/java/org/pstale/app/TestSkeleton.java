@@ -1,16 +1,15 @@
 package org.pstale.app;
 
-import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
-import com.jme3.scene.plugins.smd.SmdLoader;
 
 /**
  * 测试动画播放
@@ -22,7 +21,6 @@ public class TestSkeleton extends TestBase {
 
     @Override
     public void init() {
-        SmdLoader.LOG_ANIMATION = false;
 
         float scale = 0.1f;
 
@@ -31,8 +29,7 @@ public class TestSkeleton extends TestBase {
         rootNode.addControl(ac);
 
         // 播放动画
-        AnimChannel channel = ac.createChannel();
-        channel.setAnim("Anim");
+        // ac.createChannel().setAnim("Anim");
 
         // 创建骨骼
         Skeleton ske = ac.getSkeleton();
@@ -47,6 +44,7 @@ public class TestSkeleton extends TestBase {
         SkeletonDebugger skeletonDebug = new SkeletonDebugger("skeleton", ske);
         skeletonDebug.setMaterial(mat);
         skeletonDebug.scale(scale);
+        skeletonDebug.rotate(-FastMath.HALF_PI, 0, 0);
 
         rootNode.attachChild(skeletonDebug);
 

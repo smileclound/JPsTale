@@ -16,7 +16,7 @@ public class ModelInfo extends Flyweight {
     public ModelGroup DefaultModel;
     public ModelGroup LowModel;
 
-    public MOTIONINFO[] MotionInfo = new MOTIONINFO[MOTION_INFO_MAX];
+    public MOTIONINFO[] motionInfo = new MOTIONINFO[MOTION_INFO_MAX];
     public int MotionCount;
 
     public int FileTypeKeyWord;
@@ -62,8 +62,8 @@ public class ModelInfo extends Flyweight {
         LowModel.loadData(in);
 
         for (int i = 0; i < MOTION_INFO_MAX; i++) {
-            MotionInfo[i] = new MOTIONINFO();
-            MotionInfo[i].loadData(in);
+            motionInfo[i] = new MOTIONINFO();
+            motionInfo[i].loadData(in);
         }
 
         // FIXME ???????? drz是这么写得，但是这里明明是个Int呀？

@@ -70,9 +70,9 @@ public class OBJ3D extends Flyweight {
     public float sx, sy, sz; // 胶纳老 谅钎
     public float px, py, pz; // 器瘤记 谅钎
 
-    public TransRotation[] TmRot; // 橇饭烙喊 雀傈 局聪皋捞记
-    public TransPosition[] TmPos; // 橇饭烙喊 器瘤记 局聪皋捞记
-    public TransScale[] TmScale; // 橇饭烙喊 胶纳老 局聪皋捞记
+    public TransRotation[] rotArray;
+    public TransPosition[] posArray;
+    public TransScale[] scaleArray;
 
     Matrix4F[] TmPrevRot; // 帧的动画矩阵
 
@@ -97,9 +97,9 @@ public class OBJ3D extends Flyweight {
         NodeParent = null;
         Tm = new Matrix4D();
         pParent = null;
-        TmRot = null;
-        TmPos = null;
-        TmScale = null;
+        rotArray = null;
+        posArray = null;
+        scaleArray = null;
         TmRotCnt = 0;
         TmPosCnt = 0;
         TmScaleCnt = 0;
@@ -241,22 +241,22 @@ public class OBJ3D extends Flyweight {
             TexLink[i].loadData(in);
         }
 
-        TmRot = new TransRotation[TmRotCnt];
+        rotArray = new TransRotation[TmRotCnt];
         for (int i = 0; i < TmRotCnt; i++) {
-            TmRot[i] = new TransRotation();
-            TmRot[i].loadData(in);
+            rotArray[i] = new TransRotation();
+            rotArray[i].loadData(in);
         }
 
-        TmPos = new TransPosition[TmPosCnt];
+        posArray = new TransPosition[TmPosCnt];
         for (int i = 0; i < TmPosCnt; i++) {
-            TmPos[i] = new TransPosition();
-            TmPos[i].loadData(in);
+            posArray[i] = new TransPosition();
+            posArray[i].loadData(in);
         }
 
-        TmScale = new TransScale[TmScaleCnt];
+        scaleArray = new TransScale[TmScaleCnt];
         for (int i = 0; i < TmScaleCnt; i++) {
-            TmScale[i] = new TransScale();
-            TmScale[i].loadData(in);
+            scaleArray[i] = new TransScale();
+            scaleArray[i].loadData(in);
         }
 
         TmPrevRot = new Matrix4F[TmRotCnt];

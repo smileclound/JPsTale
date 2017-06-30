@@ -38,7 +38,7 @@ public class TestInxLoader {
 
         // 有10帧数据没有用
         for (int i = 10; i < model.MotionCount; i++) {
-            MOTIONINFO motion = model.MotionInfo[i];
+            MOTIONINFO motion = model.motionInfo[i];
             if (motion.State == 0) {
                 log.debug(i + ":unkownn");
             } else {

@@ -53,7 +53,7 @@ public class CursorState extends BaseAppState {
         AssetManager assetManager = app.getAssetManager();
         // 初始化鼠标
         // 把鼠标的图片搞成透平的，这样玩家就只能看见我们的图片了！
-        JmeCursor jmeCursor = (JmeCursor) assetManager.loadAsset("Cursor/invisiable.cur");
+        JmeCursor jmeCursor = (JmeCursor) assetManager.loadAsset("Textures/Cursors/invisiable.cur");
         inputManager.setMouseCursor(jmeCursor);
 
         // 从精灵客户端文件夹中读取光标文件

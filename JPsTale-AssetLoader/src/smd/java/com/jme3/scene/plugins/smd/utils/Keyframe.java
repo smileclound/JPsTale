@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd.animation;
+package com.jme3.scene.plugins.smd.utils;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;

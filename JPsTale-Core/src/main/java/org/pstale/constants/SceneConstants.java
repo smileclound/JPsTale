@@ -14,11 +14,6 @@ public class SceneConstants {
     public static boolean USE_LIGHT = false;
 
     /**
-     * 是否使用OPENGL坐标系
-     */
-    public static boolean OPEN_GL_AXIS = true;
-    
-    /**
      * 是否开启硬件蒙皮
      */
     public static boolean USE_HARD_WARE_SKINNING = false;

@@ -21,7 +21,7 @@ public class PAT3D extends Flyweight {
 
     public PAT3D TmParent;
 
-    public MaterialGroup smMaterialGroup;// 材质组
+    public MaterialGroup materialGroup;// 材质组
 
     int MaxFrame;
     int Frame;
@@ -71,7 +71,7 @@ public class PAT3D extends Flyweight {
             TmSort[i] = (byte) i;
         }
 
-        smMaterialGroup = null;
+        materialGroup = null;
     }
 
     public void loadData(LittleEndien in) throws IOException {
@@ -138,8 +138,8 @@ public class PAT3D extends Flyweight {
         // 读取材质
         // 骨骼文件(.smb)中不包含材质，因此可能没有这一段数据。
         if (header.matCounter > 0) {
-            smMaterialGroup = new MaterialGroup();
-            smMaterialGroup.loadData(in);
+            materialGroup = new MaterialGroup();
+            materialGroup.loadData(in);
         }
 
         if (NodeName != null) {
@@ -183,10 +183,10 @@ public class PAT3D extends Flyweight {
 
             // 统计动画帧数
             int frame = 0;
-            if (obj.TmRotCnt > 0 && obj.TmRot != null)
-                frame = obj.TmRot[obj.TmRotCnt - 1].frame;
-            if (obj.TmPosCnt > 0 && obj.TmPos != null)
-                frame = obj.TmPos[obj.TmPosCnt - 1].frame;
+            if (obj.TmRotCnt > 0 && obj.rotArray != null)
+                frame = obj.rotArray[obj.TmRotCnt - 1].frame;
+            if (obj.TmPosCnt > 0 && obj.posArray != null)
+                frame = obj.posArray[obj.TmPosCnt - 1].frame;
             if (MaxFrame < frame)
                 MaxFrame = frame;
 

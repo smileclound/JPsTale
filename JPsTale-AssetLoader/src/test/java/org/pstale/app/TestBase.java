@@ -31,6 +31,7 @@ public abstract class TestBase extends SimpleApplication {
             assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
         }
 
+        stateManager.attach(new AxisAppState());
         // 注册模型工厂
         ModelFactory.setAssetManager(assetManager);
 
