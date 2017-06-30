@@ -166,9 +166,9 @@ public class TestHeightmap extends SimpleApplication {
         TerrainQuad terrain = new TerrainQuad("", 33, MAP_SIZE, heightMap.getHeightMap());
         terrain.addControl(new TerrainLodControl(terrain, cam));
         
-        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        mat.setColor("Diffuse", ColorRGBA.White);
-        mat.setTexture("DiffuseMap", assetManager.loadTexture("colormap.png"));
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.White);
+        mat.setTexture("ColorMap", assetManager.loadTexture("colormap.png"));
         terrain.setMaterial(mat);
         
         rootNode.attachChild(terrain);
