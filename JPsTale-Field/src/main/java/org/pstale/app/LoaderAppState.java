@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
-import org.pstale.assets.ModelFactory;
+import org.pstale.assets.AssetFactory;
 import org.pstale.entity.field.Field;
 import org.pstale.entity.field.Music;
 import org.pstale.entity.field.RespawnList;
@@ -71,8 +71,8 @@ public class LoaderAppState extends SubAppState {
         future = null;
         task = null;
 
-        flag = ModelFactory.loadFlag();
-        loadFlag = ModelFactory.getLoadingFlag();
+        flag = AssetFactory.loadFlag();
+        loadFlag = AssetFactory.getLoadingFlag();
 
         float width = app.getCamera().getWidth();
         float height = app.getCamera().getHeight();
@@ -159,8 +159,8 @@ public class LoaderAppState extends SubAppState {
             /**
              * 地图主模型
              */
-            final Spatial mainModel = ModelFactory.loadStage3D(field.getName());
-            final Mesh mesh = ModelFactory.loadStage3DMesh(field.getName());
+            final Spatial mainModel = AssetFactory.loadStage3D(field.getName());
+            final Mesh mesh = AssetFactory.loadStage3DMesh(field.getName());
 
             if (mainModel == null) {
                 log.debug("加载地图模型失败");
@@ -295,7 +295,7 @@ public class LoaderAppState extends SubAppState {
             for (int i = 0; i < objs.size(); i++) {
                 final Spatial model;
                 try {
-                    model = ModelFactory.loadStageObj("Field/" + objs.get(i).getName(), objs.get(i).isBipAnimation());
+                    model = AssetFactory.loadStageObj("Field/" + objs.get(i).getName(), objs.get(i).isBipAnimation());
                     // 加载成功
                     model.scale(scale);
                     app.enqueue(new Runnable() {
@@ -330,7 +330,7 @@ public class LoaderAppState extends SubAppState {
      * @param field
      */
     private void setupCreatures(final Field field) {
-        RespawnList creatures = ModelFactory.loadSpm(field.getName());
+        RespawnList creatures = AssetFactory.loadSpm(field.getName());
         final HudState hud = getStateManager().getState(HudState.class);
         if (creatures == null) {
             hud.setMonster(null);
@@ -368,7 +368,7 @@ public class LoaderAppState extends SubAppState {
     private void setupSpawnPoints(final Field field, Mesh mesh) {
         final HudState hud = getStateManager().getState(HudState.class);
 
-        ArrayList<StartPoint> spawns = ModelFactory.loadSpp(field.getName());
+        ArrayList<StartPoint> spawns = AssetFactory.loadSpp(field.getName());
 
         if (spawns == null) {
             hud.setSpawnPoint(null);
@@ -409,7 +409,7 @@ public class LoaderAppState extends SubAppState {
     private void setupNpc(final Field field) {
         final HudState hud = getStateManager().getState(HudState.class);
 
-        ArrayList<CharacterTransform> npcs = ModelFactory.loadSpc(field.getName());
+        ArrayList<CharacterTransform> npcs = AssetFactory.loadSpc(field.getName());
         if (npcs == null) {
             hud.setNpc(null);
             return;
@@ -428,7 +428,7 @@ public class LoaderAppState extends SubAppState {
              * @param pos
              */
             // 首先尝试直接读取NPC模型
-            final Node model = (Node) ModelFactory.loadNPC(npc.charInfo.szModelName);
+            final Node model = (Node) AssetFactory.loadNPC(npc.charInfo.szModelName);
 
             // Debug skeleton
             final AnimControl ac = model.getControl(AnimControl.class);
@@ -453,7 +453,7 @@ public class LoaderAppState extends SubAppState {
                 }
             });
 
-            Monster cmNPC = ModelFactory.loadNpcScript(npc.charInfo.szModelName2);
+            Monster cmNPC = AssetFactory.loadNpcScript(npc.charInfo.szModelName2);
             if (cmNPC != null) {
                 npcList.add(cmNPC.szName);
             } else {

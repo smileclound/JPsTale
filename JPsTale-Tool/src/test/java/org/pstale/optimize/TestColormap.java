@@ -2,7 +2,7 @@ package org.pstale.optimize;
 
 import java.io.File;
 
-import org.pstale.assets.ModelFactory;
+import org.pstale.assets.AssetFactory;
 import org.pstale.utils.FileLocator;
 
 import com.jme3.app.SimpleApplication;
@@ -69,9 +69,9 @@ public class TestColormap extends SimpleApplication {
         } else {
             assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
         }
-        ModelFactory.setAssetManager(assetManager);
+        AssetFactory.setAssetManager(assetManager);
 
-        scene = ModelFactory.loadStage3D("Field/forest/fore-1.smd");
+        scene = AssetFactory.loadStage3D("Field/forest/fore-1.smd");
         scene.scale(0.05f);
         rootNode.attachChild(scene);
         

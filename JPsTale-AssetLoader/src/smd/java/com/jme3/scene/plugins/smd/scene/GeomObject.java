@@ -18,15 +18,15 @@ import com.jme3.util.LittleEndien;
 /**
  * size = 2236
  */
-public class OBJ3D extends Flyweight {
+public class GeomObject extends Flyweight {
     // DWORD Head;
     public Vertex[] Vertex;// 顶点
     public Face[] Face;// 面
     public TEXLINK[] TexLink;// 纹理坐标
 
-    public OBJ3D[] Physique; // 各顶点的骨骼
+    public GeomObject[] boneArray; // 各顶点的骨骼
 
-    Vertex ZeroVertex; // 坷宏璃飘 吝居 滚咆胶 蔼
+    Vertex zeroVertex; // 坷宏璃飘 吝居 滚咆胶 蔼
 
     public int maxZ, minZ;
     public int maxY, minY;
@@ -54,15 +54,15 @@ public class OBJ3D extends Flyweight {
     // 局聪皋捞记 包访
     public String NodeName;// [32]; // 坷宏璃飘狼 畴靛 捞抚
     public String NodeParent;// [32]; // 何葛 坷宏璃飘狼 捞抚
-    public OBJ3D pParent; // 何葛 坷宏璃飘 器牢磐
+    public GeomObject pParent; // 何葛 坷宏璃飘 器牢磐
 
-    Matrix4D Tm; // 扁夯 TM 青纺
-    public Matrix4D TmInvert; // 逆矩阵
-    Matrix4F TmResult; // 局聪皋捞记 青纺
-    Matrix4D TmRotate; // 扁夯利 雀傈 青纺
+    Matrix4D transform; // 扁夯 TM 青纺
+    public Matrix4D transformInvert; // 逆矩阵
+    Matrix4F transformResult; // 局聪皋捞记 青纺
+    Matrix4D transformRotate; // 扁夯利 雀傈 青纺
 
-    Matrix4D mWorld; // 岿靛谅钎 函券 青纺
-    Matrix4D mLocal; // 肺漠谅钎 函券 青纺
+    Matrix4D worldMatrix; // 岿靛谅钎 函券 青纺
+    Matrix4D localMatrix; // 肺漠谅钎 函券 青纺
 
     int lFrame;// 没有实际作用
 
@@ -92,10 +92,10 @@ public class OBJ3D extends Flyweight {
 
     // //////////////////
 
-    public OBJ3D() {
+    public GeomObject() {
         NodeName = null;
         NodeParent = null;
-        Tm = new Matrix4D();
+        transform = new Matrix4D();
         pParent = null;
         rotArray = null;
         posArray = null;
@@ -107,7 +107,7 @@ public class OBJ3D extends Flyweight {
         Face = null;
         Vertex = null;
         TexLink = null;
-        Physique = null;
+        boneArray = null;
     }
 
     public void loadData(LittleEndien in) throws IOException {
@@ -117,8 +117,8 @@ public class OBJ3D extends Flyweight {
         lpOldTexLink = in.readInt();// smTEXLINK *TexLink;
         lpPhysuque = in.readInt();// smOBJ3D **Physique;
 
-        ZeroVertex = new Vertex();
-        ZeroVertex.loadData(in);
+        zeroVertex = new Vertex();
+        zeroVertex.loadData(in);
 
         maxZ = in.readInt();
         minZ = in.readInt();
@@ -160,23 +160,23 @@ public class OBJ3D extends Flyweight {
         NodeParent = getString(in, 32);
         in.readInt();// OBJ3D *pParent;
 
-        Tm = new Matrix4D();
-        Tm.loadData(in);
+        transform = new Matrix4D();
+        transform.loadData(in);
 
-        TmInvert = new Matrix4D();
-        TmInvert.loadData(in);
+        transformInvert = new Matrix4D();
+        transformInvert.loadData(in);
 
-        TmResult = new Matrix4F();
-        TmResult.loadData(in);
+        transformResult = new Matrix4F();
+        transformResult.loadData(in);
 
-        TmRotate = new Matrix4D();
-        TmRotate.loadData(in);
+        transformRotate = new Matrix4D();
+        transformRotate.loadData(in);
 
-        mWorld = new Matrix4D();
-        mWorld.loadData(in);
+        worldMatrix = new Matrix4D();
+        worldMatrix.loadData(in);
 
-        mLocal = new Matrix4D();
-        mLocal.loadData(in);
+        localMatrix = new Matrix4D();
+        localMatrix.loadData(in);
 
         lFrame = in.readInt();
 
@@ -191,6 +191,7 @@ public class OBJ3D extends Flyweight {
         py = in.readInt() / 256f;
         pz = in.readInt() / 256f;
 
+        // 4个指针
         in.readInt();// smTM_ROT *TmRot;
         in.readInt();// smTM_POS *TmPos;
         in.readInt();// smTM_SCALE *TmScale;
@@ -219,9 +220,9 @@ public class OBJ3D extends Flyweight {
     /**
      * 读取OBJ3D文件数据
      * 
-     * @param PatPhysique
+     * @param skeleton
      */
-    public void loadFile(LittleEndien in, PAT3D PatPhysique) throws IOException {
+    public void loadFile(LittleEndien in, PAT3D skeleton) throws IOException {
 
         Vertex = new Vertex[nVertex];
         for (int i = 0; i < nVertex; i++) {
@@ -268,9 +269,9 @@ public class OBJ3D extends Flyweight {
         relinkFaceAndTex();
 
         // 绑定动画骨骼
-        if (lpPhysuque != 0 && PatPhysique != null) {
+        if (lpPhysuque != 0 && skeleton != null) {
 
-            Physique = new OBJ3D[nVertex];
+            boneArray = new GeomObject[nVertex];
 
             String[] names = new String[nVertex];
             for (int i = 0; i < nVertex; i++) {
@@ -278,7 +279,7 @@ public class OBJ3D extends Flyweight {
             }
 
             for (int i = 0; i < nVertex; i++) {
-                Physique[i] = PatPhysique.getObjectFromName(names[i]);
+                boneArray[i] = skeleton.getObjectFromName(names[i]);
             }
 
         }

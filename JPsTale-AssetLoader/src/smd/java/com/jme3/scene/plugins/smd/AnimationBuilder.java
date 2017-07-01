@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd.utils;
+package com.jme3.scene.plugins.smd;
 
 import java.util.HashMap;
 import java.util.SortedMap;
@@ -11,45 +11,38 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.smd.animation.PAT3D;
 import com.jme3.scene.plugins.smd.animation.TransPosition;
 import com.jme3.scene.plugins.smd.animation.TransRotation;
 import com.jme3.scene.plugins.smd.animation.TransScale;
-import com.jme3.scene.plugins.smd.scene.OBJ3D;
-import com.jme3.util.TempVars;
+import com.jme3.scene.plugins.smd.scene.GeomObject;
 
-public class AnimUtils {
-
-    static Logger logger = LoggerFactory.getLogger(AnimUtils.class);
-
+public class AnimationBuilder {
+    
+    static Logger logger = LoggerFactory.getLogger(AnimationBuilder.class);
+    
     /**
      * 精灵的动画使用3DS MAX的默认速率，每秒30Tick，每Tick共160帧。 也就是每秒4800帧。
      * 
      * 但是smd文件中也另外存储了2个参数： (1) 每秒Tick数 (默认30) (2) 每Tick帧数 (默认160)
      * 这两个变量的值控制了动画播放的速率。
      */
-    float framePerSecond = 4800f;
-
-    /************************************************
-     * PAT3D
-     */
+    private final static float framePerSecond = 4800f;
+    
 
     /**
      * 生成骨骼
+     * @param skeleton
      */
-    public Skeleton buildSkeleton(PAT3D pat) {
+    public static Skeleton buildSkeleton(PAT3D skeleton) {
 
         HashMap<String, Bone> boneMap = new HashMap<String, Bone>();
-        Bone[] bones = new Bone[pat.nObj3d];
+        Bone[] bones = new Bone[skeleton.objCount];
         
-        // TODO delete
-        Vector3f axis = new Vector3f();
-        
-        for (int i = 0; i < pat.nObj3d; i++) {
-            OBJ3D obj = pat.obj3d[i];
+        for (int i = 0; i < skeleton.objCount; i++) {
+            GeomObject obj = skeleton.objArray[i];
 
             // 创建一个骨头
             Bone bone = new Bone(obj.NodeName);
@@ -60,19 +53,11 @@ public class AnimUtils {
             //Vector3f translation = new Vector3f(obj.px,obj.pz, -obj.py);
             //Quaternion rotation = new Quaternion(obj.qx, obj.qz, -obj.qy, -obj.qw);
             //Vector3f scale = new Vector3f(obj.sx, obj.sz, obj.sy);
+            
             Vector3f translation = new Vector3f(obj.px,obj.py, obj.pz);
             Quaternion rotation = new Quaternion(obj.qx, obj.qy, obj.qz, -obj.qw);
             Vector3f scale = new Vector3f(obj.sx, obj.sy, obj.sz);
             
-            ////////////////// TODO delete
-            float angle = rotation.toAngleAxis(axis);
-            if (FastMath.abs(angle) > FastMath.PI) {
-                angle -= FastMath.TWO_PI;
-                rotation.fromAngleAxis(angle, axis);
-            }
-            logger.debug("Bone {} trans={} rot={}, {}", obj.NodeName, translation, axis, Math.toDegrees(angle));
-            ////////////////// delete
-
             bone.setBindTransforms(translation, rotation, scale);
 
             // 建立父子关系
@@ -87,8 +72,6 @@ public class AnimUtils {
 
         // 生成骨架
         Skeleton ske = new Skeleton(bones);
-        
-        logger.debug("{}", ske);
         return ske;
     }
 
@@ -97,12 +80,12 @@ public class AnimUtils {
      * 
      * @param ske
      */
-    public Animation buildAnimation(PAT3D pat, Skeleton ske) {
+    public static Animation buildAnimation(PAT3D pat, Skeleton ske) {
 
         // 统计帧数
         int maxFrame = 0;
-        for (int i = 0; i < pat.nObj3d; i++) {
-            OBJ3D obj = pat.obj3d[i];
+        for (int i = 0; i < pat.objCount; i++) {
+            GeomObject obj = pat.objArray[i];
             if (obj.TmRotCnt > 0) {
                 if (obj.rotArray[obj.TmRotCnt - 1].frame > maxFrame) {
                     maxFrame = obj.rotArray[obj.TmRotCnt - 1].frame;
@@ -136,8 +119,8 @@ public class AnimUtils {
         /**
          * 统计每个骨骼的关键帧
          */
-        for (int i = 0; i < pat.nObj3d; i++) {
-            OBJ3D obj = pat.obj3d[i];
+        for (int i = 0; i < pat.objCount; i++) {
+            GeomObject obj = pat.objArray[i];
 
             if (logger.isDebugEnabled()) {
                 //logger.debug("TmPos:" + obj.TmPosCnt + " TmRot:" + obj.TmRotCnt + " TmScl:" + obj.TmScaleCnt);
@@ -160,9 +143,6 @@ public class AnimUtils {
 
                 //Quaternion rotation = new Quaternion(rot.x, rot.z, -rot.y, -rot.w);
                 Quaternion rotation = new Quaternion(rot.x, rot.y, rot.z, -rot.w);
-                
-                // 有些旋转居然会超过90°、180°、360°？
-                resolve(rot.frame, rotation);
                 
                 k.rotation = rotation;
             }
@@ -248,9 +228,7 @@ public class AnimUtils {
                 scales[n] = current.scale;
 
                 if (logger.isDebugEnabled()) {
-                    String str = String.format("  Frame=%05d time=%.5f pos=%s rot=%s scale=%s", frame, times[n],
-                            translations[n], rotations[n], scales[n]);
-                    //logger.debug(str);
+                    //logger.debug("  Frame={} time={} pos={} rot={} scale={}", translations[n], rotations[n], scales[n]);
                 }
 
                 // 记录当前帧
@@ -274,7 +252,7 @@ public class AnimUtils {
      * @param frame
      * @return
      */
-    public Keyframe getOrMakeKeyframe(SortedMap<Integer, Keyframe> keyframes, Integer frame) {
+    private static Keyframe getOrMakeKeyframe(SortedMap<Integer, Keyframe> keyframes, Integer frame) {
         Keyframe k = keyframes.get(frame);
         if (k == null) {
             k = new Keyframe();
@@ -284,45 +262,13 @@ public class AnimUtils {
     }
     
     /**
-     * 精灵的动画中，有些部位的旋转太诡异了，会超过90度、180度、甚至360°。
-     * 我要把它们“救”回来。
-     * @param frame 
-     * @param angle
-     * @return
+     * 用于统计动画的关键帧。
+     * @author yanmaoyuan
+     *
      */
-    private float resolve(int frame, Quaternion rotation) {
-        
-        TempVars temp = TempVars.get();
-        
-        Vector3f axis = temp.vect1;
-        ////////////////////////
-        // 动画旋转超过180°，太奇怪了？
-        float angle = rotation.toAngleAxis(axis);
-        
-        float rad = FastMath.DEG_TO_RAD * 45;// 40°
-
-        float realAngle = angle;
-        int type = 0;
-        if (FastMath.abs(angle - FastMath.TWO_PI) < rad) {
-            realAngle -= FastMath.TWO_PI;
-            type = 4;
-        } else if (FastMath.abs(angle - FastMath.HALF_PI * 3) < rad) {
-            realAngle -= FastMath.HALF_PI * 3;
-            type = 3;
-        } else if (FastMath.abs(angle - FastMath.PI) < rad) {
-            realAngle -= FastMath.PI;
-            type = 2;
-        } else if (FastMath.abs(angle - FastMath.HALF_PI) < rad) {
-            realAngle -= FastMath.HALF_PI;
-            type = 1;
-        }
-        rotation.fromAngleAxis(realAngle, axis);
-        
-        if (FastMath.abs(realAngle) > FastMath.DEG_TO_RAD * 5) {
-            logger.debug("frame {} {} {} -> {}", frame, type, Math.toDegrees(angle), Math.toDegrees(realAngle));
-        }
-        
-        temp.release();
-        return angle;
+    private static class Keyframe {
+        public Vector3f translation;
+        public Quaternion rotation;
+        public Vector3f scale;
     }
 }

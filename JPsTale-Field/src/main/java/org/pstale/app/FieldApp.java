@@ -1,6 +1,6 @@
 package org.pstale.app;
 
-import org.pstale.assets.ModelFactory;
+import org.pstale.assets.AssetFactory;
 import org.pstale.constants.SceneConstants;
 import org.pstale.gui.Style;
 import org.pstale.utils.FileLocator;
@@ -53,7 +53,7 @@ public class FieldApp extends SimpleApplication {
         /**
          * 设置模型工厂
          */
-        ModelFactory.setAssetManager(assetManager);
+        AssetFactory.setAssetManager(assetManager);
 
         /**
          * 初始化Lemur样式

@@ -238,6 +238,7 @@ public class CollisionState extends BaseAppState {
             MeshCollisionShape shape = new MeshCollisionShape(mesh);
 
             PhysicsRigidBody rigid = new PhysicsRigidBody(shape, 0);
+            rigid.setFriction(1);
             bullet.getPhysicsSpace().add(rigid);
 
             meshes.add(mesh);

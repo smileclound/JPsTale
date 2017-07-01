@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.pstale.assets.Flyweight;
 
+import com.jme3.math.Vector2f;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
-import com.jme3.scene.plugins.smd.math.Vector2F;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -13,7 +13,7 @@ import com.jme3.util.LittleEndien;
  */
 public class Face extends Flyweight {
     public int[] v = new int[4];// a,b,c,Matrial
-    public Vector2F[] t = new Vector2F[3];
+    public Vector2f[] t = new Vector2f[3];
     public int lpTexLink;
     public TEXLINK TexLink;
 
@@ -24,8 +24,9 @@ public class Face extends Flyweight {
         }
 
         for (int i = 0; i < 3; i++) {
-            t[i] = new Vector2F();
-            t[i].loadData(in);
+            float u = in.readFloat();
+            float v = in.readFloat();
+            t[i] = new Vector2f(u, v);
         }
 
         lpTexLink = in.readInt();

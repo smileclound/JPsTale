@@ -1,69 +1,104 @@
 package org.pstale.loader;
 
-import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.pstale.assets.AssetFactory;
+import org.pstale.assets.AssetNameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.jme3.asset.AssetManager;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Animation;
+import com.jme3.animation.Skeleton;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.asset.plugins.ClasspathLocator;
-import com.jme3.scene.plugins.smd.SMDTYPE;
-import com.jme3.scene.plugins.smd.SmdKey;
-import com.jme3.scene.plugins.smd.SmdLoader;
-import com.jme3.script.plugins.character.ModelInfo;
+import com.jme3.scene.plugins.smd.AnimationBuilder;
+import com.jme3.scene.plugins.smd.animation.PAT3D;
 import com.jme3.script.plugins.character.MOTIONINFO;
+import com.jme3.script.plugins.character.ModelInfo;
 
 public class TestInxLoader {
 
-    static Logger log = Logger.getLogger(TestInxLoader.class);
+    static Logger logger = LoggerFactory.getLogger(TestInxLoader.class);
+    
+    String MONSTER_DK = "char/monster/death_knight/death_knight.inx";
+    String NPC_ARAD = "char/npc/arad/arad.inx";
 
-    public static void main(String[] args) {
-        // 初始化资源管理器
-        AssetManager assetManager = new DesktopAssetManager();
-        assetManager.registerLoader(SmdLoader.class, "inx");
-        assetManager.registerLocator("/", ClasspathLocator.class);
+    static {
+        AssetFactory.setAssetManager(new DesktopAssetManager());
+    }
+    
+    @Test
+    public void testDeathKnight() {
+        logger.debug("============");
+        
+        ModelInfo modelInfo = AssetFactory.loadInx(MONSTER_DK);
+        
+        String folder = AssetNameUtils.getFolder(MONSTER_DK);
 
-        // 读取地图的smd文件
-        // MODELINFO model = (MODELINFO) assetManager.loadAsset(new
-        // SmdKey("char/npc/arad/arad.inx", SMDTYPE.INX));
-        ModelInfo model = (ModelInfo) assetManager
-                .loadAsset(new SmdKey("char/monster/death_knight/death_knight.inx", SMDTYPE.MODELINFO));
-
-        log.debug(model.modelFile);
-        log.debug(model.animationFile);
-        log.debug(model.linkFile);
-
-        log.debug("FileTypeKeyWord:" + model.FileTypeKeyWord);
-        log.debug("LinkFileKeyWord:" + model.LinkFileKeyWord);
-
-        log.debug("MotionCount:" + model.MotionCount);
-
-        // 有10帧数据没有用
-        for (int i = 10; i < model.MotionCount; i++) {
-            MOTIONINFO motion = model.motionInfo[i];
-            if (motion.State == 0) {
-                log.debug(i + ":unkownn");
-            } else {
-                String name = getAnimationNameById(motion.State);
-                log.debug(i + ":" + name + " Key1:" + motion.MotionKeyWord_1 + " Key2:" + motion.MotionKeyWord_2
-                        + " Start:" + motion.StartFrame + " End:" + motion.EndFrame + " Repeat:" + motion.Repeat
-                        + " KeyCode:" + motion.KeyCode + " Frames:" + motion.MotionFrame);
-            }
+        // 有共享数据?
+        String linkFile = modelInfo.linkFile;
+        if (linkFile.length() > 0) {
+            ModelInfo mi = AssetFactory.loadInx(linkFile);
+            modelInfo.animationFile = mi.animationFile;
         }
 
-        log.debug("TalkMotionCount:" + model.TalkMotionCount);
-        for (int i = 10; i < model.TalkMotionCount; i++) {
-            MOTIONINFO motion = model.TalkMotionInfo[i];
+        PAT3D skeleton = null;
+        // 读取动画
+        if (modelInfo.animationFile.length() > 0) {
+            // 后缀名改为smb
+            String smbFile = AssetNameUtils.changeExt(modelInfo.animationFile, "smb");
+            
+            String name = AssetNameUtils.getName(smbFile);
+            
+            skeleton = AssetFactory.loadSmb(folder + name);
+
+            // 生成动画
+            Skeleton ske = AnimationBuilder.buildSkeleton(skeleton);
+            Animation anim = AnimationBuilder.buildAnimation(skeleton, ske);
+            AnimControl ac = new AnimControl(ske);
+            ac.addAnim(anim);
+        }
+        printAnimation(modelInfo);
+    }
+    @Test
+    public void testArad() {
+        logger.debug("============");
+        ModelInfo model = AssetFactory.loadInx(NPC_ARAD);
+        
+        printAnimation(model);
+    }
+    
+    private void printAnimation(ModelInfo model) {
+        logger.debug("Model: {}", model.modelFile);
+        logger.debug("Animation: {}", model.animationFile);
+        logger.debug("LinkFile: {}", model.linkFile);
+
+        logger.debug("FileTypeKeyWord: {}", model.FileTypeKeyWord);
+        logger.debug("LinkFileKeyWord: {}", model.LinkFileKeyWord);
+
+        logger.debug("MotionCount: {}", model.MotionCount - 10);
+        printAnimation(model.motionInfo, model.MotionCount - 10);
+
+        logger.debug("TalkLinkFile:{}", model.szTalkLinkFile);
+        logger.debug("TalkMotionFile:{}", model.szTalkMotionFile);
+        logger.debug("TalkMotionCount:{}", model.TalkMotionCount - 10);
+        printAnimation(model.TalkMotionInfo, model.TalkMotionCount - 10);
+    }
+
+    private void printAnimation(MOTIONINFO[] motions, int count) {
+        for (int i = 0; i < count; i++) {
+            MOTIONINFO motion = motions[i + 10];
             if (motion.State == 0) {
-                log.debug(i + ":unkownn");
+                logger.debug(i + ":unkownn");
             } else {
                 String name = getAnimationNameById(motion.State);
-                log.debug(i + ":" + name + " Key1:" + motion.MotionKeyWord_1 + " Key2:" + motion.MotionKeyWord_2
+                logger.debug(i + ":" + name + " Key1:" + motion.MotionKeyWord_1 + " Key2:" + motion.MotionKeyWord_2
                         + " Start:" + motion.StartFrame + " End:" + motion.EndFrame + " Repeat:" + motion.Repeat
                         + " KeyCode:" + motion.KeyCode + " Frames:" + motion.MotionFrame);
             }
         }
     }
 
-    private static String getAnimationNameById(int id) {
+    private String getAnimationNameById(int id) {
         String ret = "unknown";
 
         switch (id) {

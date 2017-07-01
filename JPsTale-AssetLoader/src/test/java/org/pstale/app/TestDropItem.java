@@ -2,7 +2,7 @@ package org.pstale.app;
 
 import static org.pstale.entity.item.ItemConstant.itemDataBase;
 
-import org.pstale.assets.ModelFactory;
+import org.pstale.assets.AssetFactory;
 import org.pstale.entity.item.Item;
 
 import com.jme3.material.RenderState.BlendMode;
@@ -32,7 +32,7 @@ public class TestDropItem extends TestBase {
             }
         }
 
-        Node node = ModelFactory.loadStageObj(String.format(dorpItem, item.dorpItem), false);
+        Node node = AssetFactory.loadStageObj(String.format(dorpItem, item.dorpItem), false);
         node.scale(1f);
         node.addControl(new AbstractControl() {
             @Override

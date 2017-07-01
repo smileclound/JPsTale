@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import org.apache.log4j.Logger;
-import org.pstale.assets.ModelFactory;
+import org.pstale.assets.AssetFactory;
 import org.pstale.entity.item.ItemInfo;
 
 import com.jme3.app.Application;
@@ -182,7 +182,7 @@ public class LoadingAppState extends SubAppState {
                 data.allMonster = new ArrayList<Monster>(len);
                 for (int i = 0; i < len; i++) {
                     String name = files[i];
-                    Monster m = ModelFactory.loadMonsterScript(name);
+                    Monster m = AssetFactory.loadMonsterScript(name);
                     if (m != null) {
                         data.allMonster.add(m);
                     }
@@ -202,7 +202,7 @@ public class LoadingAppState extends SubAppState {
                 data.allItem = new ArrayList<ItemInfo>(len);
                 for (int i = 0; i < len; i++) {
                     String name = files[i];
-                    ItemInfo item = ModelFactory.loadItemScript(name);
+                    ItemInfo item = AssetFactory.loadItemScript(name);
                     if (item != null) {
                         data.allItem.add(item);
                     }

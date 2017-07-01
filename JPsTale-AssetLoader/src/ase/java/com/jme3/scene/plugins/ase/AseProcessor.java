@@ -49,7 +49,8 @@ import com.jme3.util.IntMap.Entry;
 public class AseProcessor implements CONSTANT {
 	
 	private AssetManager manager = null;
-	private AssetKey key = null;
+	@SuppressWarnings("rawtypes")
+    private AssetKey key = null;
 
 	public AseProcessor(AssetInfo info) {
 		this.manager = info.getManager();

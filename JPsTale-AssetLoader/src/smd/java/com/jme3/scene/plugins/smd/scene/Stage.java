@@ -17,9 +17,14 @@ import com.jme3.util.LittleEndien;
  */
 public class Stage extends Flyweight {
     // DWORD Head; 无用的头文件指针，4字节
-    int[][] StageArea;// WORD *StageArea[MAP_SIZE][MAP_SIZE];256 *
-                      // 256个指针，共262144字节
-    Vector3f[] AreaList;// POINT *AreaList; 一个指针，等于是一个数组
+
+    // WORD *StageArea[MAP_SIZE][MAP_SIZE];
+    // 256 * 256个指针，共262144字节
+    int[][] StageArea;
+
+    // POINT *AreaList; 一个指针，等于是一个数组
+    Vector3f[] AreaList;
+
     int AreaListCnt;
 
     int MemMode;
@@ -31,7 +36,10 @@ public class Stage extends Flyweight {
     public StageFace[] Face;
     public TEXLINK[] TexLink;
     public Light3D[] Light;
-    public MaterialGroup materialGroup;// sizeof(smMaterialGroup) = 88
+
+    // sizeof(smMaterialGroup) = 88
+    public MaterialGroup materialGroup;
+    
     // smSTAGE_OBJECT *StageObject;
     public _Material[] materials;
 

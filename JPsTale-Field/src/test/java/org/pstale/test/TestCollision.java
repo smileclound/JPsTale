@@ -1,11 +1,9 @@
 package org.pstale.test;
 
-import static com.jme3.scene.plugins.smd.SMDTYPE.STAGE3D_COLLISION;
-import static com.jme3.scene.plugins.smd.SMDTYPE.STAGE3D_VISUAL;
-
 import java.nio.FloatBuffer;
 
 import org.pstale.app.TestBase;
+import org.pstale.assets.AssetFactory;
 
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -25,10 +23,8 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
-import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.shape.Box;
 
 /**
@@ -113,14 +109,14 @@ public class TestCollision extends TestBase {
          * 地形的可视部分
          */
         String model = "Field/forest/fore-2.smd";
-        visual = (Node) assetManager.loadAsset(new SmdKey(model, STAGE3D_VISUAL));
+        visual = AssetFactory.loadStage3D(model);
         visual.scale(scale);
         rootNode.attachChild(visual);
 
         /**
          * 地形的碰撞形状
          */
-        mesh = (Mesh) assetManager.loadAsset(new SmdKey(model, STAGE3D_COLLISION));
+        mesh = AssetFactory.loadStage3DMesh(model);
         scale(mesh);
         MeshCollisionShape shape = new MeshCollisionShape(mesh);
         terrain = new PhysicsRigidBody(shape, 0);

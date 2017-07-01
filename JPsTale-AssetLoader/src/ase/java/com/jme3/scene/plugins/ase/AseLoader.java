@@ -15,7 +15,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.ase.animation.Keyframe;
 import com.jme3.scene.plugins.ase.animation.VertexAssignment;
@@ -48,7 +47,8 @@ public class AseLoader implements AssetLoader {
 		strLevel = 0;
 	}
 
-	private AssetKey key;
+	@SuppressWarnings("rawtypes")
+    private AssetKey key;
 	/**
 	 * Parse an ase file
 	 */

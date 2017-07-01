@@ -39,7 +39,7 @@ public class TestAnimation extends TestBase {
             mat.getAdditionalRenderState().setDepthTest(false);
             skeletonDebug.setMaterial(mat);
             npc.attachChild(skeletonDebug);
-            ac.createChannel().setAnim("Anim");
+            //ac.createChannel().setAnim("Anim");
         }
         cam.setLocation(new Vector3f(0, 5, 10));
     }

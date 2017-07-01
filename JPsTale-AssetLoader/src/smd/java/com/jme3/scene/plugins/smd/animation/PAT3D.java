@@ -8,7 +8,7 @@ import com.jme3.scene.plugins.smd.SmdFileHeader;
 import com.jme3.scene.plugins.smd.SmdFileObjInfo;
 import com.jme3.scene.plugins.smd.material.MaterialGroup;
 import com.jme3.scene.plugins.smd.math.Vector3D;
-import com.jme3.scene.plugins.smd.scene.OBJ3D;
+import com.jme3.scene.plugins.smd.scene.GeomObject;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -16,10 +16,10 @@ import com.jme3.util.LittleEndien;
  */
 public class PAT3D extends Flyweight {
     // DWORD Head;
-    public OBJ3D[] obj3d = new OBJ3D[128];
+    public GeomObject[] objArray = new GeomObject[128];
     byte[] TmSort = new byte[128];
 
-    public PAT3D TmParent;
+    public PAT3D skeleton;
 
     public MaterialGroup materialGroup;// 材质组
 
@@ -28,7 +28,10 @@ public class PAT3D extends Flyweight {
 
     int SizeWidth, SizeHeight; // 臭捞 承捞 狼 弥措摹
 
-    public int nObj3d;
+    /**
+     * Child count
+     */
+    public int objCount;
     // LPDIRECT3DTEXTURE2 *hD3DTexture;
 
     Vector3D Posi;
@@ -45,9 +48,9 @@ public class PAT3D extends Flyweight {
     Vector3D TmLastAngle;
 
     public PAT3D() {
-        nObj3d = 0;
+        objCount = 0;
         // hD3DTexture = 0;
-        TmParent = null;
+        skeleton = null;
 
         MaxFrame = 0;
         Frame = 0;
@@ -92,7 +95,7 @@ public class PAT3D extends Flyweight {
         SizeWidth = in.readInt();
         SizeHeight = in.readInt();
 
-        nObj3d = in.readInt();
+        objCount = in.readInt();
         in.readInt();// LPDIRECT3DTEXTURE2 *hD3DTexture;
 
         Posi = new Vector3D();
@@ -117,7 +120,7 @@ public class PAT3D extends Flyweight {
 
     }
 
-    public void loadFile(LittleEndien in, String NodeName, PAT3D BipPat) throws IOException {
+    public void loadFile(LittleEndien in, PAT3D skeleton) throws IOException {
 
         SmdFileHeader header = new SmdFileHeader();
         header.loadData(in);
@@ -142,44 +145,54 @@ public class PAT3D extends Flyweight {
             materialGroup.loadData(in);
         }
 
-        if (NodeName != null) {
-            log.debug("NodeName != null && NodeName == " + NodeName);
-            // 加载指定名称的3D物体
-            for (int i = 0; i < header.objCounter; i++) {
-                if (NodeName.equals(FileObjInfo[i].NodeName)) {
-                    // 跳过i个OBJ3D，直接读取其中一个。
-                    int offset = i * 2236;
-                    in.skip(offset);
+        /**
+         * <pre>
+         * if (NodeName != null) {
+         *     log.debug("NodeName != null && NodeName == " + NodeName);
+         *     // 加载指定名称的3D物体
+         *     for (int i = 0; i < header.objCounter; i++) {
+         *         if (NodeName.equals(FileObjInfo[i].NodeName)) {
+         *             // 跳过i个OBJ3D，直接读取其中一个。
+         *             int offset = i * 2236;
+         *             in.skip(offset);
+         * 
+         *             GeomObject obj = new GeomObject();
+         *             obj.loadData(in);
+         *             obj.loadFile(in, BipPat);
+         *             addObject(obj);
+         *             break;
+         *         }
+         *     }
+         * } else {
+         * </pre>
+         */
 
-                    OBJ3D obj = new OBJ3D();
-                    obj.loadData(in);
-                    obj.loadFile(in, BipPat);
-                    addObject(obj);
-                    break;
-                }
-            }
-        } else {
-            // 读取全部3D对象
-            for (int i = 0; i < header.objCounter; i++) {
-                OBJ3D obj = new OBJ3D();
-                // 读取OBJ3D对象，共2236字节
-                obj.loadData(in);
-                obj.loadFile(in, BipPat);
-                addObject(obj);
-            }
-            linkObject();
+        // 读取全部3D对象
+        for (int i = 0; i < header.objCounter; i++) {
+            GeomObject obj = new GeomObject();
+            // 读取OBJ3D对象，共2236字节
+            obj.loadData(in);
+            obj.loadFile(in, skeleton);
+            addObject(obj);
         }
+        linkObject();
 
-        TmParent = BipPat;
+        /**
+         * <pre>
+         * }
+         * </pre>
+         */
+
+        this.skeleton = skeleton;
 
         in.close();
     }
 
-    boolean addObject(OBJ3D obj) {
+    boolean addObject(GeomObject obj) {
         // 限制物体的数量，最多128个
-        if (nObj3d < 128) {
-            obj3d[nObj3d] = obj;
-            nObj3d++;
+        if (objCount < 128) {
+            objArray[objCount] = obj;
+            objCount++;
 
             // 统计动画帧数
             int frame = 0;
@@ -214,11 +227,11 @@ public class PAT3D extends Flyweight {
      * 计算物体之间的父子关系。
      */
     void linkObject() {
-        for (int i = 0; i < nObj3d; i++) {
-            if (obj3d[i].NodeParent != null) {
-                for (int k = 0; k < nObj3d; k++) {
-                    if (obj3d[i].NodeParent.equals(obj3d[k].NodeName)) {
-                        obj3d[i].pParent = obj3d[k];
+        for (int i = 0; i < objCount; i++) {
+            if (objArray[i].NodeParent != null) {
+                for (int k = 0; k < objCount; k++) {
+                    if (objArray[i].NodeParent.equals(objArray[k].NodeName)) {
+                        objArray[i].pParent = objArray[k];
                         break;
                     }
                 }
@@ -235,15 +248,15 @@ public class PAT3D extends Flyweight {
         }
 
         // 首先记录根节点
-        for (int i = 0; i < nObj3d; i++) {
-            if (obj3d[i].pParent == null)
+        for (int i = 0; i < objCount; i++) {
+            if (objArray[i].pParent == null)
                 TmSort[NodeCnt++] = (byte) i;
         }
 
         // 何葛俊 崔妨乐绰 磊侥阑 茫酒 鉴辑措肺 历厘
-        for (int j = 0; j < nObj3d; j++) {
-            for (int i = 0; i < nObj3d; i++) {
-                if (obj3d[i].pParent != null && obj3d[TmSort[j]] == obj3d[i].pParent) {
+        for (int j = 0; j < objCount; j++) {
+            for (int i = 0; i < objCount; i++) {
+                if (objArray[i].pParent != null && objArray[TmSort[j]] == objArray[i].pParent) {
                     TmSort[NodeCnt++] = (byte) i;
                 }
             }
@@ -256,10 +269,10 @@ public class PAT3D extends Flyweight {
      * @param name
      * @return
      */
-    public OBJ3D getObjectFromName(String name) {
-        for (int i = 0; i < nObj3d; i++) {
-            if (obj3d[i].NodeName.equals(name)) {
-                return obj3d[i];
+    public GeomObject getObjectFromName(String name) {
+        for (int i = 0; i < objCount; i++) {
+            if (objArray[i].NodeName.equals(name)) {
+                return objArray[i];
             }
         }
         return null;

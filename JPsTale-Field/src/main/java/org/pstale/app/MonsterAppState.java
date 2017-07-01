@@ -1,7 +1,7 @@
 package org.pstale.app;
 import static org.pstale.constants.SceneConstants.scale;
 
-import org.pstale.assets.ModelFactory;
+import org.pstale.assets.AssetFactory;
 
 import com.jme3.app.Application;
 import com.jme3.math.ColorRGBA;
@@ -32,7 +32,7 @@ public class MonsterAppState extends SubAppState {
 
             Spatial model = null;
             try {
-                model = ModelFactory.loadStageObj("char/flag/wow.smd", false);
+                model = AssetFactory.loadStageObj("char/flag/wow.smd", false);
                 model.scale(scale);
             } catch (Exception e) {
                 Box box = new Box(1, 1, 1);
