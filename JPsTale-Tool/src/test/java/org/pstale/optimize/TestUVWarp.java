@@ -48,8 +48,8 @@ import com.jme3.asset.DesktopAssetManager;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
-import com.jme3.scene.plugins.smd.scene.Stage;
-import com.jme3.scene.plugins.smd.scene.StageFace;
+import com.jme3.scene.plugins.smd.stage.Stage;
+import com.jme3.scene.plugins.smd.stage.StageFace;
 
 @SuppressWarnings("serial")
 public class TestUVWarp extends JFrame {

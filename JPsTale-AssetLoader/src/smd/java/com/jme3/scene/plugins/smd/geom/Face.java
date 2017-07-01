@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd.scene;
+package com.jme3.scene.plugins.smd.geom;
 
 import java.io.IOException;
 

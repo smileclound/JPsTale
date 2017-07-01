@@ -1,4 +1,4 @@
-package org.pstale.assets;
+package org.pstale.assets.utils;
 
 public class AssetNameUtils {
     

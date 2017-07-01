@@ -1,12 +1,13 @@
-package com.jme3.script.plugins.character;
+package com.jme3.scene.plugins.inx;
 
 import java.io.IOException;
 
 import org.pstale.assets.Flyweight;
 
+import com.jme3.script.plugins.character.ModelGroup;
 import com.jme3.util.LittleEndien;
 
-public class ModelInfo extends Flyweight {
+public class AnimateModel extends Flyweight {
 
     public String modelFile;
     public String animationFile;
@@ -16,7 +17,7 @@ public class ModelInfo extends Flyweight {
     public ModelGroup DefaultModel;
     public ModelGroup LowModel;
 
-    public MOTIONINFO[] motionInfo = new MOTIONINFO[MOTION_INFO_MAX];
+    public SubAnimation[] motionInfo = new SubAnimation[MOTION_INFO_MAX];
     public int MotionCount;
 
     public int FileTypeKeyWord;
@@ -28,7 +29,7 @@ public class ModelInfo extends Flyweight {
     // 颇老疙捞 崔扼具 钦聪促.
     public String szTalkLinkFile; // 64
     public String szTalkMotionFile;// 64
-    public MOTIONINFO[] TalkMotionInfo = new MOTIONINFO[TALK_MOTION_INFO_MAX];
+    public SubAnimation[] TalkMotionInfo = new SubAnimation[TALK_MOTION_INFO_MAX];
     public int TalkMotionCount;
 
     public int[] NpcMotionRate = new int[NPC_MOTION_INFO_MAX];
@@ -43,9 +44,9 @@ public class ModelInfo extends Flyweight {
          * 旧的模型，MOTIONINFO结构体只有120字节，而新模型的MOTIONINFO结构体有172字节。 文件体积上有差异。
          */
         if (in.available() > 67084) {
-            MOTIONINFO.KPT = true;
+            SubAnimation.KPT = true;
         } else {
-            MOTIONINFO.KPT = false;
+            SubAnimation.KPT = false;
         }
 
         modelFile = getString(in, 64);
@@ -62,7 +63,7 @@ public class ModelInfo extends Flyweight {
         LowModel.loadData(in);
 
         for (int i = 0; i < MOTION_INFO_MAX; i++) {
-            motionInfo[i] = new MOTIONINFO();
+            motionInfo[i] = new SubAnimation();
             motionInfo[i].loadData(in);
         }
 
@@ -79,7 +80,7 @@ public class ModelInfo extends Flyweight {
         szTalkLinkFile = getString(in, 64);
         szTalkMotionFile = getString(in, 64);
         for (int i = 0; i < TALK_MOTION_INFO_MAX; i++) {
-            TalkMotionInfo[i] = new MOTIONINFO();
+            TalkMotionInfo[i] = new SubAnimation();
             TalkMotionInfo[i].loadData(in);
         }
         TalkMotionCount = in.readInt();

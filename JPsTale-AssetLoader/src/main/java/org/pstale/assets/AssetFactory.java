@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.pstale.assets.utils.AssetNameUtils;
+import org.pstale.assets.utils.SceneBuilder;
 import org.pstale.entity.field.RespawnList;
 import org.pstale.entity.field.StartPoint;
 import org.pstale.entity.item.ItemInfo;
@@ -25,16 +27,15 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.plugins.inx.AnimateModel;
 import com.jme3.scene.plugins.smd.SMDTYPE;
-import com.jme3.scene.plugins.smd.SceneBuilder;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
 import com.jme3.scene.plugins.smd.animation.PAT3D;
-import com.jme3.scene.plugins.smd.scene.Stage;
+import com.jme3.scene.plugins.smd.stage.Stage;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
 import com.jme3.script.plugins.character.CharInfoLoader;
-import com.jme3.script.plugins.character.ModelInfo;
 import com.jme3.script.plugins.character.Monster;
 import com.jme3.script.plugins.field.CharacterTransform;
 import com.jme3.script.plugins.field.SpcLoader;
@@ -69,7 +70,6 @@ public class AssetFactory {
         // 注册资源加载路径
         assetManager.registerLocator("/", ClasspathLocator.class);
         assetManager.registerLocator("/", FileLocator.class);
-        assetManager.registerLocator("assets", FileLocator.class);
         if (new File("I:/game/PTCN-RPT1.0").exists()) {
             assetManager.registerLocator("I:/game/PTCN-RPT1.0", FileLocator.class);
         } else {
@@ -133,9 +133,9 @@ public class AssetFactory {
      * @param name
      * @return
      */
-    public static ModelInfo loadInx(final String name) {
+    public static AnimateModel loadInx(final String name) {
         String inx = AssetNameUtils.changeExt(name, "inx");
-        return (ModelInfo) assetManager.loadAsset(new SmdKey(inx, SMDTYPE.MODELINFO));
+        return (AnimateModel) assetManager.loadAsset(new SmdKey(inx, SMDTYPE.MODELINFO));
     }
 
     /**

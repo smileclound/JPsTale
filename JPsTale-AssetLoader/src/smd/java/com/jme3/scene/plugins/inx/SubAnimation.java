@@ -1,4 +1,4 @@
-package com.jme3.script.plugins.character;
+package com.jme3.scene.plugins.inx;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import com.jme3.util.LittleEndien;
  * @author yanmaoyuan
  * 
  */
-public class MOTIONINFO extends Flyweight {
+public class SubAnimation extends Flyweight {
 
     // KPT的字节长度为172，不知道哪里多了52字节
     public static boolean KPT = false;
@@ -40,6 +40,8 @@ public class MOTIONINFO extends Flyweight {
     @Override
     public void loadData(LittleEndien in) throws IOException {
         State = in.readInt();
+        
+        // TODO 下面几个帧，似乎都应该除以256
         MotionKeyWord_1 = readKey(in);
         StartFrame = readKey(in);
         MotionKeyWord_2 = readKey(in);

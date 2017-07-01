@@ -1,12 +1,12 @@
-package com.jme3.scene.plugins.smd.scene;
+package com.jme3.scene.plugins.smd.stage;
 
 import java.io.IOException;
 
 import org.pstale.assets.Flyweight;
 
 import com.jme3.math.Vector3f;
-import com.jme3.scene.plugins.smd.SmdFileHeader;
 import com.jme3.scene.plugins.smd.material._Material;
+import com.jme3.scene.plugins.smd.SmdFileHeader;
 import com.jme3.scene.plugins.smd.material.MaterialGroup;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
 import com.jme3.util.LittleEndien;

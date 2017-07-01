@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.pstale.assets.Flyweight;
 
+import com.jme3.scene.plugins.inx.AnimateModel;
 import com.jme3.scene.plugins.smd.animation.PAT3D;
 import com.jme3.util.LittleEndien;
 
@@ -18,7 +19,7 @@ public class DPAT extends Flyweight {
     int UseCount;
     int dwSpeedFindSum;
 
-    ModelInfo lpModelInfo;
+    AnimateModel lpModelInfo;
 
     int LastUsedTime;
 

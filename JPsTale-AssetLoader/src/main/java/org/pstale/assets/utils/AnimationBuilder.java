@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd;
+package org.pstale.assets.utils;
 
 import java.util.HashMap;
 import java.util.SortedMap;
@@ -17,7 +17,7 @@ import com.jme3.scene.plugins.smd.animation.PAT3D;
 import com.jme3.scene.plugins.smd.animation.TransPosition;
 import com.jme3.scene.plugins.smd.animation.TransRotation;
 import com.jme3.scene.plugins.smd.animation.TransScale;
-import com.jme3.scene.plugins.smd.scene.GeomObject;
+import com.jme3.scene.plugins.smd.geom.GeomObject;
 
 public class AnimationBuilder {
     

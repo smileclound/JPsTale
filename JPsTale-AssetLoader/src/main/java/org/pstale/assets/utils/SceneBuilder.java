@@ -1,6 +1,5 @@
-package com.jme3.scene.plugins.smd;
+package org.pstale.assets.utils;
 
-import org.pstale.assets.AssetNameUtils;
 import org.pstale.constants.SceneConstants;
 import org.pstale.control.WindAnimationControl;
 import org.slf4j.Logger;
@@ -22,8 +21,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
 import com.jme3.scene.plugins.smd.material._Material;
-import com.jme3.scene.plugins.smd.scene.Stage;
-import com.jme3.scene.plugins.smd.scene.StageFace;
+import com.jme3.scene.plugins.smd.stage.Stage;
+import com.jme3.scene.plugins.smd.stage.StageFace;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;

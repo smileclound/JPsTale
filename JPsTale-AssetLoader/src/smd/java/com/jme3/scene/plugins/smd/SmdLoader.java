@@ -3,7 +3,10 @@ package com.jme3.scene.plugins.smd;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.pstale.assets.AssetNameUtils;
+import org.pstale.assets.utils.AnimationBuilder;
+import org.pstale.assets.utils.AssetNameUtils;
+import org.pstale.assets.utils.ModelBuilder;
+import org.pstale.assets.utils.SceneBuilder;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
@@ -11,9 +14,9 @@ import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
 import com.jme3.asset.AssetManager;
+import com.jme3.scene.plugins.inx.AnimateModel;
 import com.jme3.scene.plugins.smd.animation.PAT3D;
-import com.jme3.scene.plugins.smd.scene.Stage;
-import com.jme3.script.plugins.character.ModelInfo;
+import com.jme3.scene.plugins.smd.stage.Stage;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -78,20 +81,20 @@ public class SmdLoader implements AssetLoader {
         }
         case MODELINFO: {// inx 文件
             LittleEndien in = new LittleEndien(assetInfo.openStream());
-            ModelInfo modelInfo = new ModelInfo();
+            AnimateModel modelInfo = new AnimateModel();
             modelInfo.loadData(in);
             return modelInfo;
         }
         case MODELINFO_ANIMATION: {
             LittleEndien in = new LittleEndien(assetInfo.openStream());
-            ModelInfo modelInfo = new ModelInfo();
+            AnimateModel modelInfo = new AnimateModel();
             modelInfo.loadData(in);
 
             // 有共享数据?
             String linkFile = modelInfo.linkFile;
             if (linkFile.length() > 0) {
                 SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
-                ModelInfo mi = (ModelInfo) manager.loadAsset(linkFileKey);
+                AnimateModel mi = (AnimateModel) manager.loadAsset(linkFileKey);
                 modelInfo.animationFile = mi.animationFile;
             }
 
@@ -115,14 +118,14 @@ public class SmdLoader implements AssetLoader {
         }
         case MODELINFO_MODEL: {
             LittleEndien in = new LittleEndien(assetInfo.openStream());
-            ModelInfo modelInfo = new ModelInfo();
+            AnimateModel modelInfo = new AnimateModel();
             modelInfo.loadData(in);
 
             // 有共享数据?
             String linkFile = modelInfo.linkFile;
             if (linkFile.length() > 0) {
                 SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
-                ModelInfo mi = (ModelInfo) manager.loadAsset(linkFileKey);
+                AnimateModel mi = (AnimateModel) manager.loadAsset(linkFileKey);
                 modelInfo.animationFile = mi.animationFile;
             }
 

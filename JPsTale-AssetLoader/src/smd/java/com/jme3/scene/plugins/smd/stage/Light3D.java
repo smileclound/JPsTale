@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd.scene;
+package com.jme3.scene.plugins.smd.stage;
 
 import java.io.IOException;
 

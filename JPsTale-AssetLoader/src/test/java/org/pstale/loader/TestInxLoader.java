@@ -2,7 +2,8 @@ package org.pstale.loader;
 
 import org.junit.Test;
 import org.pstale.assets.AssetFactory;
-import org.pstale.assets.AssetNameUtils;
+import org.pstale.assets.utils.AnimationBuilder;
+import org.pstale.assets.utils.AssetNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,10 +11,9 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.scene.plugins.smd.AnimationBuilder;
+import com.jme3.scene.plugins.inx.AnimateModel;
+import com.jme3.scene.plugins.inx.SubAnimation;
 import com.jme3.scene.plugins.smd.animation.PAT3D;
-import com.jme3.script.plugins.character.MOTIONINFO;
-import com.jme3.script.plugins.character.ModelInfo;
 
 public class TestInxLoader {
 
@@ -30,14 +30,14 @@ public class TestInxLoader {
     public void testDeathKnight() {
         logger.debug("============");
         
-        ModelInfo modelInfo = AssetFactory.loadInx(MONSTER_DK);
+        AnimateModel modelInfo = AssetFactory.loadInx(MONSTER_DK);
         
         String folder = AssetNameUtils.getFolder(MONSTER_DK);
 
         // 有共享数据?
         String linkFile = modelInfo.linkFile;
         if (linkFile.length() > 0) {
-            ModelInfo mi = AssetFactory.loadInx(linkFile);
+            AnimateModel mi = AssetFactory.loadInx(linkFile);
             modelInfo.animationFile = mi.animationFile;
         }
 
@@ -62,12 +62,20 @@ public class TestInxLoader {
     @Test
     public void testArad() {
         logger.debug("============");
-        ModelInfo model = AssetFactory.loadInx(NPC_ARAD);
+        AnimateModel model = AssetFactory.loadInx(NPC_ARAD);
         
         printAnimation(model);
     }
     
-    private void printAnimation(ModelInfo model) {
+    @Test
+    public void testBcn01() {
+        logger.debug("=============");
+        
+        AnimateModel model = AssetFactory.loadInx("char/npc/bcn01/Bcn01.ini");
+        printAnimation(model);
+    }
+    
+    private void printAnimation(AnimateModel model) {
         logger.debug("Model: {}", model.modelFile);
         logger.debug("Animation: {}", model.animationFile);
         logger.debug("LinkFile: {}", model.linkFile);
@@ -84,15 +92,15 @@ public class TestInxLoader {
         printAnimation(model.TalkMotionInfo, model.TalkMotionCount - 10);
     }
 
-    private void printAnimation(MOTIONINFO[] motions, int count) {
+    private void printAnimation(SubAnimation[] motions, int count) {
         for (int i = 0; i < count; i++) {
-            MOTIONINFO motion = motions[i + 10];
+            SubAnimation motion = motions[i + 10];
             if (motion.State == 0) {
                 logger.debug(i + ":unkownn");
             } else {
                 String name = getAnimationNameById(motion.State);
-                logger.debug(i + ":" + name + " Key1:" + motion.MotionKeyWord_1 + " Key2:" + motion.MotionKeyWord_2
-                        + " Start:" + motion.StartFrame + " End:" + motion.EndFrame + " Repeat:" + motion.Repeat
+                logger.debug(i + ":" + name + " StartKey:" + motion.MotionKeyWord_1 + " EndKey:" + motion.EndFrame + " Key2:" + motion.MotionKeyWord_2
+                        + " Start:" + motion.StartFrame + " Repeat:" + motion.Repeat
                         + " KeyCode:" + motion.KeyCode + " Frames:" + motion.MotionFrame);
             }
         }
