@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.inx;
+package com.jme3.scene.plugins.smd.geom;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import com.jme3.util.LittleEndien;
  * @author yanmaoyuan
  * 
  */
-public class SubAnimation extends Flyweight {
+public class MotionInfo extends Flyweight {
 
     // KPT的字节长度为172，不知道哪里多了52字节
     public static boolean KPT = false;

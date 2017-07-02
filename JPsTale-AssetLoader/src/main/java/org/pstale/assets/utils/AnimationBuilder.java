@@ -13,11 +13,11 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.plugins.smd.animation.PAT3D;
-import com.jme3.scene.plugins.smd.animation.TransPosition;
-import com.jme3.scene.plugins.smd.animation.TransRotation;
-import com.jme3.scene.plugins.smd.animation.TransScale;
 import com.jme3.scene.plugins.smd.geom.GeomObject;
+import com.jme3.scene.plugins.smd.geom.PAT3D;
+import com.jme3.scene.plugins.smd.geom.TransPosition;
+import com.jme3.scene.plugins.smd.geom.TransRotation;
+import com.jme3.scene.plugins.smd.geom.TransScale;
 
 public class AnimationBuilder {
     

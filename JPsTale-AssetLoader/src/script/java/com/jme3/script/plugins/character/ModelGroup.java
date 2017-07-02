@@ -13,15 +13,15 @@ import com.jme3.util.LittleEndien;
  *
  */
 public class ModelGroup extends Flyweight {
-    public int ModelNameCnt;
-    public String[] szModelName = new String[4];// 每个String长度为16
+    public int modelNameCnt;
+    public String[] modelNames = new String[4];// 每个String长度为16
 
     @Override
     public void loadData(LittleEndien in) throws IOException {
-        ModelNameCnt = in.readInt();
+        modelNameCnt = in.readInt();
 
         for (int i = 0; i < 4; i++) {
-            szModelName[i] = getString(in, 16);
+            modelNames[i] = getString(in, 16);
         }
     }
 }

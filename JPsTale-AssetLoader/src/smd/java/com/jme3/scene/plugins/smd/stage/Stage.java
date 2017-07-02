@@ -75,8 +75,8 @@ public class Stage extends Flyweight {
 
         // Head = FALSE;
         in.readInt();// Head
-        in.readFully(new byte[262144]);// *StageArea[MAP_SIZE][MAP_SIZE]; 4 *
-                                       // 256 * 256 = 262144
+        // *StageArea[MAP_SIZE][MAP_SIZE]; 4 * 256 * 256 = 262144
+        in.readFully(new byte[262144]);
         in.readInt();// *AreaList;
         AreaListCnt = in.readInt();
         MemMode = in.readInt();

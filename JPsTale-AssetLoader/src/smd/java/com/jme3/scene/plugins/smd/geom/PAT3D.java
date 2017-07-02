@@ -1,4 +1,4 @@
-package com.jme3.scene.plugins.smd.animation;
+package com.jme3.scene.plugins.smd.geom;
 
 import java.io.IOException;
 
@@ -6,7 +6,6 @@ import org.pstale.assets.Flyweight;
 
 import com.jme3.scene.plugins.smd.SmdFileHeader;
 import com.jme3.scene.plugins.smd.SmdFileObjInfo;
-import com.jme3.scene.plugins.smd.geom.GeomObject;
 import com.jme3.scene.plugins.smd.material.MaterialGroup;
 import com.jme3.scene.plugins.smd.math.Vector3D;
 import com.jme3.util.LittleEndien;

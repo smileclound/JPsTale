@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.pstale.assets.Flyweight;
 
-import com.jme3.scene.plugins.smd.animation.FRAME_POS;
+import com.jme3.scene.plugins.smd.geom.FRAME_POS;
 import com.jme3.util.LittleEndien;
 
 /**

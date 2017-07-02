@@ -4,11 +4,6 @@ import java.io.IOException;
 
 import org.pstale.assets.Flyweight;
 
-import com.jme3.scene.plugins.smd.animation.FRAME_POS;
-import com.jme3.scene.plugins.smd.animation.PAT3D;
-import com.jme3.scene.plugins.smd.animation.TransPosition;
-import com.jme3.scene.plugins.smd.animation.TransRotation;
-import com.jme3.scene.plugins.smd.animation.TransScale;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
 import com.jme3.scene.plugins.smd.math.Matrix4F;
 import com.jme3.scene.plugins.smd.math.Matrix4D;

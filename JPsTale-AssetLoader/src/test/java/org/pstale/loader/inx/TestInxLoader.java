@@ -1,4 +1,4 @@
-package org.pstale.loader;
+package org.pstale.loader.inx;
 
 import org.junit.Test;
 import org.pstale.assets.AssetFactory;
@@ -11,9 +11,11 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.scene.plugins.inx.AnimateModel;
-import com.jme3.scene.plugins.inx.SubAnimation;
-import com.jme3.scene.plugins.smd.animation.PAT3D;
+import com.jme3.scene.plugins.smd.SMDTYPE;
+import com.jme3.scene.plugins.smd.SmdKey;
+import com.jme3.scene.plugins.smd.geom.AnimateModel;
+import com.jme3.scene.plugins.smd.geom.MotionInfo;
+import com.jme3.scene.plugins.smd.geom.PAT3D;
 
 public class TestInxLoader {
 
@@ -38,17 +40,15 @@ public class TestInxLoader {
         String linkFile = modelInfo.linkFile;
         if (linkFile.length() > 0) {
             AnimateModel mi = AssetFactory.loadInx(linkFile);
-            modelInfo.animationFile = mi.animationFile;
+            modelInfo.motionFile = mi.motionFile;
         }
 
         PAT3D skeleton = null;
         // 读取动画
-        if (modelInfo.animationFile.length() > 0) {
+        if (modelInfo.motionFile.length() > 0) {
             // 后缀名改为smb
-            String smbFile = AssetNameUtils.changeExt(modelInfo.animationFile, "smb");
-            
+            String smbFile = AssetNameUtils.changeExt(modelInfo.motionFile, "smb");
             String name = AssetNameUtils.getName(smbFile);
-            
             skeleton = AssetFactory.loadSmb(folder + name);
 
             // 生成动画
@@ -58,6 +58,15 @@ public class TestInxLoader {
             ac.addAnim(anim);
         }
         printAnimation(modelInfo);
+        
+        
+        // 读取网格
+        String smdFile = AssetNameUtils.changeExt(modelInfo.modelFile, "smd");
+        smdFile = AssetNameUtils.getName(smdFile);
+
+        SmdKey smdKey = new SmdKey(folder + smdFile, SMDTYPE.PAT3D_VISUAL);
+        smdKey.setBone(skeleton);
+        AssetFactory.getAssetManager().loadAsset(smdKey);
     }
     @Test
     public void testArad() {
@@ -77,24 +86,24 @@ public class TestInxLoader {
     
     private void printAnimation(AnimateModel model) {
         logger.debug("Model: {}", model.modelFile);
-        logger.debug("Animation: {}", model.animationFile);
+        logger.debug("Animation: {}", model.motionFile);
         logger.debug("LinkFile: {}", model.linkFile);
 
         logger.debug("FileTypeKeyWord: {}", model.FileTypeKeyWord);
         logger.debug("LinkFileKeyWord: {}", model.LinkFileKeyWord);
 
-        logger.debug("MotionCount: {}", model.MotionCount - 10);
-        printAnimation(model.motionInfo, model.MotionCount - 10);
+        logger.debug("MotionCount: {}", model.subMotionCount - 10);
+        printAnimation(model.subMotions, model.subMotionCount - 10);
 
-        logger.debug("TalkLinkFile:{}", model.szTalkLinkFile);
-        logger.debug("TalkMotionFile:{}", model.szTalkMotionFile);
-        logger.debug("TalkMotionCount:{}", model.TalkMotionCount - 10);
-        printAnimation(model.TalkMotionInfo, model.TalkMotionCount - 10);
+        logger.debug("TalkLinkFile:{}", model.talkLinkFile);
+        logger.debug("TalkMotionFile:{}", model.talkMotionFile);
+        logger.debug("TalkMotionCount:{}", model.talkMotionCount - 10);
+        printAnimation(model.talkMotions, model.talkMotionCount - 10);
     }
 
-    private void printAnimation(SubAnimation[] motions, int count) {
+    private void printAnimation(MotionInfo[] motions, int count) {
         for (int i = 0; i < count; i++) {
-            SubAnimation motion = motions[i + 10];
+            MotionInfo motion = motions[i + 10];
             if (motion.State == 0) {
                 logger.debug(i + ":unkownn");
             } else {

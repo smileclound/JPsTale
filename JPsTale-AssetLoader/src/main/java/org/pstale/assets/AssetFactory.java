@@ -27,11 +27,11 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.plugins.inx.AnimateModel;
 import com.jme3.scene.plugins.smd.SMDTYPE;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
-import com.jme3.scene.plugins.smd.animation.PAT3D;
+import com.jme3.scene.plugins.smd.geom.AnimateModel;
+import com.jme3.scene.plugins.smd.geom.PAT3D;
 import com.jme3.scene.plugins.smd.stage.Stage;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Quad;
@@ -75,6 +75,10 @@ public class AssetFactory {
         } else {
             assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
         }
+    }
+    
+    public static AssetManager getAssetManager() {
+        return assetManager;
     }
 
     /**

@@ -14,8 +14,8 @@ import com.jme3.animation.Skeleton;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
 import com.jme3.asset.AssetManager;
-import com.jme3.scene.plugins.inx.AnimateModel;
-import com.jme3.scene.plugins.smd.animation.PAT3D;
+import com.jme3.scene.plugins.smd.geom.AnimateModel;
+import com.jme3.scene.plugins.smd.geom.PAT3D;
 import com.jme3.scene.plugins.smd.stage.Stage;
 import com.jme3.util.LittleEndien;
 
@@ -95,14 +95,14 @@ public class SmdLoader implements AssetLoader {
             if (linkFile.length() > 0) {
                 SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
                 AnimateModel mi = (AnimateModel) manager.loadAsset(linkFileKey);
-                modelInfo.animationFile = mi.animationFile;
+                modelInfo.motionFile = mi.motionFile;
             }
 
             PAT3D BipPattern = null;
             // 读取动画
-            if (modelInfo.animationFile.length() > 0) {
+            if (modelInfo.motionFile.length() > 0) {
                 // 后缀名改为smb
-                String smbFile = AssetNameUtils.changeExt(modelInfo.animationFile, "smb");
+                String smbFile = AssetNameUtils.changeExt(modelInfo.motionFile, "smb");
                 smbFile = AssetNameUtils.getName(smbFile);
                 BipPattern = (PAT3D) manager.loadAsset(new SmdKey(key.getFolder() + smbFile, SMDTYPE.PAT3D));
 
@@ -126,14 +126,14 @@ public class SmdLoader implements AssetLoader {
             if (linkFile.length() > 0) {
                 SmdKey linkFileKey = new SmdKey(linkFile, SMDTYPE.MODELINFO);
                 AnimateModel mi = (AnimateModel) manager.loadAsset(linkFileKey);
-                modelInfo.animationFile = mi.animationFile;
+                modelInfo.motionFile = mi.motionFile;
             }
 
             PAT3D BipPattern = null;
             // 读取动画
-            if (modelInfo.animationFile.length() > 0) {
+            if (modelInfo.motionFile.length() > 0) {
                 // 后缀名改为smb
-                String smbFile = AssetNameUtils.changeExt(modelInfo.animationFile, "smb");
+                String smbFile = AssetNameUtils.changeExt(modelInfo.motionFile, "smb");
                 smbFile = AssetNameUtils.getName(smbFile);
                 BipPattern = (PAT3D) manager.loadAsset(new SmdKey(key.getFolder() + smbFile, SMDTYPE.PAT3D));
             }
