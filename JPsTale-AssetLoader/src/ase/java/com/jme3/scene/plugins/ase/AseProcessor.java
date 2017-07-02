@@ -734,6 +734,12 @@ public class AseProcessor implements CONSTANT {
 			}
 			
 			int targetBoneIndex = ske.getBoneIndex(obj.name);
+			// FIXME 打算修正动画数据。
+			//Bone bone = ske.getBone(obj.name);
+			//Vector3f bindPosition = bone.getBindPosition();
+			//Quaternion bindRotationI = bone.getBindRotation().inverse();
+			//Vector3f bindScale = bone.getBindScale();
+			
 			int size = obj.keyframes.size();
 			float[] times = new float[size];
 			Vector3f[] translations = new Vector3f[size];
@@ -748,6 +754,12 @@ public class AseProcessor implements CONSTANT {
 				translations[i] = frame.translation;
 				rotations[i] = frame.rotation.normalizeLocal();
 				scales[i] = frame.scale;
+				
+				// FIXME 与我想像的不太一样，骨骼缩到了一个点。
+				// 也许应该在加载动画时就处理好？
+				// translations[i].subtractLocal(bindPosition);
+				// rotations[i].multLocal(bindRotationI);
+				// scales[i].divideLocal(bindScale);
 				
 				assert translations[i] != null;
 				assert rotations[i] != null;
