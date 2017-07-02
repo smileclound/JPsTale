@@ -27,6 +27,7 @@ public class Style {
     static GuiGlobals gui;
     static Styles styles;
 
+    @SuppressWarnings("unchecked")
     public static void initStyle(Application app) {
         assetManager = app.getAssetManager();
 
@@ -42,14 +43,8 @@ public class Style {
         TbtQuadBackgroundComponent gradient = TbtQuadBackgroundComponent.create(
                 texture("/com/simsilica/lemur/icons/bordered-gradient.png", false), 1, 1, 1, 126, 126, 1f, false);
 
-        TbtQuadBackgroundComponent bevel = TbtQuadBackgroundComponent
-                .create(texture("/com/simsilica/lemur/icons/bevel-quad.png", false), 0.125f, 8, 8, 119, 119, 1f, false);
-
         TbtQuadBackgroundComponent border = TbtQuadBackgroundComponent
                 .create(texture("/com/simsilica/lemur/icons/border.png", false), 1, 1, 1, 6, 6, 1f, false);
-
-        TbtQuadBackgroundComponent border2 = TbtQuadBackgroundComponent
-                .create(texture("/com/simsilica/lemur/icons/border.png", false), 1, 2, 2, 6, 6, 1f, false);
 
         QuadBackgroundComponent doubleGradient = new QuadBackgroundComponent(new ColorRGBA(0.5f, 0.75f, 0.85f, 0.5f));
         doubleGradient.setTexture(texture("/com/simsilica/lemur/icons/double-gradient-128.png", false));
@@ -86,6 +81,7 @@ public class Style {
             }
         };
 
+        @SuppressWarnings("rawtypes")
         CommandMap stdButtonCommands = new CommandMap(null);
         stdButtonCommands.addCommands(ButtonAction.Down, pressedCommand);
         stdButtonCommands.addCommands(ButtonAction.Up, pressedCommand);

@@ -14,6 +14,7 @@ public class TestSpcLoader {
 
     static Logger log = Logger.getLogger(TestSpcLoader.class);
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();

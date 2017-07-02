@@ -1,6 +1,5 @@
 package org.pstale.assets;
 
-import static com.jme3.scene.plugins.smd.SMDTYPE.MODELINFO_MODEL;
 import static org.pstale.constants.SceneConstants.scale;
 
 import java.io.File;
@@ -30,7 +29,10 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.plugins.ase.AseLoader;
+import com.jme3.scene.plugins.smd.InxLoader;
 import com.jme3.scene.plugins.smd.SMDTYPE;
+import com.jme3.scene.plugins.smd.SmbLoader;
 import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.SmdLoader;
 import com.jme3.scene.plugins.smd.geom.AnimateModel;
@@ -73,7 +75,10 @@ public class AssetFactory {
 
     public static void setAssetManager(final AssetManager manager) {
         assetManager = manager;
-        assetManager.registerLoader(SmdLoader.class, "smd", "smb", "inx");
+        assetManager.registerLoader(AseLoader.class, "ase");
+        assetManager.registerLoader(InxLoader.class, "inx");
+        assetManager.registerLoader(SmbLoader.class, "smb");
+        assetManager.registerLoader(SmdLoader.class, "smd");
         assetManager.registerLoader(WAVLoader.class, "bgm");
         assetManager.registerLoader(SpcLoader.class, "spc");
         assetManager.registerLoader(SpmLoader.class, "spm");
@@ -84,17 +89,59 @@ public class AssetFactory {
         // 注册资源加载路径
         assetManager.registerLocator("/", ClasspathLocator.class);
         assetManager.registerLocator("/", FileLocator.class);
-        if (new File("I:/game/PTCN-RPT1.0").exists()) {
-            assetManager.registerLocator("I:/game/PTCN-RPT1.0", FileLocator.class);
-        } else {
-            assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
+        registerFolder("I:/game/PTCN-RPT1.0");
+        registerFolder("D:/Priston Tale/PTCN3550/PTCN3550");
+    }
+    
+    private static void registerFolder(String folder) {
+        if (new File(folder).exists()) {
+            assetManager.registerLocator(folder, FileLocator.class);
         }
     }
 
-    public static AssetManager getAssetManager() {
-        return assetManager;
+    /**
+     * 检查客户端文件夹是否都存在
+     * 
+     * @param folder
+     * @return
+     */
+    public static boolean checkClientRoot(String folder) {
+        File file = new File(folder);
+        if (!file.exists()) {
+            return false;
+        }
+
+        String[] folders = { "effect", "field", "char", "wav", "sky", "image" };
+        for (String subFolder : folders) {
+            if (!new File(folder + "/" + subFolder).exists()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
+    /**
+     * 检查服务端文件夹是否都存在
+     * 
+     * @param folder
+     * @return
+     */
+    public static boolean checkServerRoot(String folder) {
+        File file = new File(folder);
+        if (!file.exists()) {
+            return false;
+        }
+
+        String[] folders = { "GameServer/Field", "GameServer/Monster", "GameServer/NPC", "GameServer/OpenItem" };
+        for (String subFolder : folders) {
+            if (!new File(folder + "/" + subFolder).exists()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     /**
      * 获得一个刷怪点标记
      * 
@@ -153,7 +200,7 @@ public class AssetFactory {
      */
     public static AnimateModel loadInx(final String name) {
         String inx = AssetNameUtils.changeExt(name, "inx");
-        return (AnimateModel) assetManager.loadAsset(new SmdKey(inx, SMDTYPE.MODELINFO));
+        return (AnimateModel) assetManager.loadAsset(inx);
     }
 
     /**
@@ -245,11 +292,6 @@ public class AssetFactory {
         return ModelBuilder.buildModel(model, path);
     }
     
-    public static Node loadNPC(final String name) {
-        String inx = AssetNameUtils.changeExt(name, "inx");
-        return (Node) assetManager.loadAsset(new SmdKey(inx, MODELINFO_MODEL));
-    }
-
     @SuppressWarnings("unchecked")
     public static ArrayList<StartPoint> loadSpp(final String name) {
         String path = String.format("GameServer/Field/%s.ase.spp", AssetNameUtils.getSimpleName(name));

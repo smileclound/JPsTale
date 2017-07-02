@@ -7,7 +7,6 @@ import org.pstale.assets.AssetFactory;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
-import com.jme3.scene.plugins.smd.geom.AnimateModel;
 import com.jme3.scene.plugins.smd.geom.PAT3D;
 import com.jme3.scene.plugins.smd.stage.Stage;
 import com.jme3.util.LittleEndien;
@@ -48,11 +47,6 @@ public class SmdLoader implements AssetLoader {
             PAT3D skeleton = new PAT3D();
             skeleton.loadFile(new LittleEndien(assetInfo.openStream()));
             return skeleton;
-        }
-        case MODELINFO: {// inx 文件
-            AnimateModel modelInfo = new AnimateModel();
-            modelInfo.loadData(new LittleEndien(assetInfo.openStream()));
-            return modelInfo;
         }
         default:
             return null;

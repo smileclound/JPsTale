@@ -39,6 +39,7 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 import org.pstale.app.FieldApp;
+import org.pstale.assets.AssetFactory;
 
 import com.jme3.system.AppSettings;
 
@@ -197,7 +198,7 @@ public final class Main extends JFrame {
         serverRootTxt = new JTextField(50);
         serverRootTxt.setEditable(false);
         serverRootTxt.setText(SERVER_ROOT);
-        if (checkServerRoot(SERVER_ROOT)) {
+        if (AssetFactory.checkServerRoot(SERVER_ROOT)) {
             serverRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
         } else {
             serverRootTxt.setBackground(new Color(1f, 0.8f, 0.8f));
@@ -210,7 +211,7 @@ public final class Main extends JFrame {
         clientRootTxt = new JTextField(50);
         clientRootTxt.setEditable(false);
         clientRootTxt.setText(CLIENT_ROOT);
-        if (checkClientRoot(CLIENT_ROOT)) {
+        if (AssetFactory.checkClientRoot(CLIENT_ROOT)) {
             clientRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
         } else {
             clientRootTxt.setBackground(Color.YELLOW);
@@ -232,7 +233,7 @@ public final class Main extends JFrame {
         JButton decodeBtn = new JButton(resourceBundle.getString("button.decode"));
         decodeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (checkClientRoot(CLIENT_ROOT)) {
+                if (AssetFactory.checkClientRoot(CLIENT_ROOT)) {
                     DecodeDialog dialog = new DecodeDialog(Main.this, CLIENT_ROOT);
                     dialog.setVisible(true);
                 }
@@ -241,7 +242,7 @@ public final class Main extends JFrame {
         JButton encodeBtn = new JButton(resourceBundle.getString("button.encode"));
         encodeBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (checkClientRoot(CLIENT_ROOT)) {
+                if (AssetFactory.checkClientRoot(CLIENT_ROOT)) {
                     EncodeDialog dialog = new EncodeDialog(Main.this, CLIENT_ROOT);
                     dialog.setVisible(true);
                 }
@@ -537,7 +538,7 @@ public final class Main extends JFrame {
      */
     private boolean verifyAndSaveCurrentSelection() {
 
-        if (checkClientRoot(CLIENT_ROOT)) {
+        if (AssetFactory.checkClientRoot(CLIENT_ROOT)) {
             source.put("ClientRoot", CLIENT_ROOT);
         } else {
             JOptionPane.showMessageDialog(this, resourceBundle.getString("error.clientrootnull"), "Error",
@@ -616,7 +617,7 @@ public final class Main extends JFrame {
             }
 
             if (checkServer) {
-                if (checkServerRoot(SERVER_ROOT)) {
+                if (AssetFactory.checkServerRoot(SERVER_ROOT)) {
                     source.put("ServerRoot", SERVER_ROOT);
                 } else {
                     int rVal = JOptionPane.showConfirmDialog(this, resourceBundle.getString("error.serverrootnull"),
@@ -917,7 +918,7 @@ public final class Main extends JFrame {
             SERVER_ROOT = SERVER_ROOT.replaceAll("\\\\", "/");
 
             serverRootTxt.setText(SERVER_ROOT);
-            if (checkServerRoot(SERVER_ROOT)) {
+            if (AssetFactory.checkServerRoot(SERVER_ROOT)) {
                 serverRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
                 source.put("ServerRoot", SERVER_ROOT);
             } else {
@@ -932,56 +933,13 @@ public final class Main extends JFrame {
             CLIENT_ROOT = file.getAbsolutePath();
             CLIENT_ROOT = CLIENT_ROOT.replaceAll("\\\\", "/");
             clientRootTxt.setText(CLIENT_ROOT);
-            if (checkClientRoot(CLIENT_ROOT)) {
+            if (AssetFactory.checkClientRoot(CLIENT_ROOT)) {
                 clientRootTxt.setBackground(new Color(0.8f, 1f, 0.8f));
                 source.put("ClientRoot", CLIENT_ROOT);
             } else {
                 clientRootTxt.setBackground(Color.YELLOW);
             }
         }
-    }
-
-    /**
-     * 检查客户端文件夹是否都存在
-     * 
-     * @param folder
-     * @return
-     */
-    private boolean checkClientRoot(String folder) {
-        File file = new File(folder);
-        if (!file.exists()) {
-            return false;
-        }
-
-        String[] folders = { "effect", "field", "char", "wav", "sky", "image" };
-        for (String subFolder : folders) {
-            if (!new File(folder + "/" + subFolder).exists()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * 检查服务端文件夹是否都存在
-     * 
-     * @param folder
-     * @return
-     */
-    private boolean checkServerRoot(String folder) {
-        File file = new File(folder);
-        if (!file.exists()) {
-            return false;
-        }
-
-        String[] folders = { "GameServer/Field", "GameServer/Monster", "GameServer/NPC", "GameServer/OpenItem" };
-        for (String subFolder : folders) {
-            if (!new File(folder + "/" + subFolder).exists()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void startApp() {

@@ -384,7 +384,8 @@ public class AseProcessor implements CONSTANT {
 	 *******************************/
 	HashMap<String, Material> cache = new HashMap<String, Material>();
 
-	private Material makeMaterial(Mtl mtl) {
+	@SuppressWarnings("unused")
+    private Material makeMaterial(Mtl mtl) {
 
 		if (mtl == null) {
 			return getMissingMaterial();
@@ -484,7 +485,7 @@ public class AseProcessor implements CONSTANT {
 		if ((mtl.ScriptState & sMATS_SCRIPT_ORG_WATER) != 0) {
 			MeshState = sMATS_SCRIPT_ORG_WATER;
 		}
-
+		
 		// Blink Color
 		if ((mtl.ScriptState & sMATS_SCRIPT_BLINK_COLOR) != 0
 				&& WindMeshBottom == 0) {
@@ -545,7 +546,8 @@ public class AseProcessor implements CONSTANT {
 		// ͼƬ����
 		private ArrayList<Texture> imgs = new ArrayList<Texture>();
 
-		public ScriptControl(String script, int animCount) {
+		@SuppressWarnings("unused")
+        public ScriptControl(String script, int animCount) {
 			if (animCount != 0) {
 				int first = script.indexOf(":");
 				int last = script.lastIndexOf(":");
