@@ -84,8 +84,12 @@ public class GeomObject extends Flyweight {
     // //////////////////
     int lpPhysuque;
     int lpOldTexLink;
-
     // //////////////////
+    
+    /**
+     * 各顶点对应的骨骼名称，用于骨骼蒙皮动画。
+     */
+    public String[] boneNames;
 
     public GeomObject() {
         NodeName = null;
@@ -217,7 +221,7 @@ public class GeomObject extends Flyweight {
      * 
      * @param skeleton
      */
-    public void loadFile(LittleEndien in, PAT3D skeleton) throws IOException {
+    public void loadFile(LittleEndien in) throws IOException {
 
         Vertex = new Vertex[nVertex];
         for (int i = 0; i < nVertex; i++) {
@@ -264,19 +268,14 @@ public class GeomObject extends Flyweight {
         relinkFaceAndTex();
 
         // 绑定动画骨骼
-        if (lpPhysuque != 0 && skeleton != null) {
+        if (lpPhysuque != 0) {
 
             boneArray = new GeomObject[nVertex];
 
-            String[] names = new String[nVertex];
+            boneNames = new String[nVertex];
             for (int i = 0; i < nVertex; i++) {
-                names[i] = getString(in, 32);
+                boneNames[i] = getString(in, 32);
             }
-
-            for (int i = 0; i < nVertex; i++) {
-                boneArray[i] = skeleton.getObjectFromName(names[i]);
-            }
-
         }
     }
 
@@ -298,4 +297,18 @@ public class GeomObject extends Flyweight {
         }
     }
 
+    /**
+     * 绑定骨骼
+     * @param skeleton
+     */
+    public boolean setSkeleton(PAT3D skeleton) {
+        if (lpPhysuque != 0 && skeleton != null) {
+            boneArray = new GeomObject[nVertex];
+            for (int j = 0; j < nVertex; j++) {
+                boneArray[j] = skeleton.getObjectFromName(boneNames[j]);
+            }
+            return true;
+        }
+        return false;
+    }
 }

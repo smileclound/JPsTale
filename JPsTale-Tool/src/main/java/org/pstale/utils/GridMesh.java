@@ -72,6 +72,7 @@ public class GridMesh {
     /**
      * 计算每个格子中有哪些面
      */
+    @SuppressWarnings("unchecked")
     public ArrayList<Integer>[][] getFaceList() {
 
         if (area == null) {

@@ -40,6 +40,10 @@ public class MaterialGroup extends Flyweight {
 
         // size += 88;
 
+        logger.debug("MaterialCount: {}", materialCount);
+        if (materialCount < 0) {
+            return;
+        }
         materials = new _Material[materialCount];
 
         for (int i = 0; i < materialCount; i++) {

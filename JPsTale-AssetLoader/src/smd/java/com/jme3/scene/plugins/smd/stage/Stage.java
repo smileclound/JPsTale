@@ -136,34 +136,47 @@ public class Stage extends Flyweight {
             materials = materialGroup.materials;
         }
 
-        // 读取Vertex
-        Vertex = new StageVertex[nVertex];
-        for (int i = 0; i < nVertex; i++) {
-            Vertex[i] = new StageVertex();
-            Vertex[i].loadData(in);
+        if (nVertex > 0) {
+            // 读取Vertex
+            Vertex = new StageVertex[nVertex];
+            for (int i = 0; i < nVertex; i++) {
+                Vertex[i] = new StageVertex();
+                Vertex[i].loadData(in);
+            }
+        } else {
+            logger.debug("nVertex: {}", nVertex);
         }
 
-        // 读取Face
-        Face = new StageFace[nFace];
-        for (int i = 0; i < nFace; i++) {
-            Face[i] = new StageFace();
-            Face[i].loadData(in);
+        if (nFace > 0) {
+            // 读取Face
+            Face = new StageFace[nFace];
+            for (int i = 0; i < nFace; i++) {
+                Face[i] = new StageFace();
+                Face[i].loadData(in);
+            }
+        } else {
+            logger.debug("nFace: {}", nFace);
         }
 
-        // 读取TEX_LINK(其实就是uv坐标)
-        TexLink = new TEXLINK[nTexLink];
-        for (int i = 0; i < nTexLink; i++) {
-            TexLink[i] = new TEXLINK();
-            TexLink[i].loadData(in);
+        if (nTexLink > 0) {
+            // 读取TEX_LINK(其实就是uv坐标)
+            TexLink = new TEXLINK[nTexLink];
+            for (int i = 0; i < nTexLink; i++) {
+                TexLink[i] = new TEXLINK();
+                TexLink[i].loadData(in);
+            }
         }
 
         // 读取灯光
         if (nLight > 0) {
+            logger.debug("nLight: {}", nLight);
             Light = new Light3D[nLight];
             for (int i = 0; i < nLight; i++) {
                 Light[i] = new Light3D();
                 Light[i].loadData(in);
             }
+        } else {
+            logger.debug("nLight: {}", nLight);
         }
 
         // 重新建立Face与TexLink之间的关联

@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
-import com.jme3.scene.plugins.smd.geom.AnimateModel;
+import com.jme3.scene.plugins.smd.geom.PAT3D;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -15,14 +15,16 @@ import com.jme3.util.LittleEndien;
  * @author yanmaoyuan
  * 
  */
-public class InxLoader implements AssetLoader {
+public class SmbLoader implements AssetLoader {
 
-    static Logger log = Logger.getLogger(InxLoader.class);
+    static Logger log = Logger.getLogger(SmbLoader.class);
     
     @Override
     public Object load(AssetInfo assetInfo) throws IOException {
-        AnimateModel modelInfo = new AnimateModel();
-        modelInfo.loadData(new LittleEndien(assetInfo.openStream()));
-        return modelInfo;
+        PAT3D skeleton = new PAT3D();
+        skeleton.loadFile(new LittleEndien(assetInfo.openStream()));
+        return skeleton;
     }
+
+
 }

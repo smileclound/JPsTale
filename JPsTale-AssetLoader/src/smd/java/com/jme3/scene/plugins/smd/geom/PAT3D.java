@@ -40,8 +40,8 @@ public class PAT3D extends Flyweight {
     int dBound;
     int Bound;
 
-    FRAME_POS[] TmFrame = new FRAME_POS[OBJ_FRAME_SEARCH_MAX];
-    int TmFrameCnt;
+    public FRAME_POS[] TmFrame = new FRAME_POS[OBJ_FRAME_SEARCH_MAX];
+    public int TmFrameCnt;
 
     int TmLastFrame;
     Vector3D TmLastAngle;
@@ -76,6 +76,7 @@ public class PAT3D extends Flyweight {
         materialGroup = null;
     }
 
+    @Override
     public void loadData(LittleEndien in) throws IOException {
 
         in.readInt();// Head
@@ -119,7 +120,7 @@ public class PAT3D extends Flyweight {
 
     }
 
-    public void loadFile(LittleEndien in, PAT3D skeleton) throws IOException {
+    public void loadFile(LittleEndien in) throws IOException {
 
         SmdFileHeader header = new SmdFileHeader();
         header.loadData(in);
@@ -171,7 +172,7 @@ public class PAT3D extends Flyweight {
             GeomObject obj = new GeomObject();
             // 读取OBJ3D对象，共2236字节
             obj.loadData(in);
-            obj.loadFile(in, skeleton);
+            obj.loadFile(in);
             addObject(obj);
         }
         linkObject();
@@ -182,12 +183,10 @@ public class PAT3D extends Flyweight {
          * </pre>
          */
 
-        this.skeleton = skeleton;
-
         in.close();
     }
 
-    boolean addObject(GeomObject obj) {
+    public boolean addObject(GeomObject obj) {
         // 限制物体的数量，最多128个
         if (objCount < 128) {
             objArray[objCount] = obj;
@@ -225,7 +224,7 @@ public class PAT3D extends Flyweight {
     /**
      * 计算物体之间的父子关系。
      */
-    void linkObject() {
+    public void linkObject() {
         for (int i = 0; i < objCount; i++) {
             if (objArray[i].NodeParent != null) {
                 for (int k = 0; k < objCount; k++) {
@@ -235,7 +234,7 @@ public class PAT3D extends Flyweight {
                     }
                 }
             } else {
-                log.debug("j = 0");
+                logger.debug("j = 0");
             }
         }
 
@@ -277,4 +276,16 @@ public class PAT3D extends Flyweight {
         return null;
     }
 
+    /**
+     * 设置骨骼
+     * 
+     * @param skeleton
+     */
+    public void setSkeleton(PAT3D skeleton) {
+        this.skeleton = skeleton;
+        for (int i = 0; i < objCount; i++) {
+            GeomObject obj = objArray[i];
+            obj.setSkeleton(skeleton);
+        }
+    }
 }

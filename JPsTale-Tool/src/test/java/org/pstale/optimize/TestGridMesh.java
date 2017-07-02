@@ -18,9 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -44,16 +42,12 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
+import org.pstale.assets.utils.SceneBuilder;
 import org.pstale.utils.GridMesh;
 
-import com.jme3.asset.AssetInfo;
-import com.jme3.asset.AssetLoadException;
-import com.jme3.asset.AssetManager;
-import com.jme3.asset.DesktopAssetManager;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.plugins.smd.SMDTYPE;
-import com.jme3.scene.plugins.smd.SmdKey;
-import com.jme3.scene.plugins.smd.SmdLoader;
+import com.jme3.scene.plugins.smd.stage.Stage;
+import com.jme3.util.LittleEndien;
 
 @SuppressWarnings("serial")
 public class TestGridMesh extends JFrame {
@@ -79,9 +73,6 @@ public class TestGridMesh extends JFrame {
     // 绘图面板
     private MyPanel canvas;
 
-    private AssetManager assetManager;
-    private SmdLoader loader;
-
     private Mesh mesh;// 网格
     private FloatBuffer fb;// 顶点数据
     private IntBuffer ib;// 三角形数据
@@ -92,12 +83,6 @@ public class TestGridMesh extends JFrame {
     private GridMesh grid;
 
     public TestGridMesh() {
-
-        // 初始化资源管理器
-        assetManager = new DesktopAssetManager();
-        assetManager.registerLoader(SmdLoader.class, "smd");
-        // 读取地图的smd文件
-        loader = new SmdLoader();
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -122,17 +107,22 @@ public class TestGridMesh extends JFrame {
      * 根据文件名，导入smd文件，并生成网格。
      */
     private void initMesh(String fileName) {
-        SmdKey key = new SmdKey(fileName, SMDTYPE.STAGE3D_COLLISION);
         File file = new File(fileName);
-        MyAssetInfo info = new MyAssetInfo(assetManager, key, file);
         try {
-            mesh = (Mesh) loader.load(info);
-            grid = new GridMesh(mesh);
-            // 获得顶点数据
-            fb = (FloatBuffer) mesh.getBuffer(Position).getData();
-            ib = (IntBuffer) mesh.getBuffer(Index).getData();
-
-            drawBackground();
+            Stage stage3D = new Stage();
+            stage3D.loadFile(new LittleEndien(new FileInputStream(file)));
+            
+            if (stage3D.nFace > 0) {
+                mesh = SceneBuilder.buildCollisionMesh(stage3D);
+                grid = new GridMesh(mesh);
+                // 获得顶点数据
+                fb = (FloatBuffer) mesh.getBuffer(Position).getData();
+                ib = (IntBuffer) mesh.getBuffer(Index).getData();
+                drawBackground();
+                System.gc();
+            } else {
+                JOptionPane.showMessageDialog(this, "网格面数为0");
+            }
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "文件读取失败");
@@ -356,29 +346,6 @@ public class TestGridMesh extends JFrame {
         }
     }
 
-    /**
-     * 用于协助SmdLoader定位资源
-     * 
-     * @author yanmaoyuan
-     *
-     */
-    private class MyAssetInfo extends AssetInfo {
-        private File file;
-
-        public MyAssetInfo(AssetManager manager, SmdKey key, File file) {
-            super(manager, key);
-            this.file = file;
-        }
-
-        @Override
-        public InputStream openStream() {
-            try {
-                return new FileInputStream(file);
-            } catch (FileNotFoundException ex) {
-                throw new AssetLoadException("Failed to open file: " + file, ex);
-            }
-        }
-    }
 
     /**
      * 绘图的面板。 先绘制网格底图，然后再绘制激活的网格。

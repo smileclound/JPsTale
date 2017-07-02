@@ -11,13 +11,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.FrameBuffer;
 import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
-import com.jme3.ui.Picture;
 
 public class TestColormap extends SimpleApplication {
     private Spatial scene;

@@ -8,13 +8,13 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.pstale.assets.AssetFactory;
 import org.pstale.utils.FileLocator;
 import org.pstale.utils.GaussianBlur;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.collision.CollisionResults;
@@ -25,9 +25,6 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.plugins.smd.SMDTYPE;
-import com.jme3.scene.plugins.smd.SmdKey;
-import com.jme3.scene.plugins.smd.SmdLoader;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
@@ -50,16 +47,10 @@ public class TestHeightmap extends SimpleApplication {
     public static void main(String[] args) {
 
         // 初始化资源管理器
-        AssetManager assetManager = new DesktopAssetManager();
-        assetManager.registerLoader(SmdLoader.class, "smd");
-        if (new File("I:/game/PTCN-RPT1.0").exists()) {
-            assetManager.registerLocator("I:/game/PTCN-RPT1.0", FileLocator.class);
-        } else {
-            assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
-        }
+        AssetFactory.setAssetManager(new DesktopAssetManager());
 
         // 读取地图的smd文件
-        Mesh mesh = (Mesh) assetManager.loadAsset(new SmdKey("Field/forest/fore-1.smd", SMDTYPE.STAGE3D_COLLISION));
+        Mesh mesh = AssetFactory.loadStage3DMesh("Field/forest/fore-1.smd");
         // 包围盒
         BoundingBox bb = (BoundingBox) mesh.getBound();
         

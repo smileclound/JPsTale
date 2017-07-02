@@ -164,10 +164,6 @@ public class AnimationBuilder {
                 k.scale = new Vector3f(scale.x, scale.y, scale.z);
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Track[{}], keyframes={}",obj.NodeName ,keyframes.size());
-            }
-
             /**
              * 计算动画数据。 为BoneTrack准备数据。
              */
@@ -226,10 +222,6 @@ public class AnimationBuilder {
                 translations[n] = current.translation;
                 rotations[n] = current.rotation.normalizeLocal();
                 scales[n] = current.scale;
-
-                if (logger.isDebugEnabled()) {
-                    //logger.debug("  Frame={} time={} pos={} rot={} scale={}", translations[n], rotations[n], scales[n]);
-                }
 
                 // 记录当前帧
                 last = current;

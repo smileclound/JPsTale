@@ -335,29 +335,6 @@ public class AseProcessor implements CONSTANT {
 		return mesh;
 	}
 	
-    private Vector3f[] generateNormals(List<Vector3f> verts)
-    {
-        Vector3f[] normals = new Vector3f[verts.size()];
-        for(int i=0; i < normals.length;)
-        {
-            Vector3f normal    = new Vector3f();
-            Vector3f v1        = new Vector3f();
-            Vector3f v2        = new Vector3f();
-    
-            v1 = verts.get(i+1).subtract(verts.get(i));
-            v2 = verts.get(i+2).subtract(verts.get(i));
-            v1.cross(v2, normal);
-            normal.normalize();
-
-    
-            normals[i++] = normal;
-            normals[i++] = normal;
-            normals[i++] = normal;
-        }
-
-        return normals;
-    }
-    
     private Vector3f[] generateNormals(List<Vector3f> verts, int[] indices)
     {
     	Vector3f[] normals = new Vector3f[verts.size()];
@@ -437,10 +414,8 @@ public class AseProcessor implements CONSTANT {
 		material.setColor("GlowColor", ColorRGBA.Black);
 		material.setFloat("Shininess", 25f);
 
+		material.setFloat("AlphaDiscardThreshold", 0.01f);
 		RenderState rs = material.getAdditionalRenderState();
-
-		rs.setAlphaTest(true);
-		rs.setAlphaFallOff(0.01f);
 
 		if (mtl.twoSide) {
 			rs.setFaceCullMode(RenderState.FaceCullMode.Off);// twoside
@@ -537,7 +512,7 @@ public class AseProcessor implements CONSTANT {
 			texture.setWrap(WrapMode.Repeat);
 		} catch (Exception ex) {
 			texture = manager.loadTexture("Common/Textures/MissingTexture.png");
-			texture.setWrap(WrapMode.Clamp);
+			texture.setWrap(WrapMode.Repeat);
 		}
 		return texture;
 	}

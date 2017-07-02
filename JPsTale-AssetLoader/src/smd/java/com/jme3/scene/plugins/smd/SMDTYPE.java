@@ -12,14 +12,6 @@ public enum SMDTYPE {
      */
     STAGE3D,
     /**
-     * 从地图数据中单独取出网格数据。
-     */
-    STAGE3D_COLLISION,
-    /**
-     * 从地图是中提取出可视部分。
-     */
-    STAGE3D_VISUAL,
-    /**
      * 这种文件仅存储了PAT3D结构体中的骨骼动画，不包含任何材质。 后缀名为smb
      */
     PAT3D,

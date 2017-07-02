@@ -11,8 +11,6 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.scene.plugins.smd.SMDTYPE;
-import com.jme3.scene.plugins.smd.SmdKey;
 import com.jme3.scene.plugins.smd.geom.AnimateModel;
 import com.jme3.scene.plugins.smd.geom.MotionInfo;
 import com.jme3.scene.plugins.smd.geom.PAT3D;
@@ -63,10 +61,8 @@ public class TestInxLoader {
         // 读取网格
         String smdFile = AssetNameUtils.changeExt(modelInfo.modelFile, "smd");
         smdFile = AssetNameUtils.getName(smdFile);
-
-        SmdKey smdKey = new SmdKey(folder + smdFile, SMDTYPE.PAT3D_VISUAL);
-        smdKey.setBone(skeleton);
-        AssetFactory.getAssetManager().loadAsset(smdKey);
+        PAT3D model = AssetFactory.loadSmd(folder + smdFile);
+        model.setSkeleton(skeleton);
     }
     @Test
     public void testArad() {

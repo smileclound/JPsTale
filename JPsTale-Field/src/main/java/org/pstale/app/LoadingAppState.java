@@ -119,7 +119,7 @@ public class LoadingAppState extends SubAppState {
                 new DataState(data.serverRoot, data.allMonster, data.allNpc, data.allItem),
                 // new CursorState(),
                 new HudState(), new LoaderAppState(), new CollisionState(), new MusicAppState(), new AmbientAppState(),
-                new FieldgateAppState(), new WarpgateAppState(), new MonsterAppState(), new NpcAppState(),
+                new FieldgateAppState(), new WarpgateAppState(), new MonsterAppState(),
                 new LightState(), new PickingAppState() };
 
         AppStateManager stateManager = getStateManager();

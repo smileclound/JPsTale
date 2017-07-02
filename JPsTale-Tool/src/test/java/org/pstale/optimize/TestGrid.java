@@ -13,7 +13,7 @@ import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
-import org.pstale.utils.FileLocator;
+import org.pstale.assets.AssetFactory;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
@@ -22,9 +22,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
-import com.jme3.scene.plugins.smd.SMDTYPE;
-import com.jme3.scene.plugins.smd.SmdKey;
-import com.jme3.scene.plugins.smd.SmdLoader;
 
 /**
  * <h2>测试九宫格网格。</h2> 定义一个256 * 256大小的矩阵，将地图划分成65536个格子。统计地图网格中所有的三角形，看看它们都落在
@@ -308,15 +305,9 @@ public class TestGrid {
 
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
-        assetManager.registerLoader(SmdLoader.class, "smd");
-        if (new File("I:/game/PTCN-RPT1.0").exists()) {
-            assetManager.registerLocator("I:/game/PTCN-RPT1.0", FileLocator.class);
-        } else {
-            assetManager.registerLocator("D:/Priston Tale/PTCN3550/PTCN3550", FileLocator.class);
-        }
-
+        AssetFactory.setAssetManager(assetManager);
         // 读取地图的smd文件
-        Mesh stage = (Mesh) assetManager.loadAsset(new SmdKey("Field/dungeon/dun-4.smd", SMDTYPE.STAGE3D_COLLISION));
+        Mesh stage = AssetFactory.loadStage3DMesh("Field/dungeon/dun-4.smd");;
 
         // 绘制三角形网格
         drawTri(stage);

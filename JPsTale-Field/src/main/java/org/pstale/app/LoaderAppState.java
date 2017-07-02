@@ -8,7 +8,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.apache.log4j.Logger;
 import org.pstale.assets.AssetFactory;
 import org.pstale.entity.field.Field;
 import org.pstale.entity.field.Music;
@@ -17,6 +16,8 @@ import org.pstale.entity.field.StageObject;
 import org.pstale.entity.field.StartPoint;
 import org.pstale.entity.field.StgBoss;
 import org.pstale.entity.field.StgMonster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
@@ -48,7 +49,7 @@ import com.jme3.texture.Texture;
  */
 public class LoaderAppState extends SubAppState {
 
-    static Logger log = Logger.getLogger(LoaderAppState.class);
+    static Logger logger = LoggerFactory.getLogger(LoaderAppState.class);
 
     private SimpleApplication app;
 
@@ -163,7 +164,7 @@ public class LoaderAppState extends SubAppState {
             final Mesh mesh = AssetFactory.loadStage3DMesh(field.getName());
 
             if (mainModel == null) {
-                log.debug("加载地图模型失败");
+                logger.debug("加载地图模型失败");
                 return null;
             }
 
@@ -304,7 +305,7 @@ public class LoaderAppState extends SubAppState {
                         }
                     });
                 } catch (Exception e) {
-                    log.error("加载舞台物体失败", e);
+                    logger.error("加载舞台物体失败", e);
                 }
             }
         }
@@ -337,9 +338,9 @@ public class LoaderAppState extends SubAppState {
             hud.setBoss(null);
             return;
         }
-        log.debug("生物数量上限:" + creatures.LimitMax);
-        log.debug("刷怪时间间隔:" + creatures.OpenInterval);
-        log.debug("每次最多刷怪:" + creatures.OpenLimit);
+        logger.debug("生物数量上限:" + creatures.LimitMax);
+        logger.debug("刷怪时间间隔:" + creatures.OpenInterval);
+        logger.debug("每次最多刷怪:" + creatures.OpenLimit);
 
         List<StgMonster> monsters = creatures.monsterList;
         final ArrayList<String> mList = new ArrayList<String>();
@@ -377,7 +378,7 @@ public class LoaderAppState extends SubAppState {
 
         // 刷怪点的坐标只有X/Z坐标，而且有些刷怪点是无效的，需要重新计算。
         int len = spawns.size();
-        log.debug("刷怪点数量:" + len);
+        logger.debug("刷怪点数量:" + len);
         final ArrayList<String> sppList = new ArrayList<String>(len);
         for (int i = 0; i < len; i++) {
             StartPoint point = spawns.get(i);
@@ -399,7 +400,7 @@ public class LoaderAppState extends SubAppState {
                     }
                 });
             } catch (Exception e) {
-                log.error("加载模型失败", e);
+                logger.error("加载模型失败", e);
             }
         }
 
@@ -428,7 +429,7 @@ public class LoaderAppState extends SubAppState {
              * @param pos
              */
             // 首先尝试直接读取NPC模型
-            final Node model = (Node) AssetFactory.loadNPC(npc.charInfo.szModelName);
+            final Node model = (Node) AssetFactory.loadCharacter(npc.charInfo.szModelName);
 
             // Debug skeleton
             final AnimControl ac = model.getControl(AnimControl.class);
@@ -442,7 +443,7 @@ public class LoaderAppState extends SubAppState {
                 skeletonDebug.setMaterial(mat);
                 model.attachChild(skeletonDebug);
 
-                // ac.createChannel().setAnim("Anim");
+                //ac.createChannel().setAnim("Anim");
             }
 
             model.scale(scale);
@@ -453,11 +454,12 @@ public class LoaderAppState extends SubAppState {
                 }
             });
 
-            Monster cmNPC = AssetFactory.loadNpcScript(npc.charInfo.szModelName2);
-            if (cmNPC != null) {
-                npcList.add(cmNPC.szName);
+            Monster script = AssetFactory.loadNpcScript(npc.charInfo.szModelName2);
+            if (script != null) {
+                npcList.add(script.szName);
+                logger.debug("NPC script added: {}", npc.charInfo.szModelName2);
             } else {
-                log.debug("NPC not found:" + npc.charInfo.szModelName2);
+                logger.debug("NPC script not found: {}", npc.charInfo.szModelName2);
             }
         }
         hud.setNpc(npcList);
@@ -496,7 +498,7 @@ public class LoaderAppState extends SubAppState {
                     }
                 });
             } catch (Exception e) {
-                log.error("读取小地图失败", e);
+                logger.error("读取小地图失败", e);
             }
         }
     }

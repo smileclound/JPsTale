@@ -2,7 +2,8 @@ package org.pstale.assets;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.util.LittleEndien;
 
@@ -52,7 +53,7 @@ public abstract class Flyweight {
      * </pre>
      */
 
-    protected static Logger log = Logger.getLogger(Flyweight.class);
+    protected static Logger logger = LoggerFactory.getLogger(Flyweight.class);
 
     public abstract void loadData(LittleEndien in) throws IOException;
 
