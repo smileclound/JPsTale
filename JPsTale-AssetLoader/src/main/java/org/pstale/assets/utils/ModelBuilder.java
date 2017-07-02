@@ -12,6 +12,7 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.material.Material;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -45,11 +46,17 @@ public class ModelBuilder {
      */
     public static Node buildModel(PAT3D pat, String name) {
         Node rootNode = new Node("PAT3D:" + name);
-
+        rootNode.rotate( -FastMath.HALF_PI, 0, 0);
         Skeleton ske = null;
         // 生成骨骼
         if (pat.skeleton != null) {
             ske = AnimationBuilder.buildSkeleton(pat.skeleton);
+            // 绑定动画控制器
+            Animation anim = AnimationBuilder.buildAnimation(pat.skeleton);
+            AnimControl ac = new AnimControl(ske);
+            ac.addAnim(anim);
+            rootNode.addControl(ac);
+            rootNode.addControl(new SkeletonControl(ske));
         }
 
         logger.debug("Material Count: {}", pat.materialGroup.materialCount);
@@ -93,15 +100,6 @@ public class ModelBuilder {
                     rootNode.attachChild(geom);
                 }
             }
-        }
-
-        // 绑定动画控制器
-        if (ske != null) {
-            Animation anim = AnimationBuilder.buildAnimation(pat.skeleton, ske);
-            AnimControl ac = new AnimControl(ske);
-            ac.addAnim(anim);
-            rootNode.addControl(ac);
-            rootNode.addControl(new SkeletonControl(ske));
         }
 
         return rootNode;

@@ -1,7 +1,8 @@
 package org.pstale.utils;
 
 import org.pstale.entity.field.Field;
-import org.pstale.loader.FieldLoader;
+
+import com.jme3.script.plugins.field.FieldLoader;
 
 /**
  * 生成BMFont所需的所有字符

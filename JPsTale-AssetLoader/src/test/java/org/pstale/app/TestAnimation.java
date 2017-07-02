@@ -6,7 +6,6 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.Skeleton;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.SkeletonDebugger;
@@ -24,9 +23,8 @@ public class TestAnimation extends TestBase {
 
         float scale = 0.1f;
 
-        Node npc = AssetFactory.loadCharacter("char/npc/arad/arad.inx");
+        Node npc = AssetFactory.loadCharacter("char/monster/death_knight/death_knight.inx");
         npc.scale(scale);
-        npc.rotate(-FastMath.HALF_PI, 0, 0);
         rootNode.attachChild(npc);
 
         AnimControl ac = npc.getControl(AnimControl.class);

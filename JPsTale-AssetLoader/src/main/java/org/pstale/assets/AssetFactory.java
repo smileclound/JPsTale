@@ -89,6 +89,7 @@ public class AssetFactory {
         // 注册资源加载路径
         assetManager.registerLocator("/", ClasspathLocator.class);
         assetManager.registerLocator("/", FileLocator.class);
+        registerFolder("F:/1_DEVELOP/3_素材");
         registerFolder("I:/game/PTCN-RPT1.0");
         registerFolder("D:/Priston Tale/PTCN3550/PTCN3550");
     }
@@ -268,7 +269,7 @@ public class AssetFactory {
         String folder = AssetNameUtils.getFolder(path);
 
         // 有共享数据?
-        String linkFile = modelInfo.linkFile;
+        String linkFile = modelInfo.motionLinkFile;
         if (linkFile.length() > 0) {
             AnimateModel mi = AssetFactory.loadInx(linkFile);
             modelInfo.motionFile = mi.motionFile;

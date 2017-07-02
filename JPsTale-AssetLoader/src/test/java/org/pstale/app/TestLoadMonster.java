@@ -1,6 +1,6 @@
 package org.pstale.app;
 
-import java.io.File;
+import org.pstale.assets.AssetFactory;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -25,8 +25,6 @@ import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.debug.SkeletonDebugger;
 import com.jme3.scene.plugins.ase.AseKey;
-import com.jme3.scene.plugins.ase.AseLoader;
-import com.jme3.scene.plugins.ase.FileLocator;
 
 public class TestLoadMonster extends SimpleApplication {
 
@@ -90,18 +88,7 @@ public class TestLoadMonster extends SimpleApplication {
 		cam.lookAt(Vector3f.ZERO, cam.getUp());
 		this.flyCam.setMoveSpeed(100f);
 
-		assetManager.registerLoader(AseLoader.class, "ase");
-
-		if (new File("D:/Priston Tale/0_�ز�/Client").isDirectory()) {
-			assetManager.registerLocator("D:/Priston Tale/0_�ز�/Client",
-					FileLocator.class);
-		}
-		if (new File("F:/1_DEVELOP/3_�ز�").isDirectory()) {
-			assetManager.registerLocator("F:/1_DEVELOP/3_�ز�", FileLocator.class);
-		}
-		if (new File("models").isDirectory()) {
-			assetManager.registerLocator("models", FileLocator.class);
-		}
+		AssetFactory.setAssetManager(assetManager);
 
 		Spatial flag = assetManager.loadAsset(new AseKey("char/Flag/wow.ASE"));
 		rootNode.attachChild(flag);

@@ -267,13 +267,28 @@ public class PAT3D extends Flyweight {
      * @param name
      * @return
      */
-    public GeomObject getObjectFromName(String name) {
+    public GeomObject getObj(String name) {
         for (int i = 0; i < objCount; i++) {
             if (objArray[i].NodeName.equals(name)) {
                 return objArray[i];
             }
         }
         return null;
+    }
+    
+    /**
+     * 根据结点名称，查询对象的索引号。
+     * 
+     * @param name
+     * @return
+     */
+    public int getObjIndex(String name) {
+        for (int i = 0; i < objCount; i++) {
+            if (objArray[i].NodeName.equals(name)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**

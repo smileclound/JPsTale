@@ -15,5 +15,5 @@ dependencies {
     compile "com.simsilica:lemur-proto:1.9.1"
 
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
-
+    testCompile 'junit:junit:4.12'
 }

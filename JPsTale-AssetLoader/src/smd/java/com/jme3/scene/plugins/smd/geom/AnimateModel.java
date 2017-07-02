@@ -23,7 +23,7 @@ public class AnimateModel extends Flyweight {
     public int FileTypeKeyWord;
     public int LinkFileKeyWord;
 
-    public String linkFile;// 64
+    public String motionLinkFile;// 64
 
     // 弊 颇老 2俺啊 *.ini *.in 颇老疙捞 鞍篮 版快. 笛促 鞍篮 捞抚狼 *.inx 肺 唱坷扁东矫.
     // 颇老疙捞 崔扼具 钦聪促.
@@ -75,7 +75,7 @@ public class AnimateModel extends Flyweight {
         FileTypeKeyWord = in.readInt();
         LinkFileKeyWord = in.readInt();
 
-        linkFile = getString(in, 64);
+        motionLinkFile = getString(in, 64);
 
         talkLinkFile = getString(in, 64);
         talkMotionFile = getString(in, 64);

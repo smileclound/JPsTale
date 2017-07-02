@@ -12,13 +12,10 @@ import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.MouseButtonTrigger;
 
-import jme3utilities.sky.SkyAppState;
-
 public class FieldApp extends SimpleApplication {
 
     public FieldApp() {
-        super(new LoadingAppState(), new CursorState(), new SkyAppState(), new StatsAppState(), new FlyCamAppState(),
-                new ScreenshotAppState());
+        super(new LoadingAppState(), new StatsAppState(), new FlyCamAppState(), new ScreenshotAppState());
     }
 
     @Override

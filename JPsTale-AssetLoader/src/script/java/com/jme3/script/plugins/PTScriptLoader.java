@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetLoader;
@@ -18,7 +19,7 @@ import com.jme3.asset.AssetLoader;
  *            可能是Monster/NPC/Item
  */
 public abstract class PTScriptLoader<T> implements AssetLoader {
-    static Logger log = Logger.getLogger(PTScriptLoader.class);
+    static Logger log = LoggerFactory.getLogger(PTScriptLoader.class);
 
     private boolean handleToken = false;
 

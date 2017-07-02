@@ -19,10 +19,10 @@ public class MotionInfo extends Flyweight {
 
     public int State; // 惑怕 TRUE搁 蜡瓤
 
-    public int MotionKeyWord_1;
-    public int StartFrame; // 矫累 橇饭烙
+    public int motionStartFrame;
+    public int talkStartFrame; // 矫累 橇饭烙
     public int MotionKeyWord_2;
-    public int EndFrame; // 辆丰 橇饭烙
+    public int endFrame; // 辆丰 橇饭烙
 
     public int[] EventFrame = new int[4]; // 捞亥飘 积己 橇饭烙
 
@@ -42,10 +42,10 @@ public class MotionInfo extends Flyweight {
         State = in.readInt();
         
         // TODO 下面几个帧，似乎都应该除以256
-        MotionKeyWord_1 = readKey(in);
-        StartFrame = readKey(in);
+        motionStartFrame = readKey(in);
+        talkStartFrame = readKey(in);
         MotionKeyWord_2 = readKey(in);
-        EndFrame = readKey(in);
+        endFrame = readKey(in);
 
         for (int i = 0; i < 4; i++) {
             EventFrame[i] = readKey(in);

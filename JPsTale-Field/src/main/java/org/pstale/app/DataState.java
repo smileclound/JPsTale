@@ -5,11 +5,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.pstale.entity.field.Field;
 import org.pstale.entity.item.ItemInfo;
-import org.pstale.loader.FieldLoader;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.script.plugins.character.Monster;
+import com.jme3.script.plugins.field.FieldLoader;
 
 /**
  * 这个状态机仅用于维持地区数据

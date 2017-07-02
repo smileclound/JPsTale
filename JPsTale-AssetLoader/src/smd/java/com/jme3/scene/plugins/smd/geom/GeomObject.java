@@ -91,6 +91,11 @@ public class GeomObject extends Flyweight {
      */
     public String[] boneNames;
 
+    /**
+     * 最大帧号，用于计算动画时间。
+     */
+    public int maxFrame = 0;
+    
     public GeomObject() {
         NodeName = null;
         NodeParent = null;
@@ -213,7 +218,6 @@ public class GeomObject extends Flyweight {
             TmScaleFrame[i].loadData(in);
         }
         TmFrameCnt = in.readInt();
-
     }
 
     /**
@@ -258,6 +262,9 @@ public class GeomObject extends Flyweight {
             scaleArray[i] = new TransScale();
             scaleArray[i].loadData(in);
         }
+        
+        // 统计最大帧数
+        maxFrame = getMaxFrame();
 
         TmPrevRot = new Matrix4F[TmRotCnt];
         for (int i = 0; i < TmRotCnt; i++) {
@@ -305,10 +312,32 @@ public class GeomObject extends Flyweight {
         if (lpPhysuque != 0 && skeleton != null) {
             boneArray = new GeomObject[nVertex];
             for (int j = 0; j < nVertex; j++) {
-                boneArray[j] = skeleton.getObjectFromName(boneNames[j]);
+                boneArray[j] = skeleton.getObj(boneNames[j]);
             }
             return true;
         }
         return false;
+    }
+    
+    /**
+     * 统计最大帧号，计算动画时常。
+     */
+    public int getMaxFrame() {
+        if (TmRotCnt > 0) {
+            if (rotArray[TmRotCnt - 1].frame > maxFrame) {
+                maxFrame = rotArray[TmRotCnt - 1].frame;
+            }
+        }
+        if (TmPosCnt > 0) {
+            if (posArray[TmPosCnt - 1].frame > maxFrame) {
+                maxFrame = posArray[TmPosCnt - 1].frame;
+            }
+        }
+        if (TmScaleCnt > 0) {
+            if (scaleArray[TmScaleCnt - 1].frame > maxFrame) {
+                maxFrame = scaleArray[TmScaleCnt - 1].frame;
+            }
+        }
+        return maxFrame;
     }
 }

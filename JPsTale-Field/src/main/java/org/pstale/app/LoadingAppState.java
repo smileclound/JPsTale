@@ -169,7 +169,7 @@ public class LoadingAppState extends SubAppState {
 
             // 属性文件的路径
             data.serverRoot = SERVER_ROOT;
-
+            
             value = 2;
             message = "Config..";
 

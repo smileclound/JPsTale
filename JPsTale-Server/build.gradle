@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+sourceCompatibility = 1.8
+
+dependencies {
+    compile project(':JPsTale-Core')
+    compile project(':JPsTale-Entity')
+    compile project(':JPsTale-AssetLoader')
+    
+    compile 'org.codehaus.groovy:groovy-all:2.4.10'
+    testCompile 'junit:junit:4.12'
+}

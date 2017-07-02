@@ -10,12 +10,6 @@ sourceSets {
             srcDir 'src/script/java'
         }
     }
-    
-    test {
-        resources {
-        	srcDir rootProject.file('Assets');
-        }
-    }
 }
 
 dependencies {
@@ -27,11 +21,13 @@ dependencies {
     compile 'org.json:json:20170516'
     
     compile "${jme3.g}:jme3-core:${jme3.v}"
-    compile "${jme3.g}:jme3-desktop:${jme3.v}"
-    compile "${jme3.g}:jme3-lwjgl:${jme3.v}"
 
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'org.slf4j:slf4j-log4j12:1.7.21'
+    
+    runtime "${jme3.g}:jme3-desktop:${jme3.v}"
+    runtime "${jme3.g}:jme3-lwjgl:${jme3.v}"
+    runtime project(':Assets')
     
     testCompile 'junit:junit:4.12'
     testCompile 'org.codehaus.groovy:groovy-all:2.4.10'
