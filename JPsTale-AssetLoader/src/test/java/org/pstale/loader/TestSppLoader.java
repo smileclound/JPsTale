@@ -2,33 +2,32 @@ package org.pstale.loader;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.pstale.assets.AssetFactory;
 import org.pstale.entity.field.StartPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.asset.plugins.ClasspathLocator;
-import com.jme3.script.plugins.field.SppLoader;
 
 public class TestSppLoader {
 
-    static Logger log = Logger.getLogger(TestSppLoader.class);
+    static Logger logger = LoggerFactory.getLogger(TestSppLoader.class);
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
-        assetManager.registerLoader(SppLoader.class, "spp");
-        assetManager.registerLocator("/", ClasspathLocator.class);
+        AssetFactory.setAssetManager(assetManager);
 
         // 读取地图的spc文件
-        ArrayList<StartPoint> points = (ArrayList<StartPoint>) assetManager.loadAsset("server/Field/fore-3.ase.spp");
+        ArrayList<StartPoint> points = (ArrayList<StartPoint>) assetManager.loadAsset("GameServer/Field/fore-3.ase.spp");
 
         for (StartPoint p : points) {
-            log.info("" + p.x + ", " + p.z);
+            logger.info("{}, {}", p.x, p.z);
         }
 
-        log.info("刷怪点数量:" + points.size());
+        logger.info("刷怪点数量:{}", points.size());
     }
 
 }

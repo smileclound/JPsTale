@@ -1,11 +1,10 @@
 package org.pstale.loader;
 
 import org.apache.log4j.Logger;
+import org.pstale.assets.AssetFactory;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.asset.plugins.ClasspathLocator;
-import com.jme3.script.plugins.character.CharInfoLoader;
 import com.jme3.script.plugins.character.Monster;
 
 public class TestNpcLoader {
@@ -15,10 +14,9 @@ public class TestNpcLoader {
     public static void main(String[] args) {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
-        assetManager.registerLoader(CharInfoLoader.class, "inf", "npc");
-        assetManager.registerLocator("/", ClasspathLocator.class);
+        AssetFactory.setAssetManager(assetManager);
 
-        Monster charMon = (Monster) assetManager.loadAsset("server/Monster/_14_H_Hobgoblin.inf");
+        Monster charMon = (Monster) assetManager.loadAsset("GameServer/Monster/_14_H_Hobgoblin.inf");
         log.info(charMon.szName);
         log.info("模型:" + charMon.szModelName);
         log.info("等级:" + charMon.Level);
@@ -34,7 +32,7 @@ public class TestNpcLoader {
         log.info("移动速度:" + charMon.Move_Speed);
         log.info("视野:" + charMon.Sight);
 
-        assetManager.loadAsset("server/NPC/Bcn01.npc");
+        assetManager.loadAsset("GameServer/NPC/Bcn01.npc");
     }
 
 }

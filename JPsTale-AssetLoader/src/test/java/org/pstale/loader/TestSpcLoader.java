@@ -3,12 +3,11 @@ package org.pstale.loader;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.pstale.assets.AssetFactory;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
-import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.script.plugins.field.CharacterTransform;
-import com.jme3.script.plugins.field.SpcLoader;
 
 public class TestSpcLoader {
 
@@ -18,11 +17,10 @@ public class TestSpcLoader {
     public static void main(String[] args) {
         // 初始化资源管理器
         AssetManager assetManager = new DesktopAssetManager();
-        assetManager.registerLoader(SpcLoader.class, "spc");
-        assetManager.registerLocator("/", ClasspathLocator.class);
+        AssetFactory.setAssetManager(assetManager);
 
         // 读取地图的spc文件
-        ArrayList<CharacterTransform> npcs = (ArrayList<CharacterTransform>) assetManager.loadAsset("server/Field/fore-3.ase.spc");
+        ArrayList<CharacterTransform> npcs = (ArrayList<CharacterTransform>) assetManager.loadAsset("GameServer/Field/fore-3.ase.spc");
         for (CharacterTransform npc : npcs) {
             log.info("" + npc.charInfo.szModelName);
             log.info("" + npc.charInfo.szModelName2);

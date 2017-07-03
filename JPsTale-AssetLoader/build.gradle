@@ -26,7 +26,7 @@ dependencies {
     compile 'org.slf4j:slf4j-log4j12:1.7.21'
     
     runtime "${jme3.g}:jme3-desktop:${jme3.v}"
-    runtime "${jme3.g}:jme3-lwjgl:${jme3.v}"
+    runtime "${jme3.g}:jme3-lwjgl3:${jme3.v}"
     runtime project(':Assets')
     
     testCompile 'junit:junit:4.12'
