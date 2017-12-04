@@ -7,6 +7,11 @@ import org.pstale.assets.Flyweight;
 import com.jme3.script.plugins.character.ModelGroup;
 import com.jme3.util.LittleEndien;
 
+/**
+ * Inx文件表示动画模型。
+ * @author kocla
+ *
+ */
 public class AnimateModel extends Flyweight {
 
     public String modelFile;

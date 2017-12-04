@@ -233,8 +233,6 @@ public class PAT3D extends Flyweight {
                         break;
                     }
                 }
-            } else {
-                logger.debug("j = 0");
             }
         }
 

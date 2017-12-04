@@ -11,13 +11,29 @@ import com.jme3.scene.plugins.smd.math.Vector3D;
 import com.jme3.util.LittleEndien;
 
 /**
+ * 在角色模型文件中，GeomObject是精灵模型中的基本单元，它存储了所有的ertexBuffer和IndexBuffer。
+ * 
+ * 在骨骼动画文件中，GeomObject又存储了“骨骼”的数据，包括每一块骨骼的平移变换、旋转变换和缩放变换。
+ * 
  * size = 2236
  */
 public class GeomObject extends Flyweight {
     // DWORD Head;
-    public Vertex[] Vertex;// 顶点
-    public Face[] Face;// 面
-    public TEXLINK[] TexLink;// 纹理坐标
+
+    /**
+     * 顶点数据 VertexBuffer
+     */
+    public Vertex[] Vertex;
+    
+    /**
+     * 面数据 IndexBuffer
+     */
+    public Face[] Face;
+    
+    /**
+     * 纹理坐标
+     */
+    public TEXLINK[] TexLink;
 
     public GeomObject[] boneArray; // 各顶点的骨骼
 
@@ -82,6 +98,7 @@ public class GeomObject extends Flyweight {
     int TmFrameCnt;// 是否有动画 TRUE or FALSE
 
     // //////////////////
+    // 这个指针记录了该物体是否与骨骼蒙皮数据绑定
     int lpPhysuque;
     int lpOldTexLink;
     // //////////////////
@@ -286,6 +303,9 @@ public class GeomObject extends Flyweight {
         }
     }
 
+    /**
+     * 重新建立纹理链表的关联关系。
+     */
     private void relinkFaceAndTex() {
         // 重新建立TexLink链表中的关联
         for (int i = 0; i < nTexLink; i++) {

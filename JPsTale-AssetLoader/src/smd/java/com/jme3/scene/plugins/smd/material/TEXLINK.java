@@ -14,8 +14,16 @@ public class TEXLINK extends Flyweight {
     public float[] u = new float[3];
     public float[] v = new float[3];
     int hTexture;
-    public int lpNextTex;// 这是一个指针，指向TEXLINK结构体
-    public TEXLINK NextTex;// 若lpNextTex != 0，则NextTex指向一个实际的对象
+    
+    /**
+     * 这是一个指针，指向TEXLINK结构体
+     */
+    public int lpNextTex;
+    
+    /**
+     * 若lpNextTex != 0，则NextTex指向一个实际的对象
+     */
+    public TEXLINK NextTex;
 
     public void loadData(LittleEndien in) throws IOException {
         u[0] = in.readFloat();

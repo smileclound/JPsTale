@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.pstale.assets.Flyweight;
 
+import com.jme3.math.Matrix4f;
 import com.jme3.util.LittleEndien;
 
 /**
@@ -15,6 +16,8 @@ public class Matrix4D extends Flyweight {
     public int _31, _32, _33, _34;
     public int _41, _42, _43, _44;
 
+    public Matrix4f mat4;
+    public Matrix4f mat4I;
     public Matrix4D() {
         _11 = 1;
         _12 = 0;
@@ -56,5 +59,13 @@ public class Matrix4D extends Flyweight {
         _42 = in.readInt();
         _43 = in.readInt();
         _44 = in.readInt();
+        
+        float m00 = _11 / 256f, m01 = _21 / 256f, m02 = _31 / 256f, m03 = _41 / 256f;
+        float m10 = _12 / 256f, m11 = _22 / 256f, m12 = _32 / 256f, m13 = _42 / 256f;
+        float m20 = _13 / 256f, m21 = _23 / 256f, m22 = _33 / 256f, m23 = _43 / 256f;
+        float m30 = _14 / 256f, m31 = _24 / 256f, m32 = _34 / 256f, m33 = _44 / 256f;
+        mat4 = new Matrix4f(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
+        if (mat4.determinant() != 0)
+            mat4I = mat4.invert();
     }
 }

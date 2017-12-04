@@ -10,7 +10,7 @@ import com.jme3.scene.plugins.smd.geom.PAT3D;
 import com.jme3.util.LittleEndien;
 
 /**
- * 精灵场景加载器
+ * SMB是精灵的骨骼文件，记录了每个角色所对应的骨骼数据。
  * 
  * @author yanmaoyuan
  * 

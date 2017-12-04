@@ -13,6 +13,7 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -24,7 +25,6 @@ import com.jme3.scene.plugins.smd.geom.GeomObject;
 import com.jme3.scene.plugins.smd.geom.PAT3D;
 import com.jme3.scene.plugins.smd.material.TEXLINK;
 import com.jme3.scene.plugins.smd.material._Material;
-import com.jme3.scene.plugins.smd.math.Matrix4D;
 import com.jme3.util.BufferUtils;
 
 /**
@@ -37,6 +37,7 @@ public class ModelBuilder {
 
     static Logger logger = LoggerFactory.getLogger(ModelBuilder.class);
 
+    public final static float INV_SCALE = 1f / 256f;
     /**
      * 生成模型
      * 
@@ -66,7 +67,19 @@ public class ModelBuilder {
             if (obj.nFace > 0) {
 
                 // 对所有顶点进行线性变换，否则顶点的坐标都在原点附近。
-                invertPoint(obj);
+                Matrix4f matInvert;// 逆矩阵
+                
+                for (int j = 0; j < obj.nVertex; j++) {
+                    if (obj.boneArray != null) {
+                        matInvert = obj.boneArray[j].transformInvert.mat4I;
+                    } else {
+                        matInvert = obj.transformInvert.mat4I;
+                    }
+                    // 修正顶点坐标
+                    Vector3f v = new Vector3f(obj.Vertex[j].x, obj.Vertex[j].y, obj.Vertex[j].z).multLocal(INV_SCALE);
+                    matInvert.mult(v, v);
+                    obj.Vertex[j].v = v;
+                }
 
                 // 根据模型的材质不同，将创建多个网格，分别渲染。
                 for (int mat_id = 0; mat_id < pat.materialGroup.materialCount; mat_id++) {
@@ -103,61 +116,6 @@ public class ModelBuilder {
         }
 
         return rootNode;
-    }
-
-    private static void invertPoint(GeomObject obj) {
-
-        for (int i = 0; i < obj.nVertex; i++) {
-            if (obj.boneArray != null) {
-                obj.Vertex[i].v = mult(obj.Vertex[i].x, obj.Vertex[i].y, obj.Vertex[i].z,
-                        obj.boneArray[i].transformInvert);
-            } else {
-                obj.Vertex[i].v = mult(obj.Vertex[i].x, obj.Vertex[i].y, obj.Vertex[i].z, obj.transformInvert);
-            }
-        }
-    }
-
-    /**
-     * 将顺序读取的3个int，用TmInvert进行转置，获得一个GL坐标系的顶点。
-     * 
-     * <pre>
-     * 若有向量x=(v1, v2, v3, 1)与矩阵TmInvert (_11, _12, _13, _14)
-     *                                      (_21, _22, _23, _24)
-     *                                      (_31, _32, _33, _34)
-     *                                      (_41, _42, _43, _44)。
-     * 使用TmInvert对向量x进行线性变换后，得到的向量为a(res1, res2, res3, 1)。
-     *       即：TmInvert * x = a(res1, res2, res3, 1)
-     * 其中TmInvert与a已知，求x。
-     *       x = (1/TmInvert) * a
-     * </pre>
-     * 
-     * @param res1
-     * @param res2
-     * @param res3
-     * @param m
-     */
-    private static Vector3f mult(long res1, long res2, long res3, Matrix4D m) {
-        long v1 = -((res2 * m._33 * m._21 - res2 * m._23 * m._31 - res1 * m._33 * m._22 + res1 * m._23 * m._32
-                - res3 * m._21 * m._32 + res3 * m._31 * m._22 + m._43 * m._21 * m._32 - m._43 * m._31 * m._22
-                - m._33 * m._21 * m._42 + m._33 * m._41 * m._22 + m._23 * m._31 * m._42 - m._23 * m._41 * m._32) << 8)
-                / (m._11 * m._33 * m._22 + m._23 * m._31 * m._12 + m._21 * m._32 * m._13 - m._33 * m._21 * m._12
-                        - m._11 * m._23 * m._32 - m._31 * m._22 * m._13);
-        long v2 = ((res2 * m._11 * m._33 - res1 * m._33 * m._12 - res3 * m._11 * m._32 + res3 * m._31 * m._12
-                - res2 * m._31 * m._13 + res1 * m._32 * m._13 + m._11 * m._43 * m._32 - m._43 * m._31 * m._12
-                - m._11 * m._33 * m._42 + m._33 * m._41 * m._12 + m._31 * m._42 * m._13 - m._41 * m._32 * m._13) << 8)
-                / (m._11 * m._33 * m._22 + m._23 * m._31 * m._12 + m._21 * m._32 * m._13 - m._33 * m._21 * m._12
-                        - m._11 * m._23 * m._32 - m._31 * m._22 * m._13);
-        long v3 = -((res2 * m._11 * m._23 - res1 * m._23 * m._12 - res3 * m._11 * m._22 + res3 * m._21 * m._12
-                - res2 * m._21 * m._13 + res1 * m._22 * m._13 + m._11 * m._43 * m._22 - m._43 * m._21 * m._12
-                - m._11 * m._23 * m._42 + m._23 * m._41 * m._12 + m._21 * m._42 * m._13 - m._41 * m._22 * m._13) << 8)
-                / (m._11 * m._33 * m._22 + m._23 * m._31 * m._12 + m._21 * m._32 * m._13 - m._33 * m._21 * m._12
-                        - m._11 * m._23 * m._32 - m._31 * m._22 * m._13);
-
-        float x = (float) v1 / 256.0f;
-        float y = (float) v2 / 256.0f;
-        float z = (float) v3 / 256.0f;
-
-        return new Vector3f(x, y, z);
     }
 
     /**
@@ -206,6 +164,7 @@ public class ModelBuilder {
             TEXLINK tl = obj.Face[i].TexLink;
             if (tl != null) {
                 // 第1组uv坐标
+                // Direct3D中的v轴方向与OpenGL中的相反。
                 uv[index * 3 + 0] = new Vector2f(tl.u[0], 1f - tl.v[0]);
                 uv[index * 3 + 1] = new Vector2f(tl.u[1], 1f - tl.v[1]);
                 uv[index * 3 + 2] = new Vector2f(tl.u[2], 1f - tl.v[2]);

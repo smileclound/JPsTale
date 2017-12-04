@@ -138,7 +138,7 @@ public class AnimationBuilder {
              */
             // 骨骼的初始姿态。
             Vector3f bindPosition = new Vector3f(obj.px,obj.py, obj.pz);
-            Quaternion bindRotation = new Quaternion(obj.qx, obj.qy, obj.qz, -obj.qw);
+            Quaternion bindRotation = new Quaternion(-obj.qx, -obj.qy, -obj.qz, obj.qw);
             Quaternion bindRotationI = bindRotation.inverse();// 逆旋转
             Vector3f bindScale = new Vector3f(obj.sx, obj.sy, obj.sz);
             
