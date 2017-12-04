@@ -13,6 +13,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.plugins.smd.geom.GeomObject;
 import com.jme3.scene.plugins.smd.geom.MotionInfo;
@@ -21,6 +22,10 @@ import com.jme3.scene.plugins.smd.geom.TransPosition;
 import com.jme3.scene.plugins.smd.geom.TransRotation;
 import com.jme3.scene.plugins.smd.geom.TransScale;
 
+/**
+ * 动画生成器
+ * @author yanmaoyuan
+ */
 public class AnimationBuilder {
     
     static Logger logger = LoggerFactory.getLogger(AnimationBuilder.class);
@@ -32,7 +37,6 @@ public class AnimationBuilder {
      * 这两个变量的值控制了动画播放的速率。
      */
     public final static int FramePerSecond = 4800;
-    
     public final static int TickPerSecond = 30;
     public final static int FramePerTick = 160;
 
@@ -53,11 +57,6 @@ public class AnimationBuilder {
             bones[i] = bone;
 
             // 设置初始POSE
-
-            //Vector3f translation = new Vector3f(obj.px,obj.pz, -obj.py);
-            //Quaternion rotation = new Quaternion(obj.qx, obj.qz, -obj.qy, -obj.qw);
-            //Vector3f scale = new Vector3f(obj.sx, obj.sz, obj.sy);
-            
             Vector3f translation = new Vector3f(obj.px,obj.py, obj.pz);
             Quaternion rotation = new Quaternion(obj.qx, obj.qy, obj.qz, -obj.qw);
             Vector3f scale = new Vector3f(obj.sx, obj.sy, obj.sz);
@@ -147,7 +146,7 @@ public class AnimationBuilder {
             /**
              * 统计关键帧。
              */
-            TreeMap<Integer, Keyframe> keyframes = new TreeMap<Integer, Keyframe>();
+            TreeMap<Integer, Transform> keyframes = new TreeMap<Integer, Transform>();
             
             // 用于统计实际的帧数
             int posCnt = 0;
@@ -157,49 +156,57 @@ public class AnimationBuilder {
             for (int j = 0; j < obj.TmPosCnt; j++) {
                 TransPosition pos = obj.posArray[j];
             
-                Keyframe k = getOrMakeKeyframe(keyframes, pos.frame);
-                k.translation.set(pos.x, pos.y, pos.z);
+                Transform keyframe = getOrMakeKeyframe(keyframes, pos.frame);
+                keyframe.getTranslation().set(pos.x, pos.y, pos.z);
                 
                 // 还原位移
-                k.translation.subtractLocal(bindPosition);
+                keyframe.getTranslation().subtractLocal(bindPosition);
                 
                 posCnt++;
             }
 
             for (int j = 0; j < obj.TmRotCnt; j++) {
                 TransRotation rot = obj.rotArray[j];
-                Keyframe k = getOrMakeKeyframe(keyframes, rot.frame);
-                k.rotation.set(rot.x, rot.y, rot.z, -rot.w);
+                Transform k = getOrMakeKeyframe(keyframes, rot.frame);
+                k.getRotation().set(-rot.x, -rot.y, -rot.z, rot.w);
                 
                 if (j==0) {
-                    // 还原旋转，只处理第一帧动画
-                    bindRotationI.mult(k.rotation, tmpQ);
-                    k.rotation.set(tmpQ);
+                    // 根据初始帧与这一帧的相似度决定是否需要除法。
+                    float dx = obj.qx - rot.x;
+                    float dy = obj.qy - rot.y;
+                    float dz = obj.qz - rot.z;
+                    float dw = obj.qw - rot.w;
+                    float lengthSquared = dx * dx + dy * dy + dz * dz + dw * dw;
+                    if (lengthSquared == 0f) {
+                        k.getRotation().loadIdentity();
+                    } else {
+                        // 还原旋转，只处理第一帧动画
+                        bindRotationI.mult(k.getRotation(), tmpQ);
+                        k.getRotation().set(tmpQ);
+                    }
                 }
-                rotCnt++;
             }
 
             Quaternion ori = new Quaternion(0, 0, 0, 1);
-            for (Keyframe k : keyframes.values()) {
-                if (k.rotation != null) {
-                    // ori.multLocal(k.rotation);
-                    ori = k.rotation.mult(ori);
-                    k.rotation.set(ori);
-                }
+            for (Transform keyframe : keyframes.values()) {
+                // 右乘前一帧
+                keyframe.getRotation().multLocal(ori);
+                // 记录前一帧
+                ori.set(keyframe.getRotation());
             }
 
             for (int j = 0; j < obj.TmScaleCnt; j++) {
                 TransScale scale = obj.scaleArray[j];
-                Keyframe k = getOrMakeKeyframe(keyframes, scale.frame);
-                k.scale.set(scale.x, scale.y, scale.z);
+                Transform k = getOrMakeKeyframe(keyframes, scale.frame);
+                k.getScale().set(scale.x, scale.y, scale.z);
                 
                 // 还原缩放
-                k.scale.divideLocal(bindScale);
+                k.getScale().divideLocal(bindScale);
                 
                 sclCnt++;
             }
 
-            logger.debug("total:{} position:{} rotation:{} scacle:{}", keyframes.size(), posCnt, rotCnt, sclCnt);
+            logger.debug("total:{} position:{} rotation:{} scale:{}", keyframes.size(), posCnt, rotCnt, sclCnt);
             
             /**
              * 计算动画数据。 为BoneTrack准备数据。
@@ -223,12 +230,12 @@ public class AnimationBuilder {
                 
                 if (frame >= startFrame && frame <= endFrame) {
                     // 获取当前帧
-                    Keyframe current = keyframes.get(frame);
+                    Transform current = keyframes.get(frame);
     
                     times[n] = (float)frame / FramePerSecond;
-                    translations[n] = current.translation;
-                    rotations[n] = current.rotation.normalizeLocal();
-                    scales[n] = current.scale;
+                    translations[n] = current.getTranslation();
+                    rotations[n] = current.getRotation().normalizeLocal();
+                    scales[n] = current.getScale();
     
                     n++;
                 }
@@ -287,7 +294,7 @@ public class AnimationBuilder {
              */
             // 骨骼的初始姿态。
             Vector3f bindPosition = new Vector3f(obj.px,obj.py, obj.pz);
-            Quaternion bindRotation = new Quaternion(obj.qx, obj.qy, obj.qz, -obj.qw);
+            Quaternion bindRotation = new Quaternion(-obj.qx, -obj.qy, -obj.qz, obj.qw);
             Quaternion bindRotationI = bindRotation.inverse();// 逆旋转
             Vector3f bindScale = new Vector3f(obj.sx, obj.sy, obj.sz);
             
@@ -296,44 +303,53 @@ public class AnimationBuilder {
             /**
              * 统计关键帧。
              */
-            TreeMap<Integer, Keyframe> keyframes = new TreeMap<Integer, Keyframe>();
+            TreeMap<Integer, Transform> keyframes = new TreeMap<Integer, Transform>();
             for (int j = 0; j < obj.TmPosCnt; j++) {
                 TransPosition pos = obj.posArray[j];
-                Keyframe k = getOrMakeKeyframe(keyframes, pos.frame);
-                k.translation.set(pos.x, pos.y, pos.z);
+                Transform k = getOrMakeKeyframe(keyframes, pos.frame);
+                k.getTranslation().set(pos.x, pos.y, pos.z);
                 
                 // 还原位移
-                k.translation.subtractLocal(bindPosition);
+                k.getTranslation().subtractLocal(bindPosition);
             }
 
             for (int j = 0; j < obj.TmRotCnt; j++) {
                 TransRotation rot = obj.rotArray[j];
-                Keyframe k = getOrMakeKeyframe(keyframes, rot.frame);
-                k.rotation.set(rot.x, rot.y, rot.z, -rot.w);
+                Transform k = getOrMakeKeyframe(keyframes, rot.frame);
+                k.getRotation().set(-rot.x, -rot.y, -rot.z, rot.w);
                 
                 if (j==0) {
-                    // 还原旋转，只处理第一帧动画
-                    bindRotationI.mult(k.rotation, tmpQ);
-                    k.rotation.set(tmpQ);
+                    // 根据初始帧与这一帧的相似度决定是否需要除法。
+                    float dx = obj.qx - rot.x;
+                    float dy = obj.qy - rot.y;
+                    float dz = obj.qz - rot.z;
+                    float dw = obj.qw - rot.w;
+                    float lengthSquared = dx * dx + dy * dy + dz * dz + dw * dw;
+                    if (lengthSquared == 0f) {
+                        k.getRotation().loadIdentity();
+                    } else {
+                        // 还原旋转，只处理第一帧动画
+                        bindRotationI.mult(k.getRotation(), tmpQ);
+                        k.getRotation().set(tmpQ);
+                    }
                 }
             }
 
             Quaternion ori = new Quaternion(0, 0, 0, 1);
-            for (Keyframe k : keyframes.values()) {
-                if (k.rotation != null) {
-                    // ori.multLocal(k.rotation);
-                    ori = k.rotation.mult(ori);
-                    k.rotation.set(ori);
-                }
+            for (Transform keyframe : keyframes.values()) {
+                // 右乘前一帧
+                keyframe.getRotation().multLocal(ori);
+                // 记录前一帧
+                ori.set(keyframe.getRotation());
             }
 
             for (int j = 0; j < obj.TmScaleCnt; j++) {
                 TransScale scale = obj.scaleArray[j];
-                Keyframe k = getOrMakeKeyframe(keyframes, scale.frame);
-                k.scale.set(scale.x, scale.y, scale.z);
+                Transform k = getOrMakeKeyframe(keyframes, scale.frame);
+                k.setScale(scale.x, scale.y, scale.z);
                 
                 // 还原缩放
-                k.scale.divideLocal(bindScale);
+                k.getScale().divideLocal(bindScale);
             }
 
             /**
@@ -349,55 +365,15 @@ public class AnimationBuilder {
             Quaternion[] rotations = new Quaternion[size];
             Vector3f[] scales = new Vector3f[size];
 
-            /**
-             * 由于精灵中的pose动画、rotate动画、scale动画的数量不一定相同， 因此keyframe中有些属性的值可能是null。
-             * 如果某一帧缺少其他的数据，那么复用上一帧的数据。
-             */
-            Keyframe last = null;
-            
-            /**
-             * 这个变量用来记录已经解析到了第几个Keyframe。 当n=0时，初始化last变量的值。
-             * 在循环的末尾，总是将last的引用指向当前Keyframe对象。
-             */
             int n = 0;
             for (Integer frame : keyframes.keySet()) {
                 // 获取当前帧
-                Keyframe current = keyframes.get(frame);
-
-                // 检查pose动画
-                if (current.translation == null) {
-                    if (n == 0) {
-                        current.translation = new Vector3f(0, 0, 0);
-                    } else {// 复用上一帧的数据
-                        current.translation = new Vector3f(last.translation);
-                    }
-                }
-
-                // 检查rotate动画
-                if (current.rotation == null) {
-                    if (n == 0) {
-                        current.rotation = new Quaternion(0, 0, 0, 1);
-                    } else {
-                        current.rotation = new Quaternion(last.rotation);
-                    }
-                }
-
-                // 检查scale动画
-                if (current.scale == null) {
-                    if (n == 0) {
-                        current.scale = new Vector3f(1, 1, 1);
-                    } else {
-                        current.scale = new Vector3f(last.scale);
-                    }
-                }
+                Transform current = keyframes.get(frame);
 
                 times[n] = (float) frame / FramePerSecond;
-                translations[n] = current.translation;
-                rotations[n] = current.rotation.normalizeLocal();
-                scales[n] = current.scale;
-
-                // 记录当前帧
-                last = current;
+                translations[n] = current.getTranslation();
+                rotations[n] = current.getRotation().normalizeLocal();
+                scales[n] = current.getScale();
 
                 n++;
             }
@@ -411,33 +387,21 @@ public class AnimationBuilder {
     }
 
     /**
-     * 根据帧的编号来查询Keyframe数据，如果某个frame还没有对应的Keyframe数据，就创建一个新的。
+     * 根据帧的编号来查询关键帧数据，如果某个frame还没有对应的关键帧数据，就创建一个新的。
      * 
      * @param keyframes
      * @param frame
      * @return
      */
-    private static Keyframe getOrMakeKeyframe(SortedMap<Integer, Keyframe> keyframes, Integer frame) {
-        Keyframe k = keyframes.get(frame);
+    private static Transform getOrMakeKeyframe(SortedMap<Integer, Transform> keyframes, Integer frame) {
+        Transform k = keyframes.get(frame);
         if (k == null) {
-            k = new Keyframe();
+            k = new Transform();
             keyframes.put(frame, k);
         }
         return k;
     }
     
-    /**
-     * 用于统计动画的关键帧。
-     * @author yanmaoyuan
-     *
-     */
-    private static class Keyframe {
-        public Vector3f translation = new Vector3f(0, 0, 0);
-        public Quaternion rotation = new Quaternion(0, 0, 0, 1);
-        public Vector3f scale = new Vector3f(1, 1, 1);
-    }
-    
-
     /**
      * 获取动画名称
      * @param id
